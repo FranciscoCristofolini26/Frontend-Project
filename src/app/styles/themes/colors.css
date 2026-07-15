@@ -1,0 +1,38 @@
+:root{
+
+    /* Fonts */
+    --font-main: 'Inter', system-ui, sans-serif;
+    --font-secondary: 'Geist', 'Arial',sans-serif;
+
+    /* Theme Dark */
+    --dark-background-main : #0F172A;
+    --dark-background-secondary: #111827;
+    --dark-cards: #1E293B;
+    --dark-card-high: #334155;
+    --dark-borders: #475569;
+    --dark-accentIA: #52D6C8;
+    --dark-hover-main: #2563EB;
+    --dark-color-main: #4F8EF7;
+    --dark-success: #22C555E;
+    --dark-warning: #F59E0B;
+    --dark-error: #EF4444;
+    --dark-text-main: #64748b;
+    --dark-text-secondary: #94A3B8;
+    --dark-text-disabled: #F8FAFC;
+
+    /* Theme Ligth */
+    --ligth-background-main: #64748B;
+    --ligth-background-secondary: #475569;
+    --ligth-card: #FFFFFF;
+    --ligth-card-high: #E2E8F0;
+    --ligth-borders: #CBD5E1;
+    --ligth-color-main: #315B96;
+    --ligth-hover: #2563EB;
+    --ligth-accentIA: #52D6C8;
+    --ligth-success: #16A34A;
+    --ligth-warning: #D97706;
+    --ligth-error: #DC2626;
+    --ligth-text-main: #0F172A;
+    --ligth-text-secondary: #475569;
+    --ligth-text-disabled: #64748B;
+}
