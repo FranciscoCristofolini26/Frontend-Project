@@ -1,0 +1,33 @@
+<div class="container">
+  <header class="header">
+    <div class="header-text">
+      <h1>Notas</h1>
+      <p>Anote ideias, lembretes e informacoes importantes.</p>
+    </div>
+    <button class="btn-nova-nota">
+      <span>+</span> Nova nota
+    </button>
+  </header>
+
+  <div class="search-container">
+    <input type="text" placeholder="Pesquisar notas..." class="search-input">
+  </div>
+
+  <main class="grid-notas">
+    @for (nota of notas; track nota.title) {
+      <article class="card-nota">
+        <div class="card-content">
+          <h3>{{ nota.title }}</h3>
+          <p>{{ nota.content }}</p>
+        </div>
+        <footer class="card-footer">
+          <span class="tempo-edicao">{{ nota.edited }}</span>
+          <div class="card-actions">
+            <button class="btn-icon" [class.active]="nota.favourite">estrela</button>
+            <button class="btn-icon" [class.active]="nota.fixed">pin</button>
+          </div>
+        </footer>
+      </article>
+    }
+  </main>
+</div>
