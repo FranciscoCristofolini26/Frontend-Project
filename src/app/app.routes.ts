@@ -1,13 +1,9 @@
 import { Routes } from '@angular/router';
-import { Home } from './features/home/home';
-import { Login } from './features/login/login';
-import { Habits } from './features/habits/habits';
-import { Goals } from './features/goals/goals';
-import { Notes } from './features/notes/notes';
+import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects } from './features';
 
 export const routes: Routes = [
     { 
-        path: 'home', 
+        path: '/home', 
         component: Home
     },
     { 
@@ -27,7 +23,15 @@ export const routes: Routes = [
         component: Notes
     },
     {
-        path: 'login', 
-
+        path: '/calendar', 
+        component: Calendar
+    },
+    {
+        path: '/files',
+        component: Files
+    },
+    {
+        path: '/projects',
+        component: Projects
     }
 ];
