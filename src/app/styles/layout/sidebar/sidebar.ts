@@ -1,6 +1,4 @@
-import {Component, HostListener, OnInit, signal, effect, ElementRef, viewChild,
-} from '@angular/core';
-
+import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { animate } from 'animejs';
@@ -13,15 +11,11 @@ import { animate } from 'animejs';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit {
-
   asideElement = viewChild<ElementRef>('asideRef');
 
   screenWidth = signal(window.innerWidth);
-
   isDesktop = signal(window.innerWidth >= 1024);
-
   collapsed = signal(false);
-
   mobileOpen = signal(false);
 
   menuItems = [
@@ -29,11 +23,10 @@ export class Sidebar implements OnInit {
     { icon: 'account_tree', label: 'Planning' },
     { icon: 'event', label: 'Events' },
     { icon: 'sunny', label: 'Routine' },
-    { icon: 'list_alt', label: 'Tasks' }
+    { icon: 'list_alt', label: 'Tasks' },
   ];
 
   constructor() {
-
     effect(() => {
       const el = this.asideElement()?.nativeElement;
       if (!el || !this.isDesktop()) return;
@@ -41,7 +34,7 @@ export class Sidebar implements OnInit {
       animate(el, {
         width: this.collapsed() ? '76px' : '240px',
         duration: 350,
-        ease: 'easeOutQuart'
+        ease: 'easeOutQuart',
       });
     });
 
@@ -50,7 +43,6 @@ export class Sidebar implements OnInit {
         this.mobileOpen.set(false);
       }
     });
-
   }
 
   ngOnInit() {
@@ -66,7 +58,7 @@ export class Sidebar implements OnInit {
     const isDesk = window.innerWidth >= 1024;
     this.isDesktop.set(isDesk);
     const el = this.asideElement()?.nativeElement;
-    
+
     if (!el) return;
 
     if (isDesk) {
@@ -76,14 +68,13 @@ export class Sidebar implements OnInit {
       el.style.removeProperty('border-radius');
       this.collapsed.set(false);
     }
-
   }
 
   toggleDesktopCollapse() {
-    this.collapsed.update(v => !v);
+    this.collapsed.update((v) => !v);
   }
 
   toggleMobileMenu() {
-    this.mobileOpen.update(v => !v);
+    this.mobileOpen.update((v) => !v);
   }
 }
