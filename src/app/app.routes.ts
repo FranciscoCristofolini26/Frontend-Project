@@ -3,35 +3,35 @@ import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects } from './
 
 export const routes: Routes = [
     { 
-        path: '/home', 
+        path: 'home', 
         component: Home
     },
     { 
-        path: '/login', 
+        path: 'login', 
         component: Login
     },
     { 
-        path: '/habits', 
+        path: 'habits', 
         component: Habits
     },
     { 
-        path: '/goals', 
+        path: 'goals', 
         component: Goals
     },
     { 
-        path: '/notes', 
+        path: 'notes', 
         component: Notes
     },
     {
-        path: '/calendar', 
+        path: 'calendar', 
         component: Calendar
     },
     {
-        path: '/files',
+        path: 'files',
         component: Files
     },
     {
-        path: '/projects',
+        path: 'projects',
         component: Projects
     }
 ];
