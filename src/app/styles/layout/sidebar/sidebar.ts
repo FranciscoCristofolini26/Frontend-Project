@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { animate } from 'animejs';
 
 @Component({
@@ -61,9 +61,7 @@ export class Sidebar implements OnInit {
 
     if (!el) return;
 
-    if (isDesk) {
-      this.mobileOpen.set(false);
-    } else {
+    if (!isDesk) {
       el.style.removeProperty('width');
       el.style.removeProperty('border-radius');
       this.collapsed.set(false);
