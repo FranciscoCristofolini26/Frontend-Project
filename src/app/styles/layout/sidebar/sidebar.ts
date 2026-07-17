@@ -12,7 +12,6 @@ import { animate } from 'animejs';
 })
 export class Sidebar implements OnInit {
   asideElement = viewChild<ElementRef>('asideRef');
-
   screenWidth = signal(window.innerWidth);
   isDesktop = signal(window.innerWidth >= 1024);
   collapsed = signal(false);
