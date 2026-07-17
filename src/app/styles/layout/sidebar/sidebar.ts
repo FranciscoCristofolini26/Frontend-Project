@@ -1,9 +1,11 @@
 import { Component, Input, Output, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule, MatIconModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })

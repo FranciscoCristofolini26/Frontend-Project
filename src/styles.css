@@ -1,3 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importações Globais */
+@import 'material-symbols/index.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;500&display=swap');
+
+:root {
+  /* Light Theme Colors */
+  --light-bg-main: #64748B;
+  --light-bg-sub: #475569;
+  --light-card-surface: #FFFFFF;
+  --light-surface-elevated: #E2E8F0;
+  --light-border: #CBD5E1;
+  --light-brand-primary: #315B96;
+  --light-brand-hover: #2563EB;
+  --light-brand-accent: #52D6C8;
+  --light-success: #16A34A;
+  --light-warning: #D97706;
+  --light-error: #DC2626;
+  --light-text-main: #0F172A;
+  --light-text-sub: #475569;
+  --light-text-disabled: #64748B;
+
+  /* Dark Theme Colors */
+  --dark-bg-main: #0F172A;
+  --dark-bg-sub: #111827;
+  --dark-card-surface: #1E293B;
+  --dark-surface-elevated: #334155;
+  --dark-border: #475569;
+  --dark-brand-primary: #4F8EF7;
+  --dark-brand-hover: #2563EB;
+  --dark-brand-accent: #52D6C8;
+  --dark-success: #22C55E;
+  --dark-warning: #F59E0B;
+  --dark-error: #EF4444;
+  --dark-text-main: #64748B;
+  --dark-text-sub: #94A3B8;
+  --dark-text-disabled: #F8FAFC;
+}
+
+/* Aplica a fonte geral no corpo do site por padrão */
+body {
+  font-family: 'Roboto', sans-serif;
+}
