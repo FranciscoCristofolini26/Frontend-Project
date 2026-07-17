@@ -1,8 +1,6 @@
-import {Component, HostListener, OnInit, signal, effect, ElementRef, viewChild,
-} from '@angular/core';
-
+import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { animate } from 'animejs';
 
 @Component({
@@ -13,6 +11,7 @@ import { animate } from 'animejs';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit {
+  private iconRegistry = inject(MatIconRegistry);
 
   asideElement = viewChild<ElementRef>('asideRef');
   screenWidth = signal(window.innerWidth);
@@ -25,10 +24,13 @@ export class Sidebar implements OnInit {
     { icon: 'account_tree', label: 'Planning' },
     { icon: 'event', label: 'Events' },
     { icon: 'sunny', label: 'Routine' },
-    { icon: 'list_alt', label: 'Tasks' }
+    { icon: 'list_alt', label: 'Tasks' },
+    { icon: 'note_stack', label: 'Notes' }
   ];
 
   constructor() {
+    this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
+
     effect(() => {
       const el = this.asideElement()?.nativeElement;
       if (!el || !this.isDesktop()) return;
@@ -59,13 +61,11 @@ export class Sidebar implements OnInit {
   private checkScreenSize() {
     const isDesk = window.innerWidth >= 1024;
     this.isDesktop.set(isDesk);
-    const el = this.asideElement()?.nativeElement;
     
+    const el = this.asideElement()?.nativeElement;
     if (!el) return;
 
-    if (isDesk) {
-      this.mobileOpen.set(false);
-    } else {
+    if (!isDesk) {
       el.style.removeProperty('width');
       el.style.removeProperty('border-radius');
       this.collapsed.set(false);
