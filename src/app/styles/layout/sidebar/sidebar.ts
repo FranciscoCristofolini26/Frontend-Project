@@ -23,6 +23,7 @@ export class Sidebar implements OnInit {
     { icon: 'event', label: 'Events' },
     { icon: 'sunny', label: 'Routine' },
     { icon: 'list_alt', label: 'Tasks' },
+    { icon: 'note_stack', label: 'Notes' },
   ];
 
   constructor() {
