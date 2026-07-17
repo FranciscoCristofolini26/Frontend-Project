@@ -15,13 +15,9 @@ import { animate } from 'animejs';
 export class Sidebar implements OnInit {
 
   asideElement = viewChild<ElementRef>('asideRef');
-
   screenWidth = signal(window.innerWidth);
-
   isDesktop = signal(window.innerWidth >= 1024);
-
   collapsed = signal(false);
-
   mobileOpen = signal(false);
 
   menuItems = [
@@ -33,7 +29,6 @@ export class Sidebar implements OnInit {
   ];
 
   constructor() {
-
     effect(() => {
       const el = this.asideElement()?.nativeElement;
       if (!el || !this.isDesktop()) return;
@@ -50,7 +45,6 @@ export class Sidebar implements OnInit {
         this.mobileOpen.set(false);
       }
     });
-
   }
 
   ngOnInit() {
@@ -76,7 +70,6 @@ export class Sidebar implements OnInit {
       el.style.removeProperty('border-radius');
       this.collapsed.set(false);
     }
-
   }
 
   toggleDesktopCollapse() {
