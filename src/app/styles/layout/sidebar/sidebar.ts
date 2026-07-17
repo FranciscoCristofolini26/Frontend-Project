@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild } from '@angular/core';
+import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { animate } from 'animejs';
@@ -11,6 +11,8 @@ import { animate } from 'animejs';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit {
+  private iconRegistry = inject(MatIconRegistry);
+
   asideElement = viewChild<ElementRef>('asideRef');
   screenWidth = signal(window.innerWidth);
   isDesktop = signal(window.innerWidth >= 1024);
@@ -27,6 +29,8 @@ export class Sidebar implements OnInit {
   ];
 
   constructor() {
+    this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
+
     effect(() => {
       const el = this.asideElement()?.nativeElement;
       if (!el || !this.isDesktop()) return;
