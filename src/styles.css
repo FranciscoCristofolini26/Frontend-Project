@@ -1,3 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@import 'material-symbols/index.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;600;700;800&family=Roboto:wght=400;500&display=swap');
+
+@theme {
+  --font-title: 'Inter', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+
+  /* Cores Customizadas (Padrão / Light) */
+  --color-bg-main: #64748B;
+  --color-bg-sub: #475569;
+  --color-card-surface: #FFFFFF;
+  --color-surface-elevated: #E2E8F0;
+  --color-border: #CBD5E1;
+  --color-brand-primary: #315B96;
+  --color-brand-hover: #2563EB;
+  --color-brand-accent: #52D6C8;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --color-text-main: #0F172A;
+  --color-text-sub: #475569;
+  --color-text-disabled: #64748B;
+}
+
+.dark {
+  --color-bg-main: #0F172A;
+  --color-bg-sub: #111827;
+  --color-card-surface: #1E293B;
+  --color-surface-elevated: #334155;
+  --color-border: #475569;
+  --color-brand-primary: #4F8EF7;
+  --color-brand-hover: #2563EB;
+  --color-brand-accent: #52D6C8;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-text-main: #64748B;
+  --color-text-sub: #94A3B8;
+  --color-text-disabled: #F8FAFC;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+}

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Nota } from './models';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-notes',
-  imports: [],
+  imports: [MatIconModule],
   templateUrl: './notes.html',
   styleUrls: ['./notes.css'],
 })
