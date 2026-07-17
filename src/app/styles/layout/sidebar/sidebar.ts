@@ -1,20 +1,89 @@
-import { Component, Input, Output, signal } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import {Component, HostListener, OnInit, signal, effect, ElementRef, viewChild,
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { animate } from 'animejs';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, CommonModule, MatIconModule],
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar {
-  @Input() isDesktop = false;
-  @Input() menuOpen = false;
+export class Sidebar implements OnInit {
+
+  asideElement = viewChild<ElementRef>('asideRef');
+
+  screenWidth = signal(window.innerWidth);
+
+  isDesktop = signal(window.innerWidth >= 1024);
+
   collapsed = signal(false);
 
-  toggleSideBar(){
-    this.collapsed.update(open => !open);
+  mobileOpen = signal(false);
+
+  menuItems = [
+    { icon: 'home', label: 'Home' },
+    { icon: 'account_tree', label: 'Planning' },
+    { icon: 'event', label: 'Events' },
+    { icon: 'sunny', label: 'Routine' },
+    { icon: 'list_alt', label: 'Tasks' }
+  ];
+
+  constructor() {
+
+    effect(() => {
+      const el = this.asideElement()?.nativeElement;
+      if (!el || !this.isDesktop()) return;
+
+      animate(el, {
+        width: this.collapsed() ? '76px' : '240px',
+        duration: 350,
+        ease: 'easeOutQuart'
+      });
+    });
+
+    effect(() => {
+      if (this.isDesktop()) {
+        this.mobileOpen.set(false);
+      }
+    });
+
+  }
+
+  ngOnInit() {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    const isDesk = window.innerWidth >= 1024;
+    this.isDesktop.set(isDesk);
+    const el = this.asideElement()?.nativeElement;
+    
+    if (!el) return;
+
+    if (isDesk) {
+      this.mobileOpen.set(false);
+    } else {
+      el.style.removeProperty('width');
+      el.style.removeProperty('border-radius');
+      this.collapsed.set(false);
+    }
+
+  }
+
+  toggleDesktopCollapse() {
+    this.collapsed.update(v => !v);
+  }
+
+  toggleMobileMenu() {
+    this.mobileOpen.update(v => !v);
   }
 }
