@@ -1,3 +1,89 @@
-<aside>
-    <mat-icon>home</mat-icon>
-</aside>
+<div class="flex flex-col lg:flex-row h-screen w-full select-none">
+  <header
+    class="lg:hidden flex items-center justify-between h-16 px-4 border-b border-slate-800 bg-white z-50">
+    <button
+      (click)="toggleMobileMenu()"
+      class="p-2 rounded-lg hover:bg-slate-200">
+      <mat-icon>
+        {{ mobileOpen() ? 'close' : 'menu' }}
+      </mat-icon>
+    </button>
+  </header>
+
+  <aside
+    #asideRef
+    class="fixed top-0 left-0 lg:top-1/2 lg:-translate-y-1/2
+           h-full lg:h-[75vh]
+           bg-slate-950
+           border-r lg:border
+           border-slate-800
+           text-slate-300
+           flex flex-col
+           z-40
+           shadow-2xl
+           transition-transform duration-300"
+
+    [ngClass]="{
+      'translate-x-0 lg:left-4 lg:rounded-2xl':
+        mobileOpen() || isDesktop(),
+
+      '-translate-x-full lg:translate-x-0':
+        !mobileOpen() && !isDesktop()
+    }"
+
+  >
+
+    <div
+      class="flex items-center justify-between h-16 px-4 border-b border-slate-900">
+      @if(!collapsed() || !isDesktop()){
+        <span class="font-bold tracking-wider">
+          LOGO
+        </span>
+      }
+
+      @if(isDesktop()){
+        <button
+          (click)="toggleDesktopCollapse()"
+          class="p-2 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black transition">
+          <mat-icon>
+            {{ collapsed() ? 'arrow_right' : 'arrow_left' }}
+          </mat-icon>
+        </button>
+      }
+    </div>
+
+
+    <nav class="flex-1 px-3 py-4 space-y-2">
+      @for(item of menuItems; track item.label){
+        <div
+          class="group flex items-center h-12 px-3 rounded-xl hover:bg-slate-900 transition cursor-pointer">
+          <mat-icon
+            class="text-slate-400 group-hover:text-amber-400">
+            {{ item.icon }}
+          </mat-icon>
+
+          @if(!collapsed() || !isDesktop()){
+            <span class="ml-4 text-sm">
+              {{ item.label }}
+            </span>
+          }
+
+          @if(collapsed() && isDesktop()){
+            <span
+              class="absolute left-16 opacity-0 group-hover:opacity-100 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs whitespace-nowrap transition">
+              {{ item.label }}
+            </span>
+          }
+        </div>
+      }
+    </nav>
+  </aside>
+
+
+  @if(mobileOpen() && !isDesktop()){
+    <div
+      (click)="toggleMobileMenu()"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30">
+    </div>
+  }
+</div>
