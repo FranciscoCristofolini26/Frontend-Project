@@ -1,0 +1,62 @@
+<div class="min-h-screen bg-slate-50 px-6 py-10 sm:px-10">
+  <div class="mx-auto max-w-6xl">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-4xl font-extrabold text-light-text-main">Notas</h1>
+        <p class="mt-1 text-light-text-sub">Anote ideias, lembretes e informações importantes.</p>
+      </div>
+
+      <button
+        type="button"
+        class="flex items-center justify-center gap-2 rounded-xl bg-light-brand-primary px-5 py-3 font-medium text-white shadow-sm transition hover:bg-light-brand-hover"
+      >
+        <mat-icon class="icon-lg">add</mat-icon>
+        Nova nota
+      </button>
+    </header>
+
+    <div class="relative mt-8">
+      <mat-icon
+        class="icon-lg pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-light-text-disabled"
+      >search</mat-icon>
+      <input
+        type="text"
+        placeholder="Pesquisar notas..."
+        class="w-full rounded-xl border border-light-border bg-white py-3 pl-12 pr-4 text-light-text-main shadow-sm outline-none placeholder:text-light-text-disabled focus:border-light-brand-primary"
+      />
+    </div>
+
+    <main class="mt-8 columns-1 gap-6 sm:columns-2 lg:columns-4">
+      @for (nota of notas; track nota.title) {
+        <article
+          class="mb-6 flex break-inside-avoid flex-col rounded-2xl border border-light-border/60 bg-light-card-surface p-5 shadow-sm"
+        >
+          <h3 class="font-semibold text-light-text-main">{{ nota.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-light-text-sub">{{ nota.content }}</p>
+
+          <footer class="mt-4 flex items-center justify-between">
+            <span class="text-xs text-light-text-disabled">Editada {{ timeAgo(nota.edited) }}</span>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                class="rounded p-1 transition hover:bg-light-surface-elevated"
+                [class.text-light-brand-primary]="nota.favourite"
+                [class.text-light-text-disabled]="!nota.favourite"
+              >
+                <mat-icon>{{ nota.favourite ? 'star' : 'star_border' }}</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="rounded p-1 transition hover:bg-light-surface-elevated"
+                [class.text-light-brand-primary]="nota.fixed"
+                [class.text-light-text-disabled]="!nota.fixed"
+              >
+                <mat-icon>push_pin</mat-icon>
+              </button>
+            </div>
+          </footer>
+        </article>
+      }
+    </main>
+  </div>
+</div>

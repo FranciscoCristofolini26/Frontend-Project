@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild, inject } from '@angular/core';
+import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { animate } from 'animejs';
@@ -11,8 +11,6 @@ import { animate } from 'animejs';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit {
-  private iconRegistry = inject(MatIconRegistry);
-
   asideElement = viewChild<ElementRef>('asideRef');
   screenWidth = signal(window.innerWidth);
   isDesktop = signal(window.innerWidth >= 1024);
@@ -25,12 +23,10 @@ export class Sidebar implements OnInit {
     { icon: 'event', label: 'Events' },
     { icon: 'sunny', label: 'Routine' },
     { icon: 'list_alt', label: 'Tasks' },
-    { icon: 'note_stack', label: 'Notes' }
+    { icon: 'note_stack', label: 'Notes' },
   ];
 
   constructor() {
-    this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
-
     effect(() => {
       const el = this.asideElement()?.nativeElement;
       if (!el || !this.isDesktop()) return;
@@ -38,7 +34,7 @@ export class Sidebar implements OnInit {
       animate(el, {
         width: this.collapsed() ? '76px' : '240px',
         duration: 350,
-        ease: 'easeOutQuart'
+        ease: 'easeOutQuart',
       });
     });
 
@@ -61,8 +57,8 @@ export class Sidebar implements OnInit {
   private checkScreenSize() {
     const isDesk = window.innerWidth >= 1024;
     this.isDesktop.set(isDesk);
-    
     const el = this.asideElement()?.nativeElement;
+
     if (!el) return;
 
     if (!isDesk) {
@@ -73,10 +69,10 @@ export class Sidebar implements OnInit {
   }
 
   toggleDesktopCollapse() {
-    this.collapsed.update(v => !v);
+    this.collapsed.update((v) => !v);
   }
 
   toggleMobileMenu() {
-    this.mobileOpen.update(v => !v);
+    this.mobileOpen.update((v) => !v);
   }
 }
