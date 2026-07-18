@@ -1,62 +1,64 @@
-<div class="min-h-screen bg-slate-50 px-6 py-10 sm:px-10">
-  <div class="mx-auto max-w-6xl">
-    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+<section class="notes-page">
+  <div class="notes-content">
+    <header class="notes-header">
       <div>
-        <h1 class="text-4xl font-extrabold text-light-text-main">Notas</h1>
-        <p class="mt-1 text-light-text-sub">Anote ideias, lembretes e informações importantes.</p>
+        <h1>Notas</h1>
+        <p>Anote ideias, lembretes e informações importantes.</p>
       </div>
-
-      <button
-        type="button"
-        class="flex items-center justify-center gap-2 rounded-xl bg-light-brand-primary px-5 py-3 font-medium text-white shadow-sm transition hover:bg-light-brand-hover"
-      >
-        <mat-icon class="icon-lg">add</mat-icon>
+      <button type="button" class="primary-button" (click)="openCreateEditor()">
+        <mat-icon>add</mat-icon>
         Nova nota
       </button>
     </header>
 
-    <div class="relative mt-8">
-      <mat-icon
-        class="icon-lg pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-light-text-disabled"
-      >search</mat-icon>
-      <input
-        type="text"
-        placeholder="Pesquisar notas..."
-        class="w-full rounded-xl border border-light-border bg-white py-3 pl-12 pr-4 text-light-text-main shadow-sm outline-none placeholder:text-light-text-disabled focus:border-light-brand-primary"
-      />
-    </div>
+    <label class="search-field">
+      <mat-icon>search</mat-icon>
+      <input type="search" [(ngModel)]="searchTerm" placeholder="Pesquisar notas..." aria-label="Pesquisar notas" />
+    </label>
 
-    <main class="mt-8 columns-1 gap-6 sm:columns-2 lg:columns-4">
-      @for (nota of notas; track nota.title) {
-        <article
-          class="mb-6 flex break-inside-avoid flex-col rounded-2xl border border-light-border/60 bg-light-card-surface p-5 shadow-sm"
-        >
-          <h3 class="font-semibold text-light-text-main">{{ nota.title }}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-light-text-sub">{{ nota.content }}</p>
-
-          <footer class="mt-4 flex items-center justify-between">
-            <span class="text-xs text-light-text-disabled">Editada {{ timeAgo(nota.edited) }}</span>
-            <div class="flex items-center gap-1">
-              <button
-                type="button"
-                class="rounded p-1 transition hover:bg-light-surface-elevated"
-                [class.text-light-brand-primary]="nota.favourite"
-                [class.text-light-text-disabled]="!nota.favourite"
-              >
-                <mat-icon>{{ nota.favourite ? 'star' : 'star_border' }}</mat-icon>
+    <main class="notes-grid">
+      @for (nota of filteredNotes; track nota) {
+        <article class="note-card" tabindex="0" role="button" (click)="openEditEditor(nota)" (keydown.enter)="openEditEditor(nota)">
+          <h2>{{ nota.title }}</h2>
+          <p>{{ nota.content }}</p>
+          <footer>
+            <span>Editada {{ timeAgo(nota.edited) }}</span>
+            <div class="note-actions">
+              <button type="button" [attr.aria-label]="nota.favourite ? 'Remover dos favoritos' : 'Favoritar nota'" (click)="toggleFavourite(nota, $event)">
+                <mat-icon [class.is-active]="nota.favourite">{{ nota.favourite ? 'star' : 'star_border' }}</mat-icon>
               </button>
-              <button
-                type="button"
-                class="rounded p-1 transition hover:bg-light-surface-elevated"
-                [class.text-light-brand-primary]="nota.fixed"
-                [class.text-light-text-disabled]="!nota.fixed"
-              >
-                <mat-icon>push_pin</mat-icon>
+              <button type="button" [attr.aria-label]="nota.fixed ? 'Desafixar nota' : 'Fixar nota'" (click)="toggleFixed(nota, $event)">
+                <mat-icon [class.is-active]="nota.fixed">push_pin</mat-icon>
               </button>
             </div>
           </footer>
         </article>
+      } @empty {
+        <p class="empty-state">Nenhuma nota encontrada.</p>
       }
     </main>
   </div>
-</div>
+</section>
+
+@if (isEditorOpen) {
+  <div class="modal-backdrop" (click)="closeEditor()">
+    <section class="note-editor" role="dialog" aria-modal="true" [attr.aria-label]="isCreating ? 'Criar nota' : 'Editar nota'" (click)="$event.stopPropagation()">
+      <button type="button" class="close-button" aria-label="Fechar editor" (click)="closeEditor()"><mat-icon>close</mat-icon></button>
+      <h2>{{ isCreating ? 'Nova nota' : 'Editar nota' }}</h2>
+      <label>
+        Título
+        <input type="text" [(ngModel)]="draftTitle" placeholder="Título da nota" />
+      </label>
+      <label>
+        Nota
+        <textarea [(ngModel)]="draftContent" placeholder="Escreva sua nota..."></textarea>
+      </label>
+      <footer class="editor-actions">
+        @if (!isCreating) {
+          <button type="button" class="delete-button" (click)="deleteNote()"><mat-icon>delete</mat-icon>Excluir</button>
+        }
+        <button type="button" class="save-button" [class.is-ready]="hasChanges && draftTitle.trim()" [disabled]="!hasChanges || !draftTitle.trim()" (click)="saveNote()"><mat-icon>save</mat-icon>Salvar</button>
+      </footer>
+    </section>
+  </div>
+}

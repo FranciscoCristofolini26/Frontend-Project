@@ -1,5 +1,5 @@
 export interface Nota {
-    //id: number;
+    id: string;
     title: string;
     content: string;
     edited: Date;
