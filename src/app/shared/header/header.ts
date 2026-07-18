@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ThemeService } from '../../../shared/theme.service';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-header',
