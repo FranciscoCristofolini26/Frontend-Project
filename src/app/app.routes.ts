@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects } from './features';
+import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects } from './pages';
 
 export const routes: Routes = [
     { 

@@ -28,6 +28,10 @@ export class Sidebar implements OnInit {
     { icon: 'note_stack', label: 'Notes' },
   ];
 
+  features = [
+    { icon: 'settings', label: 'Config' },
+  ]
+
   constructor() {
     this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
 

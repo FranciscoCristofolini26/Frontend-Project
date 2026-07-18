@@ -35,25 +35,45 @@
     </div>
 
     <nav class="flex-1 px-3 py-4 space-y-2">
-      @for (item of menuItems; track item.label) {
-        <div class="group flex items-center h-12 px-3 rounded-xl hover:bg-slate-900 transition cursor-pointer">
-          <mat-icon class="text-slate-400 group-hover:text-amber-400">
-            {{ item.icon }}
-          </mat-icon>
-
-          @if (!collapsed() || !isDesktop()) {
-            <span class="ml-4 text-sm">
-              {{ item.label }}
-            </span>
-          }
-
-          @if (collapsed() && isDesktop()) {
-            <span class="absolute left-16 opacity-0 group-hover:opacity-100 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs whitespace-nowrap transition">
-              {{ item.label }}
-            </span>
+        <div class="mb-21">
+          @for (item of menuItems; track item.label) {
+            <div class="icon-Container">
+              <mat-icon class="text-slate-400 group-hover:text-amber-400">
+                {{ item.icon }}
+              </mat-icon>
+              @if (!collapsed() || !isDesktop()) {
+                <span class="ml-4 text-sm">
+                  {{ item.label }}
+                </span>
+              }
+              @if (collapsed() && isDesktop()) {
+                <span class="icon-Label">
+                  {{ item.label }}
+                </span>
+              }
+            </div>
           }
         </div>
-      }
+
+        <div>
+          @for (item of features; track item.label) {
+            <div class="icon-Container">
+              <mat-icon>
+                {{ item.icon }}
+              </mat-icon>
+              @if (!collapsed() || !isDesktop()) {
+                  <span class="ml-4 text-sm">
+                    {{ item.label }}
+                  </span>
+                }
+                @if (collapsed() && isDesktop()) {
+                  <span class="icon-Label">
+                    {{ item.label }}
+                  </span>
+                }
+            </div>
+          }
+        </div>
     </nav>
   </aside>
 

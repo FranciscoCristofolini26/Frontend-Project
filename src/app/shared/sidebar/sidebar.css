@@ -1,3 +1,40 @@
+.icon-Container{
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.icon-Container:hover{
+  background-color: #0f172a;
+}
+
+.icon-Label{
+  position: absolute;
+  left: 4rem; /* Equivalente a left-16 (64px) */
+  opacity: 0; /* Equivalente a opacity-0 */
+  
+  background-color: #0f172a; /* Equivalente a bg-slate-900 */
+  border: 1px solid #1e293b; /* Equivalente a border border-slate-800 */
+  border-radius: 0.5rem; /* Equivalente a rounded-lg (8px) */
+  
+  padding-top: 0.5rem; /* Equivalente a py-2 (8px) */
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem; /* Equivalente a px-3 (12px) */
+  padding-right: 0.75rem;
+  
+  font-size: 0.75rem; /* Equivalente a text-xs (12px) */
+  line-height: 1rem;
+  white-space: nowrap; /* Equivalente a whitespace-nowrap */
+  
+  /* Equivalente a transition (transição padrão do Tailwind para opacidade, etc.) */
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Customização e suavização dos ícones */
 mat-icon {
   user-select: none;
