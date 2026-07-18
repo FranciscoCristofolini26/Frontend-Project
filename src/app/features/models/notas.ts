@@ -5,4 +5,5 @@ export interface Nota {
     edited: Date;
     favourite: boolean;
     fixed: boolean;
+    fixedAt: Date | null;
 }

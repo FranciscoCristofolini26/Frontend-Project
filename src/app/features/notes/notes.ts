@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Nota } from './models';
+import { Nota } from '../models';
 
 @Component({
   selector: 'app-notes',
@@ -25,8 +25,15 @@ export class Notes implements OnInit {
 
   get filteredNotes(): Nota[] {
     const query = this.searchTerm.trim().toLocaleLowerCase();
-    if (!query) return this.notas;
-    return this.notas.filter(({ title, content }) => `${title} ${content}`.toLocaleLowerCase().includes(query));
+    const notes = !query
+      ? this.notas
+      : this.notas.filter(({ title, content }) => `${title} ${content}`.toLocaleLowerCase().includes(query));
+
+    return [...notes].sort((first, second) => {
+      if (first.fixed !== second.fixed) return first.fixed ? -1 : 1;
+      if (!first.fixed) return 0;
+      return (first.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER) - (second.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER);
+    });
   }
 
   get hasChanges(): boolean {
@@ -54,7 +61,7 @@ export class Notes implements OnInit {
     if (!title || !this.hasChanges) return;
 
     if (this.isCreating) {
-      this.notas = [{ id: crypto.randomUUID(), title, content: this.draftContent, edited: new Date(), favourite: false, fixed: false }, ...this.notas];
+      this.notas = [{ id: crypto.randomUUID(), title, content: this.draftContent, edited: new Date(), favourite: false, fixed: false, fixedAt: null }, ...this.notas];
     } else {
       this.notas = this.notas.map((nota) => nota.id === this.editingId ? { ...nota, title, content: this.draftContent, edited: new Date() } : nota);
     }
@@ -76,7 +83,8 @@ export class Notes implements OnInit {
 
   toggleFixed(nota: Nota, event: MouseEvent): void {
     event.stopPropagation();
-    this.updateNote(nota.id, { fixed: !nota.fixed });
+    const fixed = !nota.fixed;
+    this.updateNote(nota.id, { fixed, fixedAt: fixed ? new Date() : null });
   }
 
   timeAgo(date: Date): string {
@@ -103,12 +111,18 @@ export class Notes implements OnInit {
   private loadNotes(): Nota[] {
     const savedNotes = localStorage.getItem(this.storageKey);
     if (savedNotes) {
-      try { return JSON.parse(savedNotes).map((nota: Nota) => ({ ...nota, edited: new Date(nota.edited) })); }
+      try {
+        return JSON.parse(savedNotes).map((nota: Nota, index: number) => ({
+          ...nota,
+          edited: new Date(nota.edited),
+          fixedAt: nota.fixedAt ? new Date(nota.fixedAt) : nota.fixed ? new Date(index) : null,
+        }));
+      }
       catch { localStorage.removeItem(this.storageKey); }
     }
     const initialNotes: Nota[] = [
-      { id: crypto.randomUUID(), title: 'Nota 1', content: 'Texto da nota 1', edited: new Date(), favourite: false, fixed: false },
-      { id: crypto.randomUUID(), title: 'Nota 2', content: 'Texto da nota 2', edited: new Date(), favourite: false, fixed: false },
+      { id: crypto.randomUUID(), title: 'Nota 1', content: 'Texto da nota 1', edited: new Date(), favourite: false, fixed: false, fixedAt: null },
+      { id: crypto.randomUUID(), title: 'Nota 2', content: 'Texto da nota 2', edited: new Date(), favourite: false, fixed: false, fixedAt: null },
     ];
     localStorage.setItem(this.storageKey, JSON.stringify(initialNotes));
     return initialNotes;
