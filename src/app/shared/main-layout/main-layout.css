@@ -1,0 +1,16 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-layout__main {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .app-layout__main {
+    /* 1rem de afastamento + 15rem da sidebar expandida + 1rem de respiro. */
+    margin-inline-start: 17rem;
+  }
+}

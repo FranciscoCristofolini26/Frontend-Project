@@ -9,9 +9,9 @@ import { Nota } from '../models';
   templateUrl: './notes.html',
   styleUrls: ['./notes.css'],
 })
-
-export class Notes{
+export class Notes {
   private readonly storageKey = 'agenda-notes';
+  readonly notePreviewMaxLength = 180;
   notas: Nota[] = [];
   searchTerm = '';
   isEditorOpen = false;
@@ -30,29 +30,36 @@ export class Notes{
   }
 
   private updateNote(id: string, changes: Partial<Nota>): void {
-    this.notas = this.notas.map((nota) => nota.id === id ? { ...nota, ...changes } : nota);
+    this.notas = this.notas.map((nota) => (nota.id === id ? { ...nota, ...changes } : nota));
     this.persistNotes();
   }
 
   private persistNotes(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.notas)); 
+    localStorage.setItem(this.storageKey, JSON.stringify(this.notas));
   }
 
   get filteredNotes(): Nota[] {
     const query = this.searchTerm.trim().toLocaleLowerCase();
     const notes = !query
       ? this.notas
-      : this.notas.filter(({ title, content }) => `${title} ${content}`.toLocaleLowerCase().includes(query));
+      : this.notas.filter(({ title, content }) =>
+          `${title} ${content}`.toLocaleLowerCase().includes(query),
+        );
 
     return [...notes].sort((first, second) => {
       if (first.fixed !== second.fixed) return first.fixed ? -1 : 1;
       if (!first.fixed) return 0;
-      return (first.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER) - (second.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER);
+      return (
+        (first.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER) -
+        (second.fixedAt?.getTime() ?? Number.MAX_SAFE_INTEGER)
+      );
     });
   }
 
   get hasChanges(): boolean {
-    return this.draftTitle.trim() !== this.originalTitle || this.draftContent !== this.originalContent;
+    return (
+      this.draftTitle.trim() !== this.originalTitle || this.draftContent !== this.originalContent
+    );
   }
 
   openCreateEditor(): void {
@@ -69,28 +76,33 @@ export class Notes{
     this.isEditorOpen = true;
   }
 
-  closeEditor(): void { this.isEditorOpen = false; }
+  closeEditor(): void {
+    this.isEditorOpen = false;
+  }
 
   saveNote(): void {
     const title = this.draftTitle.trim();
     if (!title || !this.hasChanges) return;
 
     if (this.isCreating) {
-      this.notas = [{ 
-        id: crypto.randomUUID(),
-         title, 
-         content: this.draftContent, 
-         edited: new Date(), 
-         favourite: false, 
-         fixed: false, 
-         fixedAt: null 
-      }, 
-      ...this.notas];
+      this.notas = [
+        {
+          id: crypto.randomUUID(),
+          title,
+          content: this.draftContent,
+          edited: new Date(),
+          favourite: false,
+          fixed: false,
+          fixedAt: null,
+        },
+        ...this.notas,
+      ];
     } else {
-      this.notas = this.notas.map((nota) => 
-        nota.id === this.editingId 
-      ? { ...nota, title, content: this.draftContent, edited: new Date() } 
-      : nota);
+      this.notas = this.notas.map((nota) =>
+        nota.id === this.editingId
+          ? { ...nota, title, content: this.draftContent, edited: new Date() }
+          : nota,
+      );
     }
     this.persistNotes();
     this.closeEditor();
@@ -121,5 +133,13 @@ export class Notes{
     if (diffHours < 24) return `há ${diffHours} h`;
     const diffDays = Math.floor(diffHours / 24);
     return diffDays === 1 ? 'ontem' : `há ${diffDays} dias`;
+  }
+
+  previewContent(content: string): string {
+    const normalizedContent = content.replace(/\s+/g, ' ').trim();
+
+    return normalizedContent.length > this.notePreviewMaxLength
+      ? `${normalizedContent.slice(0, this.notePreviewMaxLength).trimEnd()}...`
+      : normalizedContent;
   }
 }

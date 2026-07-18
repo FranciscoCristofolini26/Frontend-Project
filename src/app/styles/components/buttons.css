@@ -1,0 +1,35 @@
+.button {
+  align-items: center;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: .75rem;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 600;
+  gap: .45rem;
+  justify-content: center;
+  line-height: 1.25;
+  padding: .75rem 1rem;
+  transition: background-color .2s, border-color .2s, color .2s, transform .2s;
+}
+
+.button:hover:not(:disabled) { transform: translateY(-1px); }
+.button:focus-visible { outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent); outline-offset: 2px; }
+.button:disabled { cursor: not-allowed; opacity: .75; }
+
+.button--primary { background: var(--color-brand-primary); color: #fff; }
+.button--primary:hover:not(:disabled) { background: var(--color-brand-hover); }
+
+.button--secondary { background: var(--color-surface-elevated); color: var(--color-text-main); }
+.button--secondary:hover:not(:disabled) { background: var(--color-border); }
+
+.button--danger { background: transparent; color: var(--color-error); }
+.button--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error) 13%, transparent); }
+
+.button--ghost { background: transparent; color: var(--color-text-disabled); }
+.button--ghost:hover:not(:disabled) { background: var(--color-surface-elevated); color: var(--color-text-main); }
+
+.button--icon { border-radius: .45rem; min-height: 2rem; min-width: 2rem; padding: .4rem; }
+
+.button--full { width: 100%; }
