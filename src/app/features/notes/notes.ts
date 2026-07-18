@@ -9,7 +9,8 @@ import { Nota } from '../models';
   templateUrl: './notes.html',
   styleUrls: ['./notes.css'],
 })
-export class Notes implements OnInit {
+
+export class Notes{
   private readonly storageKey = 'agenda-notes';
   notas: Nota[] = [];
   searchTerm = '';
@@ -21,7 +22,21 @@ export class Notes implements OnInit {
   private originalTitle = '';
   private originalContent = '';
 
-  ngOnInit(): void { this.notas = this.loadNotes(); }
+  private setDraft(title: string, content: string): void {
+    this.draftTitle = title;
+    this.draftContent = content;
+    this.originalTitle = title.trim();
+    this.originalContent = content;
+  }
+
+  private updateNote(id: string, changes: Partial<Nota>): void {
+    this.notas = this.notas.map((nota) => nota.id === id ? { ...nota, ...changes } : nota);
+    this.persistNotes();
+  }
+
+  private persistNotes(): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.notas)); 
+  }
 
   get filteredNotes(): Nota[] {
     const query = this.searchTerm.trim().toLocaleLowerCase();
@@ -61,9 +76,21 @@ export class Notes implements OnInit {
     if (!title || !this.hasChanges) return;
 
     if (this.isCreating) {
-      this.notas = [{ id: crypto.randomUUID(), title, content: this.draftContent, edited: new Date(), favourite: false, fixed: false, fixedAt: null }, ...this.notas];
+      this.notas = [{ 
+        id: crypto.randomUUID(),
+         title, 
+         content: this.draftContent, 
+         edited: new Date(), 
+         favourite: false, 
+         fixed: false, 
+         fixedAt: null 
+      }, 
+      ...this.notas];
     } else {
-      this.notas = this.notas.map((nota) => nota.id === this.editingId ? { ...nota, title, content: this.draftContent, edited: new Date() } : nota);
+      this.notas = this.notas.map((nota) => 
+        nota.id === this.editingId 
+      ? { ...nota, title, content: this.draftContent, edited: new Date() } 
+      : nota);
     }
     this.persistNotes();
     this.closeEditor();
@@ -95,38 +122,4 @@ export class Notes implements OnInit {
     const diffDays = Math.floor(diffHours / 24);
     return diffDays === 1 ? 'ontem' : `há ${diffDays} dias`;
   }
-
-  private setDraft(title: string, content: string): void {
-    this.draftTitle = title;
-    this.draftContent = content;
-    this.originalTitle = title.trim();
-    this.originalContent = content;
-  }
-
-  private updateNote(id: string, changes: Partial<Nota>): void {
-    this.notas = this.notas.map((nota) => nota.id === id ? { ...nota, ...changes } : nota);
-    this.persistNotes();
-  }
-
-  private loadNotes(): Nota[] {
-    const savedNotes = localStorage.getItem(this.storageKey);
-    if (savedNotes) {
-      try {
-        return JSON.parse(savedNotes).map((nota: Nota, index: number) => ({
-          ...nota,
-          edited: new Date(nota.edited),
-          fixedAt: nota.fixedAt ? new Date(nota.fixedAt) : nota.fixed ? new Date(index) : null,
-        }));
-      }
-      catch { localStorage.removeItem(this.storageKey); }
-    }
-    const initialNotes: Nota[] = [
-      { id: crypto.randomUUID(), title: 'Nota 1', content: 'Texto da nota 1', edited: new Date(), favourite: false, fixed: false, fixedAt: null },
-      { id: crypto.randomUUID(), title: 'Nota 2', content: 'Texto da nota 2', edited: new Date(), favourite: false, fixed: false, fixedAt: null },
-    ];
-    localStorage.setItem(this.storageKey, JSON.stringify(initialNotes));
-    return initialNotes;
-  }
-
-  private persistNotes(): void { localStorage.setItem(this.storageKey, JSON.stringify(this.notas)); }
 }
