@@ -2,7 +2,6 @@
   <app-sidebar (desktopCollapsedChange)="onSidebarCollapsedChange($event)"></app-sidebar>
 
   <main class="app-layout__main" [class.app-layout__main--sidebar-collapsed]="sidebarCollapsed()">
-    <app-header></app-header>
 
     <router-outlet />
   </main>
