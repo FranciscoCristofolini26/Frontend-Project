@@ -1,0 +1,43 @@
+<div class="min-h-screen bg-bg-main px-6 py-10 sm:px-10">
+  <div class="mx-auto max-w-6xl">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="font-title text-4xl font-extrabold text-text-main">Agenda</h1>
+        <p class="mt-1 text-text-sub">Organize sua rotina e suas tarefas em um único lugar.</p>
+      </div>
+
+      <div class="inline-flex items-center gap-1 rounded-xl border border-border bg-card-surface p-1 shadow-sm">
+        <button
+          type="button"
+          (click)="setView('planejamento')"
+          class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+          [class.bg-brand-primary]="view() === 'planejamento'"
+          [class.text-white]="view() === 'planejamento'"
+          [class.text-text-sub]="view() !== 'planejamento'"
+        >
+          <mat-icon>event_repeat</mat-icon>
+          Planejamento
+        </button>
+        <button
+          type="button"
+          (click)="setView('tarefas')"
+          class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
+          [class.bg-brand-primary]="view() === 'tarefas'"
+          [class.text-white]="view() === 'tarefas'"
+          [class.text-text-sub]="view() !== 'tarefas'"
+        >
+          <mat-icon>checklist</mat-icon>
+          Tarefas
+        </button>
+      </div>
+    </header>
+
+    <main class="mt-8">
+      @if (view() === 'planejamento') {
+        <app-planning />
+      } @else {
+        <app-tasks />
+      }
+    </main>
+  </div>
+</div>

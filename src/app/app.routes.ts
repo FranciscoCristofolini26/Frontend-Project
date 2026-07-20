@@ -33,5 +33,9 @@ export const routes: Routes = [
     {
         path: 'projects',
         component: Projects
+    },
+    {
+        path: 'schedule',
+        component: Schedule
     }
 ];

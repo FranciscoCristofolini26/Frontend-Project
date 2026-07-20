@@ -1,0 +1,66 @@
+<section>
+  <div class="flex justify-end">
+    <button
+      type="button"
+      class="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 font-medium text-white shadow-sm transition hover:bg-brand-hover"
+    >
+      <mat-icon class="icon-lg">add</mat-icon>
+      Nova tarefa
+    </button>
+  </div>
+
+  @if (tasks().length === 0) {
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
+      <mat-icon class="icon-lg text-text-sub">task_alt</mat-icon>
+      <p class="text-text-sub">Nenhuma tarefa cadastrada ainda.</p>
+    </div>
+  } @else {
+    <ul class="mt-6 space-y-3">
+      @for (task of pendingTasks(); track task.id) {
+        <li class="flex items-center gap-4 rounded-xl border border-border bg-card-surface p-4 shadow-sm">
+          <button type="button" (click)="toggleTask(task.id)" class="flex-none text-text-disabled hover:text-brand-primary">
+            <mat-icon class="icon-lg">radio_button_unchecked</mat-icon>
+          </button>
+
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-medium text-text-main">{{ task.title }}</p>
+            <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-sub">
+              <span>{{ task.dueLabel }}</span>
+              @if (task.project) {
+                <span class="rounded-full bg-surface-elevated px-2 py-0.5">{{ task.project }}</span>
+              }
+            </div>
+          </div>
+
+          <span class="flex-none rounded-full px-3 py-1 text-xs font-semibold" [class]="priorityClasses(task.priority)">
+            {{ task.priority }}
+          </span>
+        </li>
+      }
+
+      @if (completedTasks().length > 0) {
+        <li class="pt-4 text-xs font-semibold uppercase tracking-wide text-text-sub">
+          Concluídas · {{ completedTasks().length }}
+        </li>
+
+        @for (task of completedTasks(); track task.id) {
+          <li class="flex items-center gap-4 rounded-xl border border-border bg-card-surface/60 p-4 opacity-70">
+            <button type="button" (click)="toggleTask(task.id)" class="flex-none text-success">
+              <mat-icon class="icon-lg">check_circle</mat-icon>
+            </button>
+
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-medium text-text-main line-through">{{ task.title }}</p>
+              <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-sub">
+                <span>{{ task.dueLabel }}</span>
+                @if (task.project) {
+                  <span class="rounded-full bg-surface-elevated px-2 py-0.5">{{ task.project }}</span>
+                }
+              </div>
+            </div>
+          </li>
+        }
+      }
+    </ul>
+  }
+</section>
