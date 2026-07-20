@@ -19,18 +19,58 @@ export class Sidebar implements OnInit {
   collapsed = signal(false);
   mobileOpen = signal(false);
 
-  menuItems = [
-    { icon: 'home', label: 'Home' },
-    { icon: 'account_tree', label: 'Planning' },
-    { icon: 'event', label: 'Events' },
-    { icon: 'sunny', label: 'Routine' },
-    { icon: 'list_alt', label: 'Tasks' },
-    { icon: 'note_stack', label: 'Notes' },
+  navigationSections = [
+    {
+      title: 'INÍCIO',
+      items: [
+        { icon: 'home', label: 'Home', active: true },
+        { icon: 'dashboard', label: 'Dashboard' },
+      ],
+    },
+    {
+      title: 'PLANEJAMENTO',
+      items: [
+        { icon: 'view_kanban', label: 'Planner' },
+navigationSections: any;
+        { icon: 'calendar_month', label: 'Calendário' },
+        { icon: 'check_circle', label: 'Tarefas' },
+        { icon: 'target', label: 'Metas Semanais' },
+        { icon: 'self_improvement', label: 'Hábitos' },
+        { icon: 'note', label: 'Notas' },
+        { icon: 'schedule', label: 'Time Blocking' },
+        { icon: 'folder', label: 'Projetos' },
+      ],
+    },
+    {
+      title: 'PRODUTIVIDADE',
+      items: [
+        { icon: 'inbox', label: 'Inbox' },
+        { icon: 'priority_high', label: 'Prioridades' },
+        { icon: 'trending_up', label: 'Progresso' },
+        { icon: 'analytics', label: 'Estatísticas' },
+        { icon: 'today', label: 'Revisão Diária' },
+        { icon: 'description', label: 'Templates' },
+      ],
+    },
+    {
+      title: 'ASSISTENTE IA',
+      items: [
+        { icon: 'psychology', label: 'Planejamento Inteligente' },
+        { icon: 'lightbulb', label: 'Sugestões' },
+        { icon: 'insights', label: 'Insights' },
+      ],
+    },
+    {
+      title: 'CONFIGURAÇÕES',
+      items: [
+        { icon: 'settings', label: 'Configurações' },
+        { icon: 'palette', label: 'Aparência' },
+        { icon: 'notifications', label: 'Notificações' },
+        { icon: 'groups', label: 'Equipe' },
+        { icon: 'apps', label: 'Ícones' },
+      ],
+    },
   ];
-
-  features = [
-    { icon: 'settings', label: 'Config' },
-  ]
 
   constructor() {
     this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');

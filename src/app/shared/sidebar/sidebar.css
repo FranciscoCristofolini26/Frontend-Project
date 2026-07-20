@@ -1,65 +1,87 @@
-.icon-Container{
-  display: flex;
+:host {
+  display: contents;
+}
+
+.sidebar-symbol {
   align-items: center;
-  height: 3rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  border-radius: 0.75rem;
-  transition: background-color 0.15s ease-in-out;
-  cursor: pointer;
-}
-
-.icon-Container:hover{
-  background-color: #0f172a;
-}
-
-.icon-Label{
-  position: absolute;
-  left: 4rem; /* Equivalente a left-16 (64px) */
-  opacity: 0; /* Equivalente a opacity-0 */
-  
-  background-color: #0f172a; /* Equivalente a bg-slate-900 */
-  border: 1px solid #1e293b; /* Equivalente a border border-slate-800 */
-  border-radius: 0.5rem; /* Equivalente a rounded-lg (8px) */
-  
-  padding-top: 0.5rem; /* Equivalente a py-2 (8px) */
-  padding-bottom: 0.5rem;
-  padding-left: 0.75rem; /* Equivalente a px-3 (12px) */
-  padding-right: 0.75rem;
-  
-  font-size: 0.75rem; /* Equivalente a text-xs (12px) */
-  line-height: 1rem;
-  white-space: nowrap; /* Equivalente a whitespace-nowrap */
-  
-  /* Equivalente a transition (transição padrão do Tailwind para opacidade, etc.) */
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Customização e suavização dos ícones */
-mat-icon {
-  user-select: none;
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  font-size: 20px;
+  height: 20px;
   justify-content: center;
+  line-height: 1;
+  overflow: visible;
+  width: 20px;
 }
 
-/* Transições fluidas para as bordas do aside */
+.sidebar-symbol--small {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.sidebar-nav-item--active {
+  background: rgba(59, 130, 246, 0.18);
+  color: #fff;
+}
+
+.sidebar-nav-item--active:hover {
+  background: rgba(59, 130, 246, 0.26);
+}
+
+.sidebar-tooltip {
+  background: #172033;
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(2, 6, 23, 0.35);
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  left: calc(100% + 0.85rem);
+  opacity: 0;
+  padding: 0.45rem 0.65rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-0.25rem);
+  transition: opacity 150ms ease, transform 150ms ease;
+  white-space: nowrap;
+  z-index: 60;
+}
+
+.sidebar-nav-item:hover .sidebar-tooltip,
+.sidebar-nav-item:focus-visible .sidebar-tooltip,
+.group:hover .sidebar-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sidebar-tooltip--profile {
+  bottom: 0.35rem;
+}
+
+.sidebar-nav-scroll {
+  scrollbar-color: #334155 transparent;
+  scrollbar-width: thin;
+}
+
+.sidebar-nav-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
 aside {
-  transition: border-radius 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-              box-shadow 0.3s ease;
+  transition: border-radius 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
   will-change: width, border-radius;
 }
 
-/* Efeito Glow suave no hover da Sidebar quando expandida */
-aside:hover {
-  box-shadow: 0 20px 25px -5px rgba(12, 94, 90, 0.637), 
-              0 0 15px 1px rgba(245, 158, 11, 0.05); /* Glow cor de Amber */
-}
+@media (min-width: 1024px) {
+  .sidebar-workspace:has(.sidebar-collapse-control) {
+    padding-right: 2.75rem;
+  }
 
-/* Scrollbar invisível mas funcional para a lista de itens */
-nav::-webkit-scrollbar {
-  width: 0px;
+  .sidebar-workspace:has(.sidebar-collapse-control.absolute) {
+    padding-right: 0.625rem;
+  }
 }
