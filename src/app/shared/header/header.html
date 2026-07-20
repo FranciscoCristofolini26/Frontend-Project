@@ -1,0 +1,16 @@
+<header class="app-header">
+  <span class="app-header__title">
+    Agenda
+  </span>
+
+  <button type="button" 
+    class="theme-toggle" 
+    (click)="themeService.toggleTheme()"
+    [attr.aria-label]="themeService.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'"
+    [title]="themeService.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'">
+
+    <mat-icon>
+      {{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}
+    </mat-icon>
+  </button>
+</header>

@@ -1,7 +1,11 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import 'tailwindcss';
+@import './app/styles/components/buttons.css';
+@import './app/styles/components/cards.css';
+@import './app/styles/components/inputs.css';
+@import './app/styles/components/modal.css';
 
-@theme {
+:root {
   --font-title: 'Inter', sans-serif;
   --font-body: 'Roboto', sans-serif;
 
@@ -43,4 +47,9 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
+  overflow-x: clip;
+}
+
+html {
+  overflow-x: clip;
 }

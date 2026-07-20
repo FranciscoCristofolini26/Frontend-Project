@@ -11,6 +11,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class MainLayout {
   screenWidth = signal(window.innerWidth);
+  sidebarCollapsed = signal(false);
 
   isMobile = computed(() => this.screenWidth() < 768);
   isTablet = computed(() =>
@@ -23,5 +24,9 @@ export class MainLayout {
   @HostListener('window:resize')
   onResize() {
     this.screenWidth.set(window.innerWidth);
+  }
+
+  onSidebarCollapsedChange(isCollapsed: boolean) {
+    this.sidebarCollapsed.set(isCollapsed);
   }
 }

@@ -1,0 +1,147 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 4rem);
+  min-width: 0;
+}
+
+.notes-page {
+  background: var(--color-bg-main);
+  min-height: inherit;
+  padding: 2.5rem 1.5rem;
+}
+
+.notes-content {
+  margin: auto;
+  max-width: 72rem;
+}
+
+.notes-header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.notes-header h1 {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 2.25rem;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.notes-header p {
+  color: var(--color-text-sub);
+  margin: 0.4rem 0 0;
+}
+
+.search-field {
+  margin-top: 2rem;
+}
+
+.notes-grid {
+  columns: 1;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.note-card {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+}
+
+.note-card h2 {
+  color: var(--color-text-main);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.note-card > p {
+  color: var(--color-text-sub);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0.6rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.note-card footer, .editor-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+}
+
+.note-card footer span {
+  color: var(--color-text-disabled);
+  font-size: 0.75rem;
+}
+
+.note-actions {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.note-actions .is-active {
+  color: var(--color-brand-primary);
+}
+
+.empty-state {
+  color: var(--color-text-sub);
+}
+
+.note-editor {
+  padding: 2rem;
+}
+
+.note-editor h2 {
+  color: var(--color-text-main);
+  font-size: 1.35rem;
+  margin: 0 0 1.5rem;
+}
+
+.close-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.editor-actions {
+  gap: 0.75rem;
+}
+
+mat-icon {
+  align-items: center;
+  display: inline-flex;
+  font-size: 1.2rem;
+  height: 1.2rem;
+  justify-content: center;
+  width: 1.2rem;
+}
+
+@media (min-width: 640px) {
+  .notes-page {
+    padding: 2.5rem;
+  }
+  .notes-grid {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .notes-grid {
+    columns: 4;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .notes-header .button {
+    width: 100%;
+  }
+  .note-editor {
+    padding: 1.5rem;
+  }
+}
