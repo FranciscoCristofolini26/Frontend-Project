@@ -47,4 +47,9 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
+  overflow-x: clip;
+}
+
+html {
+  overflow-x: clip;
 }

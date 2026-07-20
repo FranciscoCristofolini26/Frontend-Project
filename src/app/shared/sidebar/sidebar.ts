@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild, inject } from '@angular/core';
+import { Component, HostListener, OnInit, signal, effect, ElementRef, viewChild, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { animate } from 'animejs';
@@ -18,6 +18,7 @@ export class Sidebar implements OnInit {
   isDesktop = signal(window.innerWidth >= 1024);
   collapsed = signal(false);
   mobileOpen = signal(false);
+  readonly desktopCollapsedChange = output<boolean>();
 
   navigationSections = [
     {
@@ -31,7 +32,6 @@ export class Sidebar implements OnInit {
       title: 'PLANEJAMENTO',
       items: [
         { icon: 'view_kanban', label: 'Planner' },
-navigationSections: any;
         { icon: 'calendar_month', label: 'Calendário' },
         { icon: 'check_circle', label: 'Tarefas' },
         { icon: 'target', label: 'Metas Semanais' },
@@ -80,7 +80,7 @@ navigationSections: any;
       if (!el || !this.isDesktop()) return;
 
       animate(el, {
-        width: this.collapsed() ? '76px' : '240px',
+        width: this.collapsed() ? '76px' : '264px',
         duration: 350,
         ease: 'easeOutQuart',
       });
@@ -112,12 +112,17 @@ navigationSections: any;
     if (!isDesk) {
       el.style.removeProperty('width');
       el.style.removeProperty('border-radius');
-      this.collapsed.set(false);
+      if (this.collapsed()) {
+        this.collapsed.set(false);
+        this.desktopCollapsedChange.emit(false);
+      }
     }
   }
 
   toggleDesktopCollapse() {
-    this.collapsed.update((v) => !v);
+    const nextState = !this.collapsed();
+    this.collapsed.set(nextState);
+    this.desktopCollapsedChange.emit(nextState);
   }
 
   toggleMobileMenu() {

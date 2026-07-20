@@ -1,4 +1,4 @@
-<div class="flex h-screen w-full select-none lg:block">
+<div class="flex h-screen w-screen select-none lg:block">
   <header class="flex h-16 items-center justify-between border-b border-slate-800 bg-slate-950 px-4 text-slate-100 lg:hidden">
     <div class="flex items-center gap-2.5">
       <span class="flex size-8 items-center justify-center rounded-lg bg-[var(--color-brand-primary)] text-white shadow-lg shadow-blue-950/30">
@@ -19,7 +19,7 @@
 
   <aside
     #asideRef
-    class="fixed top-0 left-0 z-40 flex h-full w-[17.5rem] flex-col overflow-hidden border-r border-slate-800/90 bg-slate-950 text-slate-300 shadow-2xl shadow-slate-950/50 transition-transform duration-300 lg:top-4 lg:left-4 lg:h-[calc(100vh-2rem)] lg:w-60 lg:rounded-2xl lg:border"
+    class="fixed top-0 left-0 z-40 flex h-full w-[17.5rem] flex-col overflow-hidden border-r border-slate-800/90 bg-slate-950 text-slate-300 shadow-2xl shadow-slate-950/50 transition-transform duration-300 lg:top-4 lg:left-4 lg:h-[calc(100vh-2rem)] lg:w-[264px] lg:rounded-2xl lg:border"
     [ngClass]="{
       'translate-x-0': mobileOpen() || isDesktop(),
       '-translate-x-full lg:translate-x-0': !mobileOpen() && !isDesktop()
@@ -56,6 +56,16 @@
             [title]="collapsed() ? 'Expandir barra lateral' : 'Recolher barra lateral'"
           >
             <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ collapsed() ? 'left_panel_open' : 'left_panel_close' }}</mat-icon>
+          </button>
+        } @else {
+          <button
+            type="button"
+            (click)="toggleMobileMenu()"
+            class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-lg text-slate-400 transition-colors duration-150 hover:bg-slate-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+            aria-label="Fechar menu"
+            title="Fechar menu"
+          >
+            <mat-icon class="sidebar-symbol sidebar-symbol--small">close</mat-icon>
           </button>
         }
       </div>

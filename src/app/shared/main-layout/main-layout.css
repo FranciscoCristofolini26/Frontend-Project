@@ -1,16 +1,23 @@
 .app-layout {
   display: flex;
   min-height: 100vh;
+  overflow-x: clip;
 }
 
 .app-layout__main {
   flex: 1 1 0%;
   min-width: 0;
+  transition: margin-inline-start 350ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @media (min-width: 1024px) {
   .app-layout__main {
-    /* 1rem de afastamento + 15rem da sidebar expandida + 1rem de respiro. */
-    margin-inline-start: 17rem;
+    /* 1rem de afastamento + 264px da sidebar expandida + 1rem de respiro. */
+    margin-inline-start: 18.5rem;
+  }
+
+  .app-layout__main--sidebar-collapsed {
+    /* Mantém apenas o espaço necessário para a sidebar recolhida de 76px. */
+    margin-inline-start: 6.75rem;
   }
 }
