@@ -25,7 +25,7 @@ export class ThemeService {
   private getInitialTheme(): Theme {
     const savedTheme = this.document.defaultView?.localStorage?.getItem(this.storageKey);
     if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
-    return this.document.defaultView?.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'dark';
   }
 
   private applyTheme(theme: Theme): void {
