@@ -1,169 +1,111 @@
-<div class="flex h-screen w-screen select-none lg:block">
-  <header class="flex h-16 items-center justify-between border-b border-slate-800 bg-slate-950 px-4 text-slate-100 lg:hidden">
-    <div class="flex items-center gap-2.5">
-      <span class="flex size-8 items-center justify-center rounded-lg bg-[var(--color-brand-primary)] text-white shadow-lg shadow-blue-950/30">
+@if (!sidebarOpen()) {
+  <button
+    type="button"
+    class="sidebar-reveal-button"
+    (click)="openSidebar()"
+    aria-label="Abrir menu"
+    title="Abrir menu"
+  >
+    <mat-icon class="sidebar-symbol">menu</mat-icon>
+  </button>
+}
+
+@if (!isDesktop() && sidebarOpen()) {
+  <button
+    type="button"
+    class="sidebar-backdrop"
+    (click)="closeSidebar()"
+    aria-label="Fechar menu"
+  ></button>
+}
+
+<aside
+  class="sidebar"
+  [class.sidebar--open]="sidebarOpen()"
+  [class.sidebar--resizing]="isResizing()"
+  [style.width.px]="panelWidth()"
+  aria-label="Navegação principal"
+>
+  <header class="sidebar-header">
+    <div class="sidebar-workspace">
+      <span class="sidebar-workspace__icon">
         <mat-icon class="sidebar-symbol">grid_view</mat-icon>
       </span>
-      <span class="text-sm font-semibold tracking-tight">Workspace Pessoal</span>
+      <div class="sidebar-workspace__details">
+        <span class="sidebar-workspace__title">Workspace Pessoal</span>
+        <span class="sidebar-workspace__subtitle">Seu espaço de produtividade</span>
+      </div>
     </div>
 
-    <button
-      type="button"
-      (click)="toggleMobileMenu()"
-      class="flex size-9 items-center justify-center rounded-lg text-slate-300 transition-colors duration-150 hover:bg-slate-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-      [attr.aria-label]="mobileOpen() ? 'Fechar menu' : 'Abrir menu'"
-    >
-      <mat-icon class="sidebar-symbol">{{ mobileOpen() ? 'close' : 'menu' }}</mat-icon>
-    </button>
+    @if (isDesktop()) {
+      <button
+        type="button"
+        class="sidebar-hide-button"
+        (click)="closeSidebar()"
+        aria-label="Ocultar barra lateral"
+        title="Ocultar barra lateral"
+      >
+        <mat-icon class="sidebar-symbol sidebar-symbol--small">left_panel_close</mat-icon>
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="sidebar-close-button"
+        (click)="closeSidebar()"
+        aria-label="Fechar menu"
+        title="Fechar menu"
+      >
+        <mat-icon class="sidebar-symbol sidebar-symbol--small">close</mat-icon>
+      </button>
+    }
   </header>
 
-  <aside
-    #asideRef
-    class="fixed top-0 left-0 z-40 flex h-full w-[17.5rem] flex-col overflow-hidden border-r border-slate-800/90 bg-slate-950 text-slate-300 shadow-2xl shadow-slate-950/50 transition-transform duration-300 lg:top-4 lg:left-4 lg:h-[calc(100vh-2rem)] lg:w-[264px] lg:rounded-2xl lg:border"
-    [ngClass]="{
-      'translate-x-0': mobileOpen() || isDesktop(),
-      '-translate-x-full lg:translate-x-0': !mobileOpen() && !isDesktop()
-    }"
-  >
-    <div class="shrink-0 p-3 pb-2">
-      <div
-        class="sidebar-workspace relative flex min-h-16 items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/70 p-2.5 shadow-sm shadow-black/10"
-        [class.justify-center]="collapsed() && isDesktop()"
-      >
-        <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand-primary)] to-blue-500 text-white shadow-lg shadow-blue-950/40">
-          <mat-icon class="sidebar-symbol">grid_view</mat-icon>
-        </span>
+  <nav class="sidebar-nav">
+    @for (section of navigationSections; track section.title) {
+      <section class="sidebar-section">
+        <div class="sidebar-section__title">
+          <span>{{ section.title }}</span>
+          <i></i>
+        </div>
 
-        @if (!collapsed() || !isDesktop()) {
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1">
-              <span class="truncate text-sm font-semibold text-slate-100">Workspace Pessoal</span>
-              <mat-icon class="sidebar-symbol sidebar-symbol--small shrink-0 text-slate-500">unfold_more</mat-icon>
-            </div>
-            <span class="mt-0.5 block truncate text-xs text-slate-500">Seu espaço de produtividade</span>
-          </div>
-        }
-
-        @if (isDesktop()) {
-          <button
-            type="button"
-            (click)="toggleDesktopCollapse()"
-            class="sidebar-collapse-control flex size-8 shrink-0 items-center justify-center rounded-lg border border-slate-700/80 bg-slate-800/90 text-slate-400 shadow-sm transition-all duration-150 hover:border-blue-400/50 hover:bg-[var(--color-brand-primary)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-            [class.absolute]="collapsed()"
-            [class.-right-3]="collapsed()"
-            [class.top-1]="collapsed()"
-            [attr.aria-label]="collapsed() ? 'Expandir barra lateral' : 'Recolher barra lateral'"
-            [title]="collapsed() ? 'Expandir barra lateral' : 'Recolher barra lateral'"
-          >
-            <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ collapsed() ? 'left_panel_open' : 'left_panel_close' }}</mat-icon>
-          </button>
-        } @else {
-          <button
-            type="button"
-            (click)="toggleMobileMenu()"
-            class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-lg text-slate-400 transition-colors duration-150 hover:bg-slate-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-            aria-label="Fechar menu"
-            title="Fechar menu"
-          >
-            <mat-icon class="sidebar-symbol sidebar-symbol--small">close</mat-icon>
-          </button>
-        }
-      </div>
-
-      @if (!collapsed() || !isDesktop()) {
-        <label class="mt-3 flex h-10 items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/60 px-3 text-slate-500 transition-colors duration-150 focus-within:border-blue-400/60 focus-within:bg-slate-900">
-          <mat-icon class="sidebar-symbol sidebar-symbol--small">search</mat-icon>
-          <input
-            type="search"
-            class="min-w-0 flex-1 bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500"
-            placeholder="Buscar..."
-            aria-label="Buscar"
-          />
-          <kbd class="rounded-md border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-400">Ctrl K</kbd>
-        </label>
-
-        <button
-          type="button"
-          class="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-brand-primary)] px-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/35 transition-all duration-150 hover:-translate-y-px hover:bg-[var(--color-brand-hover)] hover:shadow-blue-950/55 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 active:translate-y-0"
-        >
-          <mat-icon class="sidebar-symbol sidebar-symbol--small">add</mat-icon>
-          Novo
-        </button>
-      }
-    </div>
-
-    <nav class="sidebar-nav-scroll min-h-0 flex-1 overflow-y-auto px-3 pb-3" aria-label="Navegação principal">
-      @for (section of navigationSections; track section.title) {
-        <section class="mb-5 last:mb-0">
-          @if (!collapsed() || !isDesktop()) {
-            <div class="mb-1.5 flex items-center gap-2 px-2">
-              <span class="shrink-0 text-[10px] font-bold tracking-[0.14em] text-slate-500">{{ section.title }}</span>
-              <span class="h-px flex-1 bg-slate-800"></span>
-            </div>
-          }
-
-          <div class="space-y-0.5">
-            @for (item of section.items; track item.label) {
+        <div class="sidebar-section__items">
+          @for (item of section.items; track item.label) {
+            <a [routerLink] = "item.url">
               <button
                 type="button"
-                class="sidebar-nav-item group relative flex h-10 w-full items-center gap-3 rounded-xl px-2.5 text-left text-sm font-medium text-slate-400 transition-colors duration-150 hover:bg-slate-800/80 hover:text-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-                [class.justify-center]="collapsed() && isDesktop()"
+                class="sidebar-nav-item"
                 [class.sidebar-nav-item--active]="item.active"
                 [attr.aria-current]="item.active ? 'page' : null"
-                [attr.aria-label]="item.label"
               >
-                @if (item.active) {
-                  <span class="absolute inset-y-2 left-0 w-0.5 rounded-r-full bg-blue-400"></span>
-                }
-                <mat-icon class="sidebar-symbol shrink-0">{{ item.icon }}</mat-icon>
-
-                @if (!collapsed() || !isDesktop()) {
-                  <span class="truncate">{{ item.label }}</span>
-                }
-
-                @if (collapsed() && isDesktop()) {
-                  <span class="sidebar-tooltip">{{ item.label }}</span>
-                }
+                <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
               </button>
-            }
-          </div>
-        </section>
-      }
-    </nav>
+            </a>
+          }
+        </div>
+      </section>
+    }
+  </nav>
 
-    <footer class="shrink-0 border-t border-slate-800/90 p-3">
-      <div
-        class="group flex min-h-12 items-center gap-2.5 rounded-xl bg-slate-900/60 p-2 transition-colors duration-150 hover:bg-slate-800/80"
-        [class.justify-center]="collapsed() && isDesktop()"
-      >
-        <span class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-violet-500 text-[10px] font-bold text-white shadow-md shadow-blue-950/40">
-          SP
-          <span class="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-slate-900 bg-emerald-400"></span>
-        </span>
-
-        @if (!collapsed() || !isDesktop()) {
-          <div class="min-w-0 flex-1">
-            <span class="block truncate text-xs font-semibold text-slate-100">Seu perfil</span>
-            <span class="block truncate text-[11px] text-slate-500">Plano Pro · Online</span>
-          </div>
-          <button
-            type="button"
-            class="flex size-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors duration-150 hover:bg-slate-700 hover:text-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-            aria-label="Configurações do perfil"
-            title="Configurações do perfil"
-          >
-            <mat-icon class="sidebar-symbol sidebar-symbol--small">settings</mat-icon>
-          </button>
-        }
-
-        @if (collapsed() && isDesktop()) {
-          <span class="sidebar-tooltip sidebar-tooltip--profile">Seu perfil · Plano Pro · Online</span>
-        }
+  <footer class="sidebar-footer">
+    <div class="sidebar-profile">
+      <span class="sidebar-avatar">SP<i></i></span>
+      <div>
+        <span>Seu perfil</span>
+        <small>Plano Pro · Online</small>
       </div>
-    </footer>
-  </aside>
+      <button type="button" aria-label="Configurações do perfil" title="Configurações do perfil">
+        <mat-icon class="sidebar-symbol sidebar-symbol--small">settings</mat-icon>
+      </button>
+    </div>
+  </footer>
 
-  @if (mobileOpen() && !isDesktop()) {
-    <div (click)="toggleMobileMenu()" class="fixed inset-0 z-30 bg-slate-950/70 backdrop-blur-sm"></div>
+  @if (isDesktop()) {
+    <button
+      type="button"
+      class="sidebar-resizer"
+      (pointerdown)="startResize($event)"
+      aria-label="Redimensionar barra lateral"
+    ></button>
   }
-</div>
+</aside>

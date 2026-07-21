@@ -9,41 +9,42 @@
   --font-title: 'Inter', sans-serif;
   --font-body: 'Roboto', sans-serif;
 
-  /* Cores Customizadas (Padrão / Light) */
-  --color-bg-main: #64748B;
-  --color-bg-sub: #475569;
+  /* Tema claro: neutro, luminoso e com contraste confortável. */
+  --color-bg-main: #F7F7F5;
+  --color-bg-sub: #EFEFEB;
   --color-card-surface: #FFFFFF;
-  --color-surface-elevated: #E2E8F0;
-  --color-border: #CBD5E1;
-  --color-brand-primary: #315B96;
-  --color-brand-hover: #2563EB;
-  --color-brand-accent: #52D6C8;
-  --color-success: #16A34A;
-  --color-warning: #D97706;
+  --color-surface-elevated: #E7E7E2;
+  --color-border: #D6D6D0;
+  --color-brand-primary: #2563EB;
+  --color-brand-hover: #1D4ED8;
+  --color-brand-accent: #0F9E8D;
+  --color-success: #059669;
+  --color-warning: #B45309;
   --color-error: #DC2626;
-  --color-text-main: #0F172A;
-  --color-text-sub: #475569;
-  --color-text-disabled: #64748B;
+  --color-text-main: #1A1A1A;
+  --color-text-sub: #5B5B58;
+  --color-text-disabled: #8C8C88;
 }
 
 .dark {
-  --color-bg-main: #0F172A;
-  --color-bg-sub: #111827;
-  --color-card-surface: #1E293B;
-  --color-surface-elevated: #334155;
-  --color-border: #475569;
+  --color-bg-main: #141414;
+  --color-bg-sub: #1A1A1A;
+  --color-card-surface: #222222;
+  --color-surface-elevated: #2D2D2D;
+  --color-border: #3A3A3A;
   --color-brand-primary: #4F8EF7;
-  --color-brand-hover: #2563EB;
+  --color-brand-hover: #3B82F6;
   --color-brand-accent: #52D6C8;
-  --color-success: #22C55E;
+  --color-success: #34D399;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
-  --color-text-main: #64748B;
-  --color-text-sub: #94A3B8;
-  --color-text-disabled: #F8FAFC;
+  --color-text-main: #F5F5F5;
+  --color-text-sub: #C8C8C8;
+  --color-text-disabled: #808080;
 }
 
 body {
+  margin: 0;
   font-family: var(--font-body);
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
@@ -51,5 +52,10 @@ body {
 }
 
 html {
+  color-scheme: light;
   overflow-x: clip;
+}
+
+html.dark {
+  color-scheme: dark;
 }
