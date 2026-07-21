@@ -23,6 +23,7 @@ export class Tasks {
       dueLabel: 'Hoje, 09:30',
       project: 'Vendas Q3',
       completed: false,
+      notes: 'Aguardando parecer jurídico antes de enviar a versão final ao cliente.',
     },
     {
       id: 2,
@@ -46,6 +47,7 @@ export class Tasks {
       dueLabel: 'Amanhã',
       project: 'Ativação',
       completed: false,
+      notes: 'Focar nos três primeiros passos do fluxo de boas-vindas.',
     },
     {
       id: 5,
@@ -63,10 +65,24 @@ export class Tasks {
     },
   ]);
 
+  selectedTaskId = signal<number | null>(null);
+
   pendingTasks = computed(() => this.tasks().filter((task) => !task.completed));
   completedTasks = computed(() => this.tasks().filter((task) => task.completed));
+  selectedTask = computed(
+    () => this.tasks().find((task) => task.id === this.selectedTaskId()) ?? null,
+  );
 
-  toggleTask(id: number) {
+  selectTask(id: number) {
+    this.selectedTaskId.update((current) => (current === id ? null : id));
+  }
+
+  closeDetail() {
+    this.selectedTaskId.set(null);
+  }
+
+  toggleTask(id: number, event?: Event) {
+    event?.stopPropagation();
     this.tasks.update((list) =>
       list.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
     );
@@ -74,5 +90,14 @@ export class Tasks {
 
   priorityClasses(priority: TaskPriority): string {
     return PRIORITY_CLASSES[priority];
+  }
+
+  rowClasses(taskId: number): string {
+    const base =
+      'flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all duration-150';
+
+    return this.selectedTaskId() === taskId
+      ? `${base} border-brand-primary bg-card-surface shadow-lg -translate-y-1`
+      : `${base} border-border bg-card-surface shadow-none hover:-translate-y-0.5 hover:shadow-md`;
   }
 }

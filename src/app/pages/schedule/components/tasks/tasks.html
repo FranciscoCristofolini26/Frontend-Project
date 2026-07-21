@@ -1,0 +1,117 @@
+<section>
+  <div class="min-w-0">
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 font-medium text-white shadow-sm transition hover:bg-brand-hover"
+      >
+        <mat-icon class="icon-lg">add</mat-icon>
+        Nova tarefa
+      </button>
+    </div>
+
+    @if (tasks().length === 0) {
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
+        <mat-icon class="icon-lg text-text-sub">task_alt</mat-icon>
+        <p class="text-text-sub">Nenhuma tarefa cadastrada ainda.</p>
+      </div>
+    } @else {
+      <ul class="mt-6 space-y-3">
+        @for (task of pendingTasks(); track task.id) {
+          <li [class]="rowClasses(task.id)" (click)="selectTask(task.id)">
+            <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-text-disabled hover:text-brand-primary">
+              <mat-icon class="icon-lg">radio_button_unchecked</mat-icon>
+            </button>
+
+            <p class="min-w-0 flex-1 truncate font-medium text-text-main">{{ task.title }}</p>
+
+            <div class="flex flex-none items-center gap-2">
+              <span class="rounded-full px-3 py-1 text-xs font-semibold" [class]="priorityClasses(task.priority)">
+                {{ task.priority }}
+              </span>
+              @if (task.project) {
+                <span class="rounded-full bg-surface-elevated px-2.5 py-1 text-xs text-text-sub">{{ task.project }}</span>
+              }
+              <span class="text-xs text-text-sub">{{ task.dueLabel }}</span>
+            </div>
+          </li>
+        }
+
+        @if (completedTasks().length > 0) {
+          <li class="pt-4 text-xs font-semibold uppercase tracking-wide text-text-sub">
+            Concluídas · {{ completedTasks().length }}
+          </li>
+
+          @for (task of completedTasks(); track task.id) {
+            <li [class]="rowClasses(task.id) + ' opacity-70'" (click)="selectTask(task.id)">
+              <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
+                <mat-icon class="icon-lg">check_circle</mat-icon>
+              </button>
+
+              <p class="min-w-0 flex-1 truncate font-medium text-text-main line-through">{{ task.title }}</p>
+
+              <div class="flex flex-none items-center gap-2">
+                @if (task.project) {
+                  <span class="rounded-full bg-surface-elevated px-2.5 py-1 text-xs text-text-sub">{{ task.project }}</span>
+                }
+                <span class="text-xs text-text-sub">{{ task.dueLabel }}</span>
+              </div>
+            </li>
+          }
+        }
+      </ul>
+    }
+  </div>
+</section>
+
+@if (selectedTask(); as task) {
+  <div class="fixed inset-0 z-40 bg-black/30" (click)="closeDetail()"></div>
+
+  <aside class="fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto border-l border-border bg-card-surface p-6 shadow-2xl sm:w-96">
+    <div class="flex items-start justify-between gap-2">
+      <span class="rounded-full px-3 py-1 text-xs font-semibold" [class]="priorityClasses(task.priority)">
+        {{ task.priority }}
+      </span>
+      <button type="button" (click)="closeDetail()" class="flex-none text-text-sub hover:text-text-main">
+        <mat-icon class="icon-lg">close</mat-icon>
+      </button>
+    </div>
+
+    <h2 class="mt-3 text-lg font-semibold text-text-main" [class.line-through]="task.completed">
+      {{ task.title }}
+    </h2>
+
+    <dl class="mt-5 grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-text-sub">Prazo</dt>
+        <dd class="mt-1 text-text-main">{{ task.dueLabel }}</dd>
+      </div>
+      @if (task.project) {
+        <div>
+          <dt class="text-xs uppercase tracking-wide text-text-sub">Projeto</dt>
+          <dd class="mt-1 text-text-main">{{ task.project }}</dd>
+        </div>
+      }
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-text-sub">Status</dt>
+        <dd class="mt-1 text-text-main">{{ task.completed ? 'Concluída' : 'Pendente' }}</dd>
+      </div>
+    </dl>
+
+    @if (task.notes) {
+      <div class="mt-5">
+        <p class="text-xs uppercase tracking-wide text-text-sub">Notas</p>
+        <p class="mt-1 text-sm text-text-main">{{ task.notes }}</p>
+      </div>
+    }
+
+    <button
+      type="button"
+      (click)="toggleTask(task.id)"
+      class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-hover"
+    >
+      <mat-icon class="icon-lg">{{ task.completed ? 'replay' : 'check' }}</mat-icon>
+      {{ task.completed ? 'Reabrir tarefa' : 'Marcar como concluída' }}
+    </button>
+  </aside>
+}

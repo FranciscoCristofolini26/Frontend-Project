@@ -11,4 +11,5 @@ export interface Task {
   dueLabel: string;
   project?: string;
   completed: boolean;
+  notes?: string;
 }
