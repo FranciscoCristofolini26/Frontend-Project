@@ -6,3 +6,4 @@ export * from './notes/notes';
 export * from './habits/habits';
 export * from './projects/projects';
 export * from './login/login';
+export * from './schedule/schedule';

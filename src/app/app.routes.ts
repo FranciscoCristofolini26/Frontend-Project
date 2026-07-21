@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects } from './pages';
+import { Calendar, Files, Goals, Habits, Home, Login, Notes, Projects, Schedule } from './pages';
 
 export const routes: Routes = [
     { 
@@ -33,5 +33,9 @@ export const routes: Routes = [
     {
         path: 'projects',
         component: Projects
+    },
+    {
+        path: 'schedule',
+        component: Schedule
     }
 ];

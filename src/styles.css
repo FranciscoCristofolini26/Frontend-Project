@@ -5,7 +5,7 @@
 @import './app/styles/components/inputs.css';
 @import './app/styles/components/modal.css';
 
-:root {
+@theme {
   --font-title: 'Inter', sans-serif;
   --font-body: 'Roboto', sans-serif;
 
