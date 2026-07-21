@@ -64,10 +64,12 @@
   </div>
 </section>
 
-@if (selectedTask(); as task) {
-  <div class="fixed inset-0 z-40 bg-black/30" (click)="closeDetail()"></div>
-
-  <aside class="fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto border-l border-border bg-card-surface p-6 shadow-2xl sm:w-96">
+<aside
+  class="fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto border-l border-border bg-card-surface p-6 shadow-2xl transition-transform duration-300 ease-in-out sm:w-96"
+  [class.translate-x-0]="!!selectedTask()"
+  [class.translate-x-full]="!selectedTask()"
+>
+  @if (selectedTask(); as task) {
     <div class="flex items-start justify-between gap-2">
       <span class="rounded-full px-3 py-1 text-xs font-semibold" [class]="priorityClasses(task.priority)">
         {{ task.priority }}
@@ -113,5 +115,5 @@
       <mat-icon class="icon-lg">{{ task.completed ? 'replay' : 'check' }}</mat-icon>
       {{ task.completed ? 'Reabrir tarefa' : 'Marcar como concluída' }}
     </button>
-  </aside>
-}
+  }
+</aside>

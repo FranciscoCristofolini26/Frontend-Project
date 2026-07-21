@@ -13,6 +13,7 @@ type ScheduleView = 'planejamento' | 'tarefas';
 })
 export class Schedule {
   view = signal<ScheduleView>('tarefas');
+  tasksDetailOpen = signal(false);
 
   setView(view: ScheduleView) {
     this.view.set(view);

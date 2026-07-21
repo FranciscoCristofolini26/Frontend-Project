@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Task, TaskPriority } from '../../models';
 
@@ -66,12 +66,17 @@ export class Tasks {
   ]);
 
   selectedTaskId = signal<number | null>(null);
+  detailOpenChange = output<boolean>();
 
   pendingTasks = computed(() => this.tasks().filter((task) => !task.completed));
   completedTasks = computed(() => this.tasks().filter((task) => task.completed));
   selectedTask = computed(
     () => this.tasks().find((task) => task.id === this.selectedTaskId()) ?? null,
   );
+
+  constructor() {
+    effect(() => this.detailOpenChange.emit(this.selectedTaskId() !== null));
+  }
 
   selectTask(id: number) {
     this.selectedTaskId.update((current) => (current === id ? null : id));
