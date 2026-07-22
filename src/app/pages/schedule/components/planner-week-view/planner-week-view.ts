@@ -96,3 +96,5 @@ export class PlannerWeekView {
     return typeof window !== 'undefined' && window.innerWidth <= 384;
   }
 }
+  }
+}

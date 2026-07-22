@@ -22,21 +22,7 @@
         }
       </div>
 
-      <div class="planner-day-view__canvas" [class.planner-day-view__canvas--drop-enabled]="dragEnabled()">
-        <div class="planner-day-view__drop-slots" aria-label="Horários disponíveis para agendamento">
-          @for (hour of hours; track hour) {
-            <div
-              cdkDropList
-              class="planner-day-view__drop-slot"
-              [id]="'daily-slot-' + hour"
-              [cdkDropListDisabled]="!dragEnabled()"
-              [cdkDropListSortingDisabled]="true"
-              (cdkDropListDropped)="dropTask($event, hour)"
-              [attr.aria-label]="'Agendar às ' + hour.toString().padStart(2, '0') + ':00'"
-            ></div>
-          }
-        </div>
-
+      <div class="planner-day-view__canvas">
         @for (event of positionedEvents(); track event.id) {
           <app-planner-event-card
             [event]="event"
@@ -45,7 +31,6 @@
             [style.left.%]="eventLeft(event)"
             [style.width.%]="eventWidth(event)"
             (remove)="eventRemoved.emit($event)"
-            (edit)="eventEdited.emit($event)"
           />
         }
       </div>

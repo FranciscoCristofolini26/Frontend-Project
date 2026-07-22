@@ -221,7 +221,6 @@ export class Planning {
       this.aiOrganizationPrompt.set(true);
       return;
     }
-
     const nextId = Math.max(0, ...this.events().map((event) => event.id)) + 1;
     this.events.update((events) => [
       ...events,
@@ -359,5 +358,6 @@ export class Planning {
   private timeToMinutes(time: string): number {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
+  }
   }
 }

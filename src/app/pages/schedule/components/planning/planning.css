@@ -5,93 +5,23 @@
 .planner-layout {
   align-items: start;
   display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(0, 1fr) 288px;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 18rem;
 }
 
 .planner-layout__timeline {
-  container-type: inline-size;
-  min-width: 0;
-  width: 100%;
-}
-
-.planner-layout__daily-aside {
-  align-self: start;
-  display: grid;
-  gap: 14px;
   min-width: 0;
 }
 
-.planner-ai-alert {
-  align-items: center;
-  background: color-mix(in srgb, var(--color-text-main) 40%, transparent);
-  display: flex;
-  inset: 0;
-  justify-content: center;
-  padding: 16px;
-  position: fixed;
-  z-index: 100;
-}
-
-.planner-ai-alert__content {
-  background: var(--color-card-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  box-shadow: 0 16px 48px color-mix(in srgb, var(--color-text-main) 28%, transparent);
-  max-width: 448px;
-  padding: 20px;
-}
-
-.planner-ai-alert__content p {
-  color: var(--color-text-sub);
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 8px 0 0;
-}
-
-.planner-ai-alert__content p:first-child {
-  color: var(--color-text-main);
-  font-size: 16px;
-  font-weight: 800;
-  margin-top: 0;
-}
-
-.planner-ai-alert__actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-
-.planner-ai-alert__actions button {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  color: var(--color-text-main);
-  cursor: pointer;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  min-height: 44px;
-  padding: 8px 12px;
-}
-
-.planner-ai-alert__actions .planner-ai-alert__primary {
-  background: var(--color-brand-primary);
-  border-color: var(--color-brand-primary);
-  color: var(--color-card-surface);
-}
-
-@media (max-width: 1152px) {
+@media (max-width: 72rem) {
   .planner-layout {
-    gap: 16px;
-    grid-template-columns: minmax(0, 1fr) 248px;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 15.5rem;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 58rem) {
   .planner-layout {
-    align-items: stretch;
     display: flex;
     flex-direction: column;
   }

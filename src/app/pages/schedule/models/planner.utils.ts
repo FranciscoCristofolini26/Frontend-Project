@@ -82,7 +82,6 @@ export function layoutEvents(events: PlannerEvent[]): PositionedPlannerEvent[] {
     return positioned.map((event) => ({ ...event, columnCount: columnsEnd.length }));
   });
 }
-
 /** Groups events whose intervals intersect, keeping the DOM order chronological. */
 export function groupOverlappingEvents(events: PlannerEvent[]): PlannerOverlapGroup[] {
   const sorted = [...events].sort(

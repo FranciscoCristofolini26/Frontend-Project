@@ -9,7 +9,7 @@
 .planner-unscheduled-tasks__header {
   align-items: flex-start;
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   justify-content: space-between;
 }
 
@@ -21,15 +21,15 @@
 .planner-unscheduled-tasks__header h2 {
   color: var(--color-text-main);
   font-family: var(--font-title);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
 .planner-unscheduled-tasks__header p,
 .planner-unscheduled-tasks__empty {
   color: var(--color-text-sub);
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .planner-unscheduled-tasks__count {
@@ -38,58 +38,43 @@
   border-radius: 50%;
   color: var(--color-text-sub);
   display: inline-flex;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  height: 24px;
+  height: 1.5rem;
   justify-content: center;
-  width: 24px;
+  width: 1.5rem;
 }
 
 .planner-unscheduled-tasks__list {
   display: grid;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 0.625rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1rem;
 }
 
 .planner-unscheduled-task {
   align-items: center;
   background: var(--color-bg-main);
   border: 1px dashed var(--color-border);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   cursor: grab;
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   min-width: 0;
-  padding: 12px;
-}
-
-.planner-unscheduled-task--drag-disabled {
-  cursor: default;
-}
-
-.planner-unscheduled-task.cdk-drag-preview {
-  box-shadow: 0 12px 24px color-mix(in srgb, var(--color-text-main) 22%, transparent);
-}
-
-.planner-unscheduled-task.cdk-drag-placeholder {
-  opacity: 0.35;
-}
-
-.planner-unscheduled-tasks__list.cdk-drop-list-dragging .planner-unscheduled-task:not(.cdk-drag-placeholder) {
-  transition: transform 180ms ease;
+  padding: 0.75rem;
 }
 
 .planner-unscheduled-task:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
-  outline-offset: 2px;
+  outline: 0.1875rem solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+  outline-offset: 0.125rem;
 }
 
 .planner-unscheduled-task__drag {
   color: var(--color-text-disabled);
   flex: none;
-  font-size: 16px;
-  height: 16px;
-  width: 16px;
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
 }
 
 .planner-unscheduled-task__content {
@@ -107,22 +92,22 @@
 
 .planner-unscheduled-task__content p {
   color: var(--color-text-main);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 .planner-unscheduled-task__content span {
   color: var(--color-text-sub);
-  font-size: 11px;
-  margin-top: 3.2px;
+  font-size: 0.6875rem;
+  margin-top: 0.2rem;
 }
 
 .planner-unscheduled-task__category {
   border-radius: 999px;
   flex: none;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
-  padding: 4px 6.4px;
+  padding: 0.25rem 0.4rem;
 }
 
 .planner-unscheduled-task__category--work {
@@ -144,4 +129,10 @@
 .planner-unscheduled-task__category--habit {
   background: color-mix(in srgb, var(--color-success) 12%, transparent);
   color: var(--color-success);
+}
+
+@media (max-width: 68rem) {
+  .planner-unscheduled-tasks__list {
+    grid-template-columns: 1fr;
+  }
 }
