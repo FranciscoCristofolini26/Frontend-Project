@@ -3,8 +3,8 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { IconModel } from './models/IconModel';
 import { NavigationSectionsModel } from './models/NavigationSectionsModel';
+import { SidebarState } from './sidebar-state';
 
-const DESKTOP_BREAKPOINT = 1024;
 const MOBILE_SIDEBAR_WIDTH = 280;
 const MIN_SIDEBAR_WIDTH = 240;
 const MAX_SIDEBAR_WIDTH = 340;
@@ -24,19 +24,18 @@ const SIDEBAR_WIDTH_STORAGE_KEY = 'agenda.sidebar-width';
 })
 export class Sidebar implements OnDestroy {
   private readonly iconRegistry = inject(MatIconRegistry);
+  private readonly sidebarState = inject(SidebarState);
   private resizeMoveListener?: (event: PointerEvent) => void;
   private resizeEndListener?: () => void;
 
-  readonly viewportWidth = signal(window.innerWidth);
-  readonly sidebarOpen = signal(true);
+  readonly viewportWidth = this.sidebarState.viewportWidth;
+  readonly sidebarOpen = this.sidebarState.isOpen;
   readonly sidebarWidth = signal(this.getStoredSidebarWidth());
   readonly isResizing = signal(false);
 
-  readonly isDesktop = computed(() => this.viewportWidth() >= DESKTOP_BREAKPOINT);
-  readonly isTablet = computed(
-    () => this.viewportWidth() >= 768 && this.viewportWidth() < DESKTOP_BREAKPOINT,
-  );
-  readonly isMobile = computed(() => this.viewportWidth() < 768);
+  readonly isDesktop = this.sidebarState.isDesktop;
+  readonly isTablet = this.sidebarState.isTablet;
+  readonly isMobile = this.sidebarState.isMobile;
   readonly panelWidth = computed(() =>
     this.isDesktop() ? this.sidebarWidth() : MOBILE_SIDEBAR_WIDTH,
   );
