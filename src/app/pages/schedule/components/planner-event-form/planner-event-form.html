@@ -1,0 +1,106 @@
+@if (open()) {
+  <div
+    class="modal-backdrop planner-event-form__backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="closeFromBackdrop($event)"
+    (keydown.escape)="cancel()"
+  >
+    <section
+      class="modal-dialog planner-event-form__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="event-form-title"
+    >
+      <form class="planner-event-form" (submit)="submit($event)">
+        <header class="planner-event-form__header">
+          <div>
+            <p class="planner-event-form__eyebrow">Novo evento</p>
+            <h2 id="event-form-title">Planeje um bloco no seu dia</h2>
+            <p class="planner-event-form__date">{{ dateLabel() }}</p>
+          </div>
+          <button
+            type="button"
+            class="button button--ghost button--icon"
+            (click)="cancel()"
+            aria-label="Fechar formulário"
+            title="Fechar"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="planner-event-form__body">
+          <label class="form-field">
+            Nome do evento
+            <input
+              class="input-control"
+              type="text"
+              [value]="title()"
+              (input)="updateTitle($event)"
+              placeholder="Ex.: Reunião de alinhamento"
+              autocomplete="off"
+              autofocus
+            />
+          </label>
+
+          <label class="form-field">
+            Descrição
+            <textarea
+              class="input-control textarea planner-event-form__description"
+              [value]="description()"
+              (input)="updateDescription($event)"
+              placeholder="Adicione detalhes que ajudem a preparar esse evento."
+            ></textarea>
+          </label>
+
+          <div class="planner-event-form__fields">
+            <label class="form-field">
+              Início
+              <input
+                class="input-control"
+                type="time"
+                min="08:00"
+                max="20:00"
+                [value]="startTime()"
+                (input)="updateStartTime($event)"
+              />
+            </label>
+
+            <label class="form-field">
+              Término
+              <input
+                class="input-control"
+                type="time"
+                min="08:00"
+                max="20:00"
+                [value]="endTime()"
+                (input)="updateEndTime($event)"
+              />
+            </label>
+
+            <label class="form-field">
+              Categoria
+              <select class="input-control" [value]="category()" (change)="updateCategory($event)">
+                @for (option of categories; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </label>
+          </div>
+
+          @if (errorMessage()) {
+            <p class="planner-event-form__error" role="alert">{{ errorMessage() }}</p>
+          }
+        </div>
+
+        <footer class="planner-event-form__footer">
+          <button type="button" class="button button--secondary" (click)="cancel()">
+            Cancelar
+          </button>
+          <button type="submit" class="button button--primary">Criar evento</button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}

@@ -1,0 +1,22 @@
+<article
+  class="planner-event-card"
+  [class]="'planner-event-card planner-event-card--' + event().category"
+>
+  <button
+    type="button"
+    class="planner-event-card__remove"
+    (click)="remove.emit(event().id)"
+    [attr.aria-label]="'Remover ' + event().title"
+    title="Remover evento"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <p class="planner-event-card__title">{{ event().title }}</p>
+  <p class="planner-event-card__time">{{ event().startTime }} – {{ event().endTime }}</p>
+  @if (!compact() && event().description) {
+    <p class="planner-event-card__description">{{ event().description }}</p>
+  }
+  @if (!compact()) {
+    <span class="planner-event-card__category">{{ categoryLabel() }}</span>
+  }
+</article>

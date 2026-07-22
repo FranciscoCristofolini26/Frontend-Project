@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.planner-free-time-card {
+  padding: 1rem;
+}
+
+.planner-free-time-card__heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.planner-free-time-card h2,
+.planner-free-time-card p {
+  margin: 0;
+}
+
+.planner-free-time-card h2 {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.planner-free-time-card mat-icon {
+  color: var(--color-warning);
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
+}
+
+.planner-free-time-card__value {
+  color: var(--color-brand-primary);
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 0.875rem !important;
+}
+
+.planner-free-time-card__description {
+  color: var(--color-text-sub);
+  font-size: 0.75rem;
+  margin-top: 0.25rem !important;
+}

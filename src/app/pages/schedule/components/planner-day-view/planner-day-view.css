@@ -1,0 +1,95 @@
+:host {
+  display: block;
+}
+
+.planner-day-view {
+  overflow: hidden;
+}
+
+.planner-day-view__header {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+
+.planner-day-view__eyebrow,
+.planner-day-view__title {
+  margin: 0;
+}
+
+.planner-day-view__eyebrow {
+  color: var(--color-text-sub);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.planner-day-view__title {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  text-transform: capitalize;
+}
+
+.planner-day-view__half-hour {
+  color: var(--color-text-disabled);
+  font-size: 0.6875rem;
+}
+
+.planner-day-view__scroll {
+  overflow-x: auto;
+}
+
+.planner-day-view__grid {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(30rem, 1fr);
+  min-width: 34rem;
+}
+
+.planner-day-view__hours {
+  color: var(--color-text-sub);
+  display: grid;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  grid-template-rows: repeat(13, 7.5rem);
+  text-align: right;
+}
+
+.planner-day-view__hours span {
+  padding: 0.45rem 0.75rem 0 0;
+}
+
+.planner-day-view__canvas {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      var(--color-border) 0,
+      var(--color-border) 1px,
+      transparent 1px,
+      transparent 3.75rem
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(7.5rem - 1px),
+      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main)) calc(7.5rem - 1px),
+      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main)) 7.5rem
+    );
+  border-left: 1px solid var(--color-border);
+  min-height: 90rem;
+  position: relative;
+}
+
+@media (max-width: 40rem) {
+  .planner-day-view__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem 1rem;
+  }
+}

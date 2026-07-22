@@ -1,15 +1,5 @@
 <section>
   <div class="min-w-0">
-    <div class="flex justify-end">
-      <button
-        type="button"
-        class="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 font-medium text-white shadow-sm transition hover:bg-brand-hover"
-      >
-        <mat-icon class="icon-lg">add</mat-icon>
-        Nova tarefa
-      </button>
-    </div>
-
     @if (tasks().length === 0) {
       <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
         <mat-icon class="icon-lg text-text-sub">task_alt</mat-icon>

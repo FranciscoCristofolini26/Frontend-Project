@@ -1,0 +1,38 @@
+<section class="planner-unscheduled-tasks card" aria-labelledby="unscheduled-title">
+  <header class="planner-unscheduled-tasks__header">
+    <div>
+      <h2 id="unscheduled-title">Não planejadas</h2>
+      <p>Arraste uma tarefa para a timeline quando quiser definir um horário.</p>
+    </div>
+    <span class="planner-unscheduled-tasks__count">{{ taskCount() }}</span>
+  </header>
+
+  @if (tasks().length > 0) {
+    <div class="planner-unscheduled-tasks__list">
+      @for (task of tasks(); track task.id) {
+        <article class="planner-unscheduled-task" draggable="true" tabindex="0">
+          <mat-icon class="planner-unscheduled-task__drag" aria-hidden="true"
+            >drag_indicator</mat-icon
+          >
+          <div class="planner-unscheduled-task__content">
+            <p>{{ task.title }}</p>
+            @if (task.project) {
+              <span>{{ task.project }}</span>
+            }
+          </div>
+          <span
+            class="planner-unscheduled-task__category"
+            [class]="
+              'planner-unscheduled-task__category planner-unscheduled-task__category--' +
+              task.category
+            "
+          >
+            {{ categoryLabel(task.category) }}
+          </span>
+        </article>
+      }
+    </div>
+  } @else {
+    <p class="planner-unscheduled-tasks__empty">Todas as tarefas já receberam um horário.</p>
+  }
+</section>

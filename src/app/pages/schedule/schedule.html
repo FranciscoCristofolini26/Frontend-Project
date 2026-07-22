@@ -1,43 +1,47 @@
-<div class="min-h-screen bg-bg-main px-6 py-10 sm:px-10">
+<div class="schedule-page">
   <div
-    class="mx-auto max-w-6xl transition-all duration-300 ease-in-out"
-    [class.sm:pr-96]="view() === 'tarefas' && tasksDetailOpen()"
+    class="schedule-page__content"
+    [class.schedule-page__content--task-detail]="view() === 'tarefas' && tasksDetailOpen()"
   >
-    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="font-title text-4xl font-extrabold text-text-main">Agenda</h1>
-        <p class="mt-1 text-text-sub">Organize sua rotina e suas tarefas em um único lugar.</p>
-      </div>
+    <app-header
+      [activeContent]="activeContent()"
+      [selectedDate]="selectedDate()"
+      [viewMode]="plannerViewMode()"
+      (selectedDateChange)="selectedDate.set($event)"
+      (viewModeChange)="plannerViewMode.set($event)"
+      (primaryAction)="onPrimaryAction($event)"
+    />
 
-      <div class="inline-flex items-center gap-1 rounded-xl border border-border bg-card-surface p-1 shadow-sm">
+    <nav class="schedule-content-switcher" aria-label="Conteúdo da agenda">
+      <div class="schedule-content-switcher__tabs">
         <button
           type="button"
           (click)="setView('planejamento')"
-          class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
-          [class.bg-brand-primary]="view() === 'planejamento'"
-          [class.text-white]="view() === 'planejamento'"
-          [class.text-text-sub]="view() !== 'planejamento'"
+          class="schedule-content-switcher__tab"
+          [class.schedule-content-switcher__tab--active]="view() === 'planejamento'"
+          [attr.aria-current]="view() === 'planejamento' ? 'page' : null"
         >
-          <mat-icon>event_repeat</mat-icon>
-          Planejamento
+          Planner
         </button>
         <button
           type="button"
           (click)="setView('tarefas')"
-          class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition"
-          [class.bg-brand-primary]="view() === 'tarefas'"
-          [class.text-white]="view() === 'tarefas'"
-          [class.text-text-sub]="view() !== 'tarefas'"
+          class="schedule-content-switcher__tab"
+          [class.schedule-content-switcher__tab--active]="view() === 'tarefas'"
+          [attr.aria-current]="view() === 'tarefas' ? 'page' : null"
         >
-          <mat-icon>checklist</mat-icon>
-          Tarefas
+          Tasks
         </button>
       </div>
-    </header>
+    </nav>
 
-    <main class="mt-8">
+    <main class="schedule-page__main">
       @if (view() === 'planejamento') {
-        <app-planning />
+        <app-planning
+          [selectedDate]="selectedDate()"
+          [viewMode]="plannerViewMode()"
+          [newEventRequest]="newEventRequest()"
+        />
       } @else {
         <app-tasks (detailOpenChange)="tasksDetailOpen.set($event)" />
       }

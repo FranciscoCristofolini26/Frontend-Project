@@ -1,0 +1,130 @@
+:host {
+  display: block;
+  min-width: 0;
+  position: absolute;
+}
+
+.planner-event-card {
+  display: flex;
+  background: var(--color-card-surface);
+  border: 1px solid var(--color-border);
+  border-left: 0.25rem solid var(--color-brand-primary);
+  
+  border-radius: 0.625rem;
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--color-text-main) 8%, transparent);
+  box-sizing: border-box;
+  color: var(--color-text-main);
+  height: 100%;
+  width: 150px;
+  min-height: 2.75rem;
+  overflow: hidden;
+  padding: 0.55rem 0.625rem;
+  position: relative;
+}
+
+.planner-event-card--study {
+  border-left-color: var(--color-brand-accent);
+}
+.planner-event-card--personal {
+  border-left-color: var(--color-warning);
+}
+.planner-event-card--event {
+  border-left-color: var(--color-error);
+}
+.planner-event-card--habit {
+  border-left-color: var(--color-success);
+}
+
+.planner-event-card__title,
+.planner-event-card__time {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planner-event-card__title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding-right: 1rem;
+}
+
+.planner-event-card__description {
+  color: var(--color-text-sub);
+  font-size: 0.625rem;
+  line-height: 1.25;
+  margin: 0.375rem 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planner-event-card__remove {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.25rem;
+  color: var(--color-text-disabled);
+  cursor: pointer;
+  display: inline-flex;
+  height: 1rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 0.35rem;
+  top: 0.35rem;
+  width: 1rem;
+}
+
+.planner-event-card__remove:hover,
+.planner-event-card__remove:focus-visible {
+  background: color-mix(in srgb, var(--color-error) 12%, transparent);
+  color: var(--color-error);
+}
+
+.planner-event-card__remove:focus-visible {
+  outline: 0.125rem solid var(--color-error);
+  outline-offset: 0.0625rem;
+}
+
+.planner-event-card__remove mat-icon {
+  font-size: 0.875rem;
+  height: 0.875rem;
+  width: 0.875rem;
+}
+
+.planner-event-card__time {
+  color: var(--color-text-sub);
+  font-size: 0.6875rem;
+  margin-top: 0.25rem;
+}
+
+.planner-event-card__category {
+  color: var(--color-text-sub);
+  display: inline-block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+}
+
+:host(.planner-event-card--week) .planner-event-card {
+  border-left-width: 0.1875rem;
+  border-radius: 0.5rem;
+  padding: 0.4rem;
+}
+
+:host(.planner-event-card--week) .planner-event-card__title {
+  font-size: 0.6875rem;
+}
+
+:host(.planner-event-card--week) .planner-event-card__time {
+  font-size: 0.625rem;
+  margin-top: 0.2rem;
+}
+
+:host(.planner-event-card--week) .planner-event-card__remove {
+  right: 0.2rem;
+  top: 0.2rem;
+}

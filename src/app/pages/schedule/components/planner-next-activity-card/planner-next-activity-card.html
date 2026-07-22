@@ -1,0 +1,19 @@
+<section class="card planner-next-activity-card" aria-labelledby="next-activity-title">
+  <div class="planner-next-activity-card__heading">
+    <h2 id="next-activity-title">Próxima atividade</h2>
+    <mat-icon aria-hidden="true">east</mat-icon>
+  </div>
+
+  @if (nextActivity(); as activity) {
+    <p class="planner-next-activity-card__title">{{ activity.title }}</p>
+    <p class="planner-next-activity-card__time">
+      {{ activity.startTime }} – {{ activity.endTime }}
+    </p>
+    <p class="planner-next-activity-card__relative">{{ startsInLabel() }}</p>
+  } @else {
+    <div class="planner-next-activity-card__empty">
+      <mat-icon aria-hidden="true">event_available</mat-icon>
+      <p>Não há mais atividades previstas.</p>
+    </div>
+  }
+</section>

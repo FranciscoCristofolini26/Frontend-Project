@@ -1,0 +1,51 @@
+<section class="planner-week-view card" aria-label="Visualização semanal">
+  <header class="planner-week-view__header">
+    <div>
+      <p class="planner-week-view__eyebrow">Visão semanal</p>
+      <h2 class="planner-week-view__title">Sua semana planejada</h2>
+    </div>
+    <span class="planner-week-view__half-hour">Intervalos de 30 min</span>
+  </header>
+
+  <div class="planner-week-view__scroll">
+    <div class="planner-week-view__grid">
+      <div class="planner-week-view__days" aria-hidden="true">
+        <span></span>
+        @for (day of weekDays(); track day.key) {
+          <span class="planner-week-view__day"
+            ><strong>{{ day.label }}</strong
+            >{{ day.dayNumber }}</span
+          >
+        }
+      </div>
+
+      <div class="planner-week-view__body">
+        <div class="planner-week-view__hours" aria-hidden="true">
+          @for (hour of hours; track hour) {
+            <span>{{ hour.toString().padStart(2, '0') }}:00</span>
+          }
+        </div>
+
+        @for (day of weekDays(); track day.key) {
+          <div
+            class="planner-week-view__day-canvas"
+            [attr.aria-label]="day.label + ' ' + day.dayNumber"
+          >
+            @for (event of day.events; track event.id) {
+              <app-planner-event-card
+                class="planner-event-card--week"
+                [event]="event"
+                [compact]="true"
+                [style.top.px]="eventTop(event)"
+                [style.height.px]="eventHeight(event)"
+                [style.left.%]="eventLeft(event)"
+                [style.width.%]="eventWidth(event)"
+                (remove)="eventRemoved.emit($event)"
+              />
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,56 +1,37 @@
-<section>
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-      <p class="text-xs font-semibold uppercase tracking-wide text-text-sub">Planejador diário</p>
-      <h2 class="font-title text-2xl font-bold text-text-main">{{ dayLabel }}</h2>
-    </div>
-
-    <div class="flex items-center gap-2 text-xs font-medium text-text-sub">
-      <span class="rounded-full border border-border bg-card-surface px-3 py-1">{{ totalBlocks() }} Blocos</span>
-      <span class="rounded-full border border-border bg-card-surface px-3 py-1">{{ completedBlocks() }} Concluídos</span>
-      <span class="rounded-full border border-border bg-card-surface px-3 py-1">{{ focusTime() }} Foco</span>
-    </div>
+<section class="planner-layout" aria-label="Planejador">
+  <div class="planner-layout__timeline">
+    @if (viewMode() === 'daily') {
+      <app-planner-day-view
+        [date]="selectedDate()"
+        [events]="dayEvents()"
+        (eventRemoved)="removeEvent($event)"
+      />
+      <app-planner-unscheduled-tasks [tasks]="unscheduledTasks()" />
+    } @else {
+      <app-planner-week-view
+        [date]="selectedDate()"
+        [events]="events()"
+        (eventRemoved)="removeEvent($event)"
+      />
+    }
   </div>
 
-  @if (routine().length === 0) {
-    <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
-      <mat-icon class="icon-lg text-text-sub">event_busy</mat-icon>
-      <p class="text-text-sub">Nenhuma rotina configurada ainda.</p>
-    </div>
-  } @else {
-    <div class="mt-6">
-      @for (slot of timeline(); track slot.hour) {
-        <div class="flex gap-4 border-t border-border py-3 first:border-t-0">
-          <span class="w-14 flex-none pt-1 text-xs font-medium text-text-sub">{{ slot.label }}</span>
+  <app-planner-sidebar
+    [date]="selectedDate()"
+    [events]="dayEvents()"
+    [taskCount]="taskCount()"
+    [eventCount]="eventCount()"
+    [habits]="habits()"
+    [plannedHours]="plannedHours()"
+    [freeTime]="freeTime()"
+    [freeTimePercentage]="freeTimePercentage()"
+    (habitToggled)="toggleHabit($event)"
+  />
 
-          <div class="min-w-0 flex-1 space-y-2">
-            @if (slot.blocks.length === 0) {
-              <p class="flex items-center gap-2 py-1 text-sm text-text-sub">
-                <mat-icon class="icon-sm">add</mat-icon>
-                Livre — clique para agendar
-              </p>
-            } @else {
-              @for (block of slot.blocks; track block.id) {
-                <div class="flex items-start gap-3 rounded-lg border border-border border-l-4 bg-card-surface px-4 py-3" [class]="typeBorder(block.type)">
-                  @if (block.type === RoutineBlockType.TAREFA) {
-                    <button type="button" (click)="toggleBlock(block.id)" class="mt-0.5 flex-none" [class]="block.completed ? 'text-success' : 'text-text-disabled hover:text-brand-primary'">
-                      <mat-icon class="icon-sm">{{ block.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
-                    </button>
-                  }
-
-                  <div class="min-w-0 flex-1">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <p class="truncate font-medium text-text-main" [class.line-through]="block.completed">{{ block.title }}</p>
-                      <span class="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" [class]="typeBadge(block.type)">{{ block.type }}</span>
-                    </div>
-                    <p class="mt-0.5 text-xs text-text-sub">{{ block.startTime }} – {{ block.endTime }} · {{ block.detail }}</p>
-                  </div>
-                </div>
-              }
-            }
-          </div>
-        </div>
-      }
-    </div>
-  }
+  <app-planner-event-form
+    [open]="eventFormOpen()"
+    [date]="selectedDate()"
+    (cancelled)="eventFormOpen.set(false)"
+    (created)="createEvent($event)"
+  />
 </section>

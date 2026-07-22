@@ -1,0 +1,21 @@
+<section class="card planner-summary-card" aria-labelledby="summary-title">
+  <h2 id="summary-title">Resumo do dia</h2>
+  <ul class="planner-summary-card__metrics">
+    <li>
+      <mat-icon aria-hidden="true">checklist</mat-icon>
+      <span>{{ taskCount() }} tarefas</span>
+    </li>
+    <li>
+      <mat-icon aria-hidden="true">event</mat-icon>
+      <span>{{ eventCount() }} eventos</span>
+    </li>
+    <li>
+      <mat-icon aria-hidden="true">repeat</mat-icon>
+      <span>{{ habitCount() }} hábitos</span>
+    </li>
+    <li>
+      <mat-icon aria-hidden="true">schedule</mat-icon>
+      <span>{{ plannedHours() }} planejadas</span>
+    </li>
+  </ul>
+</section>

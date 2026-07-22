@@ -1,140 +1,216 @@
-import { Component, computed, signal } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { RoutineBlock, RoutineBlockType } from '../../models';
+import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
+import { PlannerViewMode } from '../header/header';
+import {
+  DAY_END_HOUR,
+  DAY_START_HOUR,
+  PlannerEvent,
+  PlannerEventDraft,
+  PlannerHabit,
+  PlannerTask,
+  addDays,
+  dateKey,
+  durationInMinutes,
+  startOfDay,
+} from '../../models';
+import { PlannerDayView } from '../planner-day-view/planner-day-view';
+import { PlannerSidebar } from '../planner-sidebar/planner-sidebar';
+import { PlannerUnscheduledTasks } from '../planner-unscheduled-tasks/planner-unscheduled-tasks';
+import { PlannerWeekView } from '../planner-week-view/planner-week-view';
+import { PlannerEventForm } from '../planner-event-form/planner-event-form';
 
-const TYPE_STYLES: Record<RoutineBlockType, { border: string; badge: string }> = {
-  [RoutineBlockType.REUNIAO]: { border: 'border-l-brand-primary', badge: 'bg-brand-primary/10 text-brand-primary' },
-  [RoutineBlockType.TAREFA]: { border: 'border-l-error', badge: 'bg-error/10 text-error' },
-  [RoutineBlockType.FOCO]: { border: 'border-l-text-main', badge: 'bg-text-main/10 text-text-main' },
-  [RoutineBlockType.PAUSA]: { border: 'border-l-warning', badge: 'bg-warning/10 text-warning' },
-};
+function formatDuration(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
 
-const DAY_START_HOUR = 8;
-const DAY_END_HOUR = 19;
+  if (hours === 0) {
+    return `${remainingMinutes}min`;
+  }
 
-function toMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
+  return `${hours}h${remainingMinutes > 0 ? ` ${remainingMinutes}min` : ''}`;
+}
+
+function createPlannerEvents(today: Date): PlannerEvent[] {
+  return [
+    {
+      id: 1,
+      date: dateKey(today),
+      title: 'Daily com produto',
+      startTime: '09:00',
+      endTime: '09:30',
+      category: 'work',
+      kind: 'event',
+    },
+    {
+      id: 2,
+      date: dateKey(today),
+      title: 'Revisar proposta da Acme',
+      startTime: '10:00',
+      endTime: '11:00',
+      category: 'work',
+      kind: 'task',
+    },
+    {
+      id: 3,
+      date: dateKey(today),
+      title: 'Estudar Angular',
+      startTime: '14:00',
+      endTime: '15:30',
+      category: 'study',
+      kind: 'task',
+    },
+    {
+      id: 4,
+      date: dateKey(today),
+      title: 'Consulta médica',
+      startTime: '14:30',
+      endTime: '15:15',
+      category: 'personal',
+      kind: 'event',
+    },
+    {
+      id: 5,
+      date: dateKey(today),
+      title: 'Revisão de sprint',
+      startTime: '16:30',
+      endTime: '17:15',
+      category: 'event',
+      kind: 'event',
+    },
+    {
+      id: 6,
+      date: dateKey(addDays(today, -2)),
+      title: 'Planejamento de conteúdo',
+      startTime: '10:00',
+      endTime: '11:00',
+      category: 'work',
+      kind: 'event',
+    },
+    {
+      id: 7,
+      date: dateKey(addDays(today, -1)),
+      title: 'Sessão de leitura',
+      startTime: '15:00',
+      endTime: '16:00',
+      category: 'study',
+      kind: 'task',
+    },
+    {
+      id: 8,
+      date: dateKey(addDays(today, 1)),
+      title: 'Café com Ana',
+      startTime: '12:00',
+      endTime: '13:00',
+      category: 'personal',
+      kind: 'event',
+    },
+    {
+      id: 9,
+      date: dateKey(addDays(today, 2)),
+      title: 'Workshop de design',
+      startTime: '09:30',
+      endTime: '11:30',
+      category: 'event',
+      kind: 'event',
+    },
+    {
+      id: 10,
+      date: dateKey(addDays(today, 3)),
+      title: 'Planejar a próxima semana',
+      startTime: '16:00',
+      endTime: '17:00',
+      category: 'work',
+      kind: 'task',
+    },
+  ];
 }
 
 @Component({
   selector: 'app-planning',
-  imports: [MatIconModule],
+  imports: [
+    PlannerDayView,
+    PlannerWeekView,
+    PlannerSidebar,
+    PlannerUnscheduledTasks,
+    PlannerEventForm,
+  ],
   templateUrl: './planning.html',
   styleUrl: './planning.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Planning {
-  readonly RoutineBlockType = RoutineBlockType;
+  readonly selectedDate = input<Date>(startOfDay(new Date()));
+  readonly viewMode = input<PlannerViewMode>('daily');
+  readonly newEventRequest = input(0);
+  readonly eventFormOpen = signal(false);
 
-  readonly today = new Date();
-  readonly dayLabel = this.formatDayLabel(this.today);
-
-  routine = signal<RoutineBlock[]>([
-    {
-      id: 1,
-      title: 'Daily Sync com Time de Produto',
-      type: RoutineBlockType.REUNIAO,
-      startTime: '09:00',
-      endTime: '09:30',
-      detail: 'Sala Virtual · 30 min',
-    },
-    {
-      id: 2,
-      title: 'Revisar proposta comercial da Acme',
-      type: RoutineBlockType.TAREFA,
-      startTime: '09:30',
-      endTime: '10:30',
-      detail: 'Vendas Q3',
-      completed: false,
-    },
-    {
-      id: 3,
-      title: 'Bloco de foco profundo',
-      type: RoutineBlockType.FOCO,
-      startTime: '10:30',
-      endTime: '12:00',
-      detail: 'Sem notificações',
-    },
-    {
-      id: 4,
-      title: 'Almoço',
-      type: RoutineBlockType.PAUSA,
-      startTime: '12:30',
-      endTime: '13:30',
-      detail: 'Pausa consciente',
-    },
-    {
-      id: 5,
-      title: 'Sessão de foco: refatorar módulo de billing',
-      type: RoutineBlockType.TAREFA,
-      startTime: '14:00',
-      endTime: '15:00',
-      detail: 'Plataforma',
-      completed: false,
-    },
-    {
-      id: 6,
-      title: 'Confirmar consulta médica',
-      type: RoutineBlockType.TAREFA,
-      startTime: '14:30',
-      endTime: '15:30',
-      detail: 'Pessoal',
-      completed: false,
-    },
-    {
-      id: 7,
-      title: 'Revisão de sprint',
-      type: RoutineBlockType.REUNIAO,
-      startTime: '16:00',
-      endTime: '16:45',
-      detail: 'Alinhamento semanal · 45 min',
-    },
+  readonly events = signal<PlannerEvent[]>(createPlannerEvents(startOfDay(new Date())));
+  readonly unscheduledTasks = signal<PlannerTask[]>([
+    { id: 1, title: 'Organizar materiais da reunião', category: 'work', project: 'Produto' },
+    { id: 2, title: 'Ler capítulo 4 do curso', category: 'study', project: 'Angular' },
+    { id: 3, title: 'Responder e-mails pendentes', category: 'personal' },
+  ]);
+  readonly habits = signal<PlannerHabit[]>([
+    { id: 1, title: 'Beber água', completed: true },
+    { id: 2, title: 'Exercício físico', completed: false },
+    { id: 3, title: 'Ler por 20 minutos', completed: false },
+    { id: 4, title: 'Planejar o dia seguinte', completed: false },
   ]);
 
-  hours = Array.from({ length: DAY_END_HOUR - DAY_START_HOUR + 1 }, (_, i) => DAY_START_HOUR + i);
-
-  timeline = computed(() =>
-    this.hours.map((hour) => ({
-      hour,
-      label: `${hour.toString().padStart(2, '0')}:00`,
-      blocks: this.routine()
-        .filter((block) => Math.floor(toMinutes(block.startTime) / 60) === hour)
-        .sort((a, b) => toMinutes(a.startTime) - toMinutes(b.startTime)),
-    })),
+  readonly dayEvents = computed(() => {
+    const activeDate = dateKey(this.selectedDate());
+    return this.events().filter((event) => event.date === activeDate);
+  });
+  readonly taskCount = computed(
+    () =>
+      this.unscheduledTasks().length +
+      this.dayEvents().filter((event) => event.kind === 'task').length,
   );
-
-  totalBlocks = computed(() => this.routine().length);
-  completedBlocks = computed(() => this.routine().filter((block) => block.completed).length);
-  focusTime = computed(() => {
-    const minutes = this.routine()
-      .filter((block) => block.type === RoutineBlockType.FOCO)
-      .reduce((sum, block) => sum + (toMinutes(block.endTime) - toMinutes(block.startTime)), 0);
-
-    const hours = Math.floor(minutes / 60);
-    const remaining = minutes % 60;
-    return hours > 0 ? `${hours}h${remaining > 0 ? ` ${remaining}m` : ''}` : `${remaining}m`;
+  readonly eventCount = computed(
+    () => this.dayEvents().filter((event) => event.kind === 'event').length,
+  );
+  readonly plannedMinutes = computed(() =>
+    this.dayEvents().reduce((total, event) => total + durationInMinutes(event), 0),
+  );
+  readonly plannedHours = computed(() => formatDuration(this.plannedMinutes()));
+  readonly freeMinutes = computed(() => {
+    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
+    return Math.max(0, availableMinutes - this.plannedMinutes());
+  });
+  readonly freeTime = computed(() => formatDuration(this.freeMinutes()));
+  readonly freeTimePercentage = computed(() => {
+    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
+    return Math.round((this.freeMinutes() / availableMinutes) * 100);
   });
 
-  toggleBlock(id: number) {
-    this.routine.update((list) =>
-      list.map((block) => (block.id === id ? { ...block, completed: !block.completed } : block)),
+  constructor() {
+    effect(() => {
+      if (this.newEventRequest() > 0) {
+        this.eventFormOpen.set(true);
+      }
+    });
+  }
+
+  toggleHabit(id: number): void {
+    this.habits.update((habits) =>
+      habits.map((habit) => (habit.id === id ? { ...habit, completed: !habit.completed } : habit)),
     );
   }
 
-  typeBorder(type: RoutineBlockType): string {
-    return TYPE_STYLES[type].border;
+  createEvent(draft: PlannerEventDraft): void {
+    const nextId = Math.max(0, ...this.events().map((event) => event.id)) + 1;
+    this.events.update((events) => [
+      ...events,
+      {
+        ...draft,
+        id: nextId,
+        date: dateKey(this.selectedDate()),
+        kind: 'event',
+      },
+    ]);
+    this.eventFormOpen.set(false);
   }
 
-  typeBadge(type: RoutineBlockType): string {
-    return TYPE_STYLES[type].badge;
-  }
-
-  private formatDayLabel(date: Date): string {
-    const formatted = new Intl.DateTimeFormat('pt-BR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    }).format(date);
-    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  removeEvent(id: number): void {
+    this.events.update((events) => events.filter((event) => event.id !== id));
   }
 }

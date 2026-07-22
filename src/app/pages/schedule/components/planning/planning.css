@@ -1,21 +1,32 @@
-mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
+:host {
+  display: block;
 }
 
-mat-icon.icon-lg {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+.planner-layout {
+  align-items: start;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 18rem;
 }
 
-mat-icon.icon-sm {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+.planner-layout__timeline {
+  min-width: 0;
+}
+
+@media (max-width: 72rem) {
+  .planner-layout {
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 15.5rem;
+  }
+}
+
+@media (max-width: 58rem) {
+  .planner-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  app-planner-sidebar {
+    width: 100%;
+  }
 }

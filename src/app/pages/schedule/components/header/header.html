@@ -1,1 +1,77 @@
-<p>header works!</p>
+<header class="card planner-header">
+  <div class="planner-header__left">
+    <h1 class="planner-header__title">{{ pageTitle() }}</h1>
+  </div>
+
+  <div class="planner-header__center">
+    <div class="date-navigation" aria-label="Navegação de data">
+      <button
+        type="button"
+        class="button button--compact button--ghost button--icon"
+        (click)="previousDay()"
+        aria-label="Dia anterior"
+        title="Dia anterior"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <time class="date-navigation__label" [attr.datetime]="selectedDate().toISOString()">
+        {{ dateLabel() }}
+      </time>
+
+      <button
+        type="button"
+        class="button button--compact button--ghost button--icon"
+        (click)="nextDay()"
+        aria-label="Próximo dia"
+        title="Próximo dia"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      @if (!isToday()) {
+        <button
+          type="button"
+          class="button button--compact button--secondary date-navigation__today"
+          (click)="goToToday()"
+        >
+          Hoje
+        </button>
+      }
+    </div>
+
+    @if (showsViewModes()) {
+      <div class="view-switcher" aria-label="Visualização do planner">
+        <button
+          type="button"
+          class="view-switcher__option"
+          [class.view-switcher__option--active]="viewMode() === 'daily'"
+          [attr.aria-pressed]="viewMode() === 'daily'"
+          (click)="setViewMode('daily')"
+        >
+          Diário
+        </button>
+        <button
+          type="button"
+          class="view-switcher__option"
+          [class.view-switcher__option--active]="viewMode() === 'weekly'"
+          [attr.aria-pressed]="viewMode() === 'weekly'"
+          (click)="setViewMode('weekly')"
+        >
+          Semanal
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="planner-header__right">
+    <button
+      type="button"
+      class="button button--compact button--primary planner-header__primary-action"
+      (click)="primaryAction.emit(activeContent())"
+    >
+      <mat-icon>{{ primaryActionConfig().icon }}</mat-icon>
+      <span>{{ primaryActionConfig().label }}</span>
+    </button>
+  </div>
+</header>

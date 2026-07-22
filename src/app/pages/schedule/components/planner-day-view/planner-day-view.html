@@ -1,0 +1,32 @@
+<section class="planner-day-view card" aria-label="Visualização diária">
+  <header class="planner-day-view__header">
+    <div>
+      <p class="planner-day-view__eyebrow">Visão diária</p>
+      <h2 class="planner-day-view__title">{{ dateLabel() }}</h2>
+    </div>
+    <span class="planner-day-view__half-hour">Intervalos de 30 min</span>
+  </header>
+
+  <div class="planner-day-view__scroll">
+    <div class="planner-day-view__grid">
+      <div class="planner-day-view__hours" aria-hidden="true">
+        @for (hour of hours; track hour) {
+          <span>{{ hour.toString().padStart(2, '0') }}:00</span>
+        }
+      </div>
+
+      <div class="planner-day-view__canvas">
+        @for (event of positionedEvents(); track event.id) {
+          <app-planner-event-card
+            [event]="event"
+            [style.top.px]="eventTop(event)"
+            [style.height.px]="eventHeight(event)"
+            [style.left.%]="eventLeft(event)"
+            [style.width.%]="eventWidth(event)"
+            (remove)="eventRemoved.emit($event)"
+          />
+        }
+      </div>
+    </div>
+  </div>
+</section>

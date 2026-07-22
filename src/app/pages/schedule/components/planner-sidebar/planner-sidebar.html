@@ -1,0 +1,14 @@
+<aside class="planner-sidebar" aria-label="Resumo do planejamento">
+  <app-planner-summary-card
+    [taskCount]="taskCount()"
+    [eventCount]="eventCount()"
+    [habitCount]="habits().length"
+    [plannedHours]="plannedHours()"
+  />
+
+  <app-planner-next-activity-card [date]="date()" [events]="events()" />
+
+  <app-planner-habits-card [habits]="habits()" (habitToggled)="habitToggled.emit($event)" />
+
+  <app-planner-free-time-card [freeTime]="freeTime()" [percentage]="freeTimePercentage()" />
+</aside>
