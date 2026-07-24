@@ -31,6 +31,7 @@
             [style.left.%]="eventLeft(event)"
             [style.width.%]="eventWidth(event)"
             (remove)="eventRemoved.emit($event)"
+            (edit)="eventEdited.emit($event)"
           />
         }
       </div>

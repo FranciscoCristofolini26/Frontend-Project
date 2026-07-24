@@ -253,7 +253,6 @@ export class Planning {
       this.aiOrganizationPrompt.set(true);
       return;
     }
-
     this.events.update((events) =>
       events.map((item) => (item.id === event.id ? { ...item, ...draft } : item)),
     );

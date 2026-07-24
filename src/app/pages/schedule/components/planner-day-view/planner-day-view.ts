@@ -54,7 +54,7 @@ export class PlannerDayView {
   readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
   readonly hourHeight = computed(() => this.pixelsPerMinute() * 60);
   readonly canvasHeight = computed(() => this.hourHeight() * 13);
-  readonly eventMinHeight = computed(() => (this.compactTimeline() ? 48 : 50));
+  readonly eventMinHeight = computed(() => (this.compactTimeline() ? 38 : 44));
 
   @HostListener('window:resize')
   updateTimelineScale(): void {
@@ -71,7 +71,7 @@ export class PlannerDayView {
   }
 
   eventLeft(event: PositionedPlannerEvent): number {
-    return 0.5 + (event.column * 100) / event.columnCount;
+  return 0.5 + (event.column * 100) / event.columnCount;
   }
 
   eventWidth(event: PositionedPlannerEvent): number {

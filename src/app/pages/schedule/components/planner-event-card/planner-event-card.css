@@ -7,19 +7,21 @@
 }
 
 .planner-event-card {
-  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
-  border-left: 4px solid var(--color-brand-primary);
-  border-radius: 10px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-main) 8%, transparent);
+  border-left: 0.25rem solid var(--color-brand-primary);
+
+  border-radius: 0.625rem;
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--color-text-main) 8%, transparent);
   box-sizing: border-box;
   color: var(--color-text-main);
   cursor: pointer;
-  display: flex;
   height: 100%;
-  min-height: 0;
-  min-width: 0;
+  width: 250px;
+  min-height: var(--planner-event-min-height, 2.75rem);
   overflow: hidden;
   padding: 8.8px 10px;
   position: relative;
@@ -43,6 +45,11 @@
 :host(:focus-within) .planner-event-card {
   box-shadow: 0 8px 16px color-mix(in srgb, var(--color-text-main) 15%, transparent);
   transform: translateY(-0.2000px);
+}
+
+.planner-event-card:focus-visible {
+  outline: 0.1875rem solid color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
+  outline-offset: 0.0625rem;
 }
 
 .planner-event-card--study {
@@ -85,9 +92,10 @@
 }
 
 .planner-event-card__title {
-  font-size: 12px;
+  font-size: 0.6125rem;
   font-weight: 800;
   line-height: 1.25;
+  padding-right: 1rem;
 }
 
 .planner-event-card__description {
@@ -137,15 +145,15 @@
 
 .planner-event-card__time {
   color: var(--color-text-sub);
-  font-size: 11px;
-  text-align: right;
-  width: 70px;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .planner-event-card__category {
   color: var(--color-text-sub);
   font-size: 10px;
   font-weight: 700;
+  margin-top: 0.2rem;
   text-transform: uppercase;
 }
 
@@ -219,5 +227,31 @@
   .planner-event-card {
     animation: none;
     transition: none;
+  }
+}
+
+@media (max-width: 24rem) {
+  .planner-event-card {
+    padding: 0.4rem 0.45rem;
+  }
+
+  .planner-event-card__title {
+    font-size: 0.6875rem;
+    padding-right: 0.875rem;
+  }
+
+  .planner-event-card__time {
+    font-size: 0.625rem;
+    margin-top: 0.15rem;
+  }
+
+  .planner-event-card__category,
+  .planner-event-card__description {
+    display: none;
+  }
+
+  .planner-event-card__remove {
+    right: 0.2rem;
+    top: 0.2rem;
   }
 }

@@ -81,9 +81,9 @@
       to bottom,
       transparent 0,
       transparent calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
+      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main))
         calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
+      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main)) var(--planner-hour-height)
     );
   border-left: 1px solid var(--color-border);
   min-height: var(--planner-canvas-height);
@@ -166,5 +166,40 @@ app-planner-event-card {
 
   .planner-day-view__hours span {
     padding-right: 5.6px;
+  }
+
+  .planner-day-view__grid {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    min-width: 0;
+  }
+
+  .planner-day-view__hours span {
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 24rem) {
+  .planner-day-view__header {
+    padding: 0.75rem;
+  }
+
+  .planner-day-view__title {
+    font-size: 1rem;
+  }
+
+  .planner-day-view__half-hour {
+    display: none;
+  }
+
+  .planner-day-view__grid {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+  }
+
+  .planner-day-view__hours {
+    font-size: 0.625rem;
+  }
+
+  .planner-day-view__hours span {
+    padding-right: 0.35rem;
   }
 }

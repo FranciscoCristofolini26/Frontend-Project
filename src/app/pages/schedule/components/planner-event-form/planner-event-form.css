@@ -118,7 +118,7 @@
   }
 
   .planner-event-form__footer .button {
-    flex: 1 1 calc(50% - 6px);
+    flex: 1 1 calc(50% - 0.375rem);
   }
 
   .planner-event-form__footer .button--primary {
