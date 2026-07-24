@@ -42,8 +42,6 @@ export class PlannerWeekView {
   readonly events = input<PlannerEvent[]>([]);
   readonly eventRemoved = output<number>();
   readonly eventEdited = output<PlannerEvent>();
-  readonly mobilePickerOpen = signal(false);
-  readonly mobileSelectedKey = signal<string | null>(null);
   readonly compactTimeline = signal(this.isCompactViewport());
   readonly hours = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
@@ -92,11 +90,6 @@ export class PlannerWeekView {
   overlapGroupHeight(group: PlannerOverlapGroup): number {
     const groupDuration = durationInMinutes(group) * this.pixelsPerMinute();
     return Math.max(groupDuration, group.events.length * 44 + (group.events.length - 1) * 4);
-  }
-
-  selectMobileDay(key: string): void {
-    this.mobileSelectedKey.set(key);
-    this.mobilePickerOpen.set(false);
   }
 
   private isCompactViewport(): boolean {

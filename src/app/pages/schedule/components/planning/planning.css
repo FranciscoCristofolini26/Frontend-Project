@@ -33,7 +33,7 @@
   }
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 93.75rem) {
   .planner-layout--weekly {
     grid-template-columns: minmax(0, 1fr);
   }
