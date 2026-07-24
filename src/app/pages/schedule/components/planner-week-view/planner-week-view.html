@@ -15,25 +15,6 @@
   </header>
 
   @if (mobileSelectedDay(); as selectedDay) {
-    <div class="planner-week-view__mobile-selector">
-      @if (mobilePickerOpen()) {
-        <div id="week-day-options" class="planner-week-view__mobile-options" role="listbox">
-          @for (day of weekDays(); track day.key) {
-            <button
-              type="button"
-              role="option"
-              [attr.aria-selected]="day.key === selectedDay.key"
-              [class.planner-week-view__mobile-option--active]="day.key === selectedDay.key"
-              (click)="selectMobileDay(day.key)"
-            >
-              <span>{{ day.label }}</span>
-              <strong>{{ day.dayNumber }}</strong>
-            </button>
-          }
-        </div>
-      }
-    </div>
-
     <div class="planner-week-view__mobile-day">
       <app-planner-day-view
         [date]="selectedDay.date"

@@ -30,3 +30,13 @@
     width: 100%;
   }
 }
+
+@media (max-width: 93.75rem) {
+  .planner-layout--weekly {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .planner-layout--weekly app-planner-sidebar {
+    width: 100%;
+  }
+}

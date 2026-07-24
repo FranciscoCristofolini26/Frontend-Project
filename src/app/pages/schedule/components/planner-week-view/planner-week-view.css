@@ -111,12 +111,11 @@
   position: relative;
 }
 
-.planner-week-view__mobile-selector,
 .planner-week-view__mobile-day {
   display: none;
 }
 
-@media (max-width: 40rem) {
+@media (max-width: 62.5rem) {
   .planner-week-view__header {
     align-items: flex-start;
     flex-direction: column;
@@ -128,75 +127,8 @@
     display: none;
   }
 
-  .planner-week-view__mobile-selector {
-    display: block;
-    padding: 0.875rem 1rem 0;
-    position: relative;
-  }
-
-  .planner-week-view__mobile-trigger {
-    align-items: center;
-    background: var(--color-bg-sub);
-    border: 1px solid var(--color-border);
-    border-radius: 0.625rem;
-    color: var(--color-text-main);
-    cursor: pointer;
-    display: flex;
-    font: inherit;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    justify-content: space-between;
-    padding: 0.75rem 0.875rem;
-    width: 100%;
-  }
-
-  .planner-week-view__mobile-trigger strong {
-    text-transform: capitalize;
-  }
-
-  .planner-week-view__mobile-options {
-    background: var(--color-card-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.625rem;
-    box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, var(--color-text-main) 12%, transparent);
-    display: grid;
-    gap: 0.25rem;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    left: 1rem;
-    padding: 0.5rem;
-    position: absolute;
-    right: 1rem;
-    top: calc(100% - 0.125rem);
-    z-index: 2;
-  }
-
-  .planner-week-view__mobile-options button {
-    background: transparent;
-    border: 0;
-    border-radius: 0.5rem;
-    color: var(--color-text-sub);
-    cursor: pointer;
-    display: grid;
-    font: inherit;
-    font-size: 0.625rem;
-    gap: 0.125rem;
-    justify-items: center;
-    padding: 0.45rem 0.125rem;
-  }
-
-  .planner-week-view__mobile-options button:hover,
-  .planner-week-view__mobile-option--active {
-    background: var(--color-surface-elevated) !important;
-    color: var(--color-brand-primary) !important;
-  }
-
-  .planner-week-view__mobile-options strong {
-    font-size: 0.75rem;
-  }
-
   .planner-week-view__mobile-day {
     display: block;
-    margin-top: 0.875rem;
     padding: 0 0.875rem 0.875rem;
   }
 }

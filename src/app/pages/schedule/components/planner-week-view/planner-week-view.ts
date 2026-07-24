@@ -41,8 +41,6 @@ export class PlannerWeekView {
   readonly events = input<PlannerEvent[]>([]);
   readonly eventRemoved = output<number>();
   readonly eventEdited = output<PlannerEvent>();
-  readonly mobilePickerOpen = signal(false);
-  readonly mobileSelectedKey = signal<string | null>(null);
   readonly compactTimeline = signal(this.isCompactViewport());
   readonly hours = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
@@ -61,7 +59,7 @@ export class PlannerWeekView {
     }),
   );
   readonly mobileSelectedDay = computed(() => {
-    const selectedKey = this.mobileSelectedKey() ?? dateKey(this.date());
+    const selectedKey = dateKey(this.date());
     return this.weekDays().find((day) => day.key === selectedKey) ?? this.weekDays()[0];
   });
   readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2));
@@ -90,11 +88,6 @@ export class PlannerWeekView {
 
   eventWidth(event: PositionedPlannerEvent): number {
     return 94 / event.columnCount - 2;
-  }
-
-  selectMobileDay(key: string): void {
-    this.mobileSelectedKey.set(key);
-    this.mobilePickerOpen.set(false);
   }
 
   private isCompactViewport(): boolean {

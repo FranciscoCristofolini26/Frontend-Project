@@ -1,4 +1,8 @@
-<section class="planner-layout" aria-label="Planejador">
+<section
+  class="planner-layout"
+  [class.planner-layout--weekly]="viewMode() === 'weekly'"
+  aria-label="Planejador"
+>
   <div class="planner-layout__timeline">
     @if (viewMode() === 'daily') {
       <app-planner-day-view
