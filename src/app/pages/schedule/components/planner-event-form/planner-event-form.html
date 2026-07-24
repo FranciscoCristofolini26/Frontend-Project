@@ -15,8 +15,8 @@
       <form class="planner-event-form" (submit)="submit($event)">
         <header class="planner-event-form__header">
           <div>
-            <p class="planner-event-form__eyebrow">Novo evento</p>
-            <h2 id="event-form-title">Planeje um bloco no seu dia</h2>
+            <p class="planner-event-form__eyebrow">{{ heading().eyebrow }}</p>
+            <h2 id="event-form-title">{{ heading().title }}</h2>
             <p class="planner-event-form__date">{{ dateLabel() }}</p>
           </div>
           <button
@@ -98,7 +98,12 @@
           <button type="button" class="button button--secondary" (click)="cancel()">
             Cancelar
           </button>
-          <button type="submit" class="button button--primary">Criar evento</button>
+          @if (editingEvent()) {
+            <button type="button" class="button button--danger" (click)="remove()">Excluir</button>
+          }
+          @if (isDirty()) {
+            <button type="submit" class="button button--primary">{{ heading().submit }}</button>
+          }
         </footer>
       </form>
     </section>

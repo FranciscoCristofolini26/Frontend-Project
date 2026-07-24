@@ -113,7 +113,15 @@
     grid-template-columns: 1fr;
   }
 
+  .planner-event-form__footer {
+    flex-wrap: wrap;
+  }
+
   .planner-event-form__footer .button {
-    flex: 1;
+    flex: 1 1 calc(50% - 0.375rem);
+  }
+
+  .planner-event-form__footer .button--primary {
+    flex-basis: 100%;
   }
 }

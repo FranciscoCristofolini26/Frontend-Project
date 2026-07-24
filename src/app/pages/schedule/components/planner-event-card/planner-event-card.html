@@ -1,11 +1,15 @@
 <article
   class="planner-event-card"
   [class]="'planner-event-card planner-event-card--' + event().category"
+  role="button"
+  tabindex="0"
+  (click)="editEvent()"
+  (keydown)="handleKeydown($event)"
 >
   <button
     type="button"
     class="planner-event-card__remove"
-    (click)="remove.emit(event().id)"
+    (click)="removeEvent($event)"
     [attr.aria-label]="'Remover ' + event().title"
     title="Remover evento"
   >

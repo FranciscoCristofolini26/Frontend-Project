@@ -5,6 +5,7 @@
         [date]="selectedDate()"
         [events]="dayEvents()"
         (eventRemoved)="removeEvent($event)"
+        (eventEdited)="openEventEditor($event)"
       />
       <app-planner-unscheduled-tasks [tasks]="unscheduledTasks()" />
     } @else {
@@ -12,6 +13,7 @@
         [date]="selectedDate()"
         [events]="events()"
         (eventRemoved)="removeEvent($event)"
+        (eventEdited)="openEventEditor($event)"
       />
     }
   </div>
@@ -31,7 +33,10 @@
   <app-planner-event-form
     [open]="eventFormOpen()"
     [date]="selectedDate()"
-    (cancelled)="eventFormOpen.set(false)"
+    [event]="editingEvent()"
+    (cancelled)="closeEventForm()"
     (created)="createEvent($event)"
+    (updated)="updateEvent($event)"
+    (removed)="removeEditingEvent($event)"
   />
 </section>

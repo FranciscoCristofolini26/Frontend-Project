@@ -21,5 +21,24 @@ export class PlannerEventCard {
   readonly event = input.required<PlannerEvent>();
   readonly compact = input(false);
   readonly remove = output<number>();
+  readonly edit = output<PlannerEvent>();
   readonly categoryLabel = computed(() => CATEGORY_LABELS[this.event().category]);
+
+  editEvent(): void {
+    this.edit.emit(this.event());
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    if (event.target !== event.currentTarget || (event.key !== 'Enter' && event.key !== ' ')) {
+      return;
+    }
+
+    event.preventDefault();
+    this.editEvent();
+  }
+
+  removeEvent(event: MouseEvent): void {
+    event.stopPropagation();
+    this.remove.emit(this.event().id);
+  }
 }

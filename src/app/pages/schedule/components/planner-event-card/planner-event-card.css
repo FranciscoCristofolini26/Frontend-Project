@@ -6,20 +6,28 @@
 
 .planner-event-card {
   display: flex;
+  flex-wrap: wrap;
+
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
   border-left: 0.25rem solid var(--color-brand-primary);
-  
+
   border-radius: 0.625rem;
   box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--color-text-main) 8%, transparent);
   box-sizing: border-box;
   color: var(--color-text-main);
+  cursor: pointer;
   height: 100%;
-  width: 150px;
-  min-height: 2.75rem;
+  width: 250px;
+  min-height: var(--planner-event-min-height, 2.75rem);
   overflow: hidden;
   padding: 0.55rem 0.625rem;
   position: relative;
+}
+
+.planner-event-card:focus-visible {
+  outline: 0.1875rem solid color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
+  outline-offset: 0.0625rem;
 }
 
 .planner-event-card--study {
@@ -44,9 +52,9 @@
 }
 
 .planner-event-card__title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 0.6125rem;
+  font-weight: 800;
+  line-height: 1.25;
   padding-right: 1rem;
 }
 
@@ -96,7 +104,7 @@
 
 .planner-event-card__time {
   color: var(--color-text-sub);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   margin-top: 0.25rem;
 }
 
@@ -105,7 +113,7 @@
   display: inline-block;
   font-size: 0.625rem;
   font-weight: 700;
-  margin-top: 0.4rem;
+  margin-top: 0.2rem;
   text-transform: uppercase;
 }
 
@@ -127,4 +135,30 @@
 :host(.planner-event-card--week) .planner-event-card__remove {
   right: 0.2rem;
   top: 0.2rem;
+}
+
+@media (max-width: 24rem) {
+  .planner-event-card {
+    padding: 0.4rem 0.45rem;
+  }
+
+  .planner-event-card__title {
+    font-size: 0.6875rem;
+    padding-right: 0.875rem;
+  }
+
+  .planner-event-card__time {
+    font-size: 0.625rem;
+    margin-top: 0.15rem;
+  }
+
+  .planner-event-card__category,
+  .planner-event-card__description {
+    display: none;
+  }
+
+  .planner-event-card__remove {
+    right: 0.2rem;
+    top: 0.2rem;
+  }
 }

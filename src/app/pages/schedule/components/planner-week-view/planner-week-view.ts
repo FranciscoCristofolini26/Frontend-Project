@@ -1,16 +1,25 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  computed,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import {
   DAY_END_HOUR,
   DAY_START_HOUR,
-  PIXELS_PER_MINUTE,
   PlannerEvent,
   PositionedPlannerEvent,
   durationInMinutes,
+  dateKey,
   getWeekDays,
   layoutEvents,
   toMinutes,
 } from '../../models';
 import { PlannerEventCard } from '../planner-event-card/planner-event-card';
+import { PlannerDayView } from '../planner-day-view/planner-day-view';
 
 interface WeekDay {
   date: Date;
@@ -22,7 +31,7 @@ interface WeekDay {
 
 @Component({
   selector: 'app-planner-week-view',
-  imports: [PlannerEventCard],
+  imports: [PlannerEventCard, PlannerDayView],
   templateUrl: './planner-week-view.html',
   styleUrl: './planner-week-view.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,13 +40,17 @@ export class PlannerWeekView {
   readonly date = input.required<Date>();
   readonly events = input<PlannerEvent[]>([]);
   readonly eventRemoved = output<number>();
+  readonly eventEdited = output<PlannerEvent>();
+  readonly mobilePickerOpen = signal(false);
+  readonly mobileSelectedKey = signal<string | null>(null);
+  readonly compactTimeline = signal(this.isCompactViewport());
   readonly hours = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
     (_, index) => DAY_START_HOUR + index,
   );
   readonly weekDays = computed<WeekDay[]>(() =>
     getWeekDays(this.date()).map((date) => {
-      const key = this.toDateKey(date);
+      const key = dateKey(date);
       return {
         date,
         key,
@@ -47,13 +60,28 @@ export class PlannerWeekView {
       };
     }),
   );
+  readonly mobileSelectedDay = computed(() => {
+    const selectedKey = this.mobileSelectedKey() ?? dateKey(this.date());
+    return this.weekDays().find((day) => day.key === selectedKey) ?? this.weekDays()[0];
+  });
+  readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2));
+  readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
+  readonly hourHeight = computed(() => this.pixelsPerMinute() * 60);
+  readonly canvasHeight = computed(() => this.hourHeight() * 13);
+  readonly eventMinHeight = computed(() => (this.compactTimeline() ? 38 : 42));
+
+  @HostListener('window:resize')
+  updateTimelineScale(): void {
+    this.compactTimeline.set(this.isCompactViewport());
+  }
 
   eventTop(event: PositionedPlannerEvent): number {
-    return (toMinutes(event.startTime) - DAY_START_HOUR * 60) * PIXELS_PER_MINUTE;
+    const offsetInMinutes = toMinutes(event.startTime) - DAY_START_HOUR * 60;
+    return offsetInMinutes * this.pixelsPerMinute();
   }
 
   eventHeight(event: PositionedPlannerEvent): number {
-    return Math.max(durationInMinutes(event) * PIXELS_PER_MINUTE - 6, 42);
+    return Math.max(durationInMinutes(event) * this.pixelsPerMinute() - 6, this.eventMinHeight());
   }
 
   eventLeft(event: PositionedPlannerEvent): number {
@@ -64,9 +92,12 @@ export class PlannerWeekView {
     return 94 / event.columnCount - 2;
   }
 
-  private toDateKey(date: Date): string {
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-    const day = `${date.getDate()}`.padStart(2, '0');
-    return `${date.getFullYear()}-${month}-${day}`;
+  selectMobileDay(key: string): void {
+    this.mobileSelectedKey.set(key);
+    this.mobilePickerOpen.set(false);
+  }
+
+  private isCompactViewport(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth <= 384;
   }
 }

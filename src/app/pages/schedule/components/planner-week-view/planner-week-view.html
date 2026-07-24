@@ -1,4 +1,11 @@
-<section class="planner-week-view card" aria-label="Visualização semanal">
+<section
+  class="planner-week-view card"
+  aria-label="Visualização semanal"
+  [style.--planner-half-hour-height]="halfHourHeight() + 'px'"
+  [style.--planner-hour-height]="hourHeight() + 'px'"
+  [style.--planner-canvas-height]="canvasHeight() + 'px'"
+  [style.--planner-event-min-height]="eventMinHeight() + 'px'"
+>
   <header class="planner-week-view__header">
     <div>
       <p class="planner-week-view__eyebrow">Visão semanal</p>
@@ -6,6 +13,36 @@
     </div>
     <span class="planner-week-view__half-hour">Intervalos de 30 min</span>
   </header>
+
+  @if (mobileSelectedDay(); as selectedDay) {
+    <div class="planner-week-view__mobile-selector">
+      @if (mobilePickerOpen()) {
+        <div id="week-day-options" class="planner-week-view__mobile-options" role="listbox">
+          @for (day of weekDays(); track day.key) {
+            <button
+              type="button"
+              role="option"
+              [attr.aria-selected]="day.key === selectedDay.key"
+              [class.planner-week-view__mobile-option--active]="day.key === selectedDay.key"
+              (click)="selectMobileDay(day.key)"
+            >
+              <span>{{ day.label }}</span>
+              <strong>{{ day.dayNumber }}</strong>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="planner-week-view__mobile-day">
+      <app-planner-day-view
+        [date]="selectedDay.date"
+        [events]="selectedDay.events"
+        (eventRemoved)="eventRemoved.emit($event)"
+        (eventEdited)="eventEdited.emit($event)"
+      />
+    </div>
+  }
 
   <div class="planner-week-view__scroll">
     <div class="planner-week-view__grid">
@@ -41,6 +78,7 @@
                 [style.left.%]="eventLeft(event)"
                 [style.width.%]="eventWidth(event)"
                 (remove)="eventRemoved.emit($event)"
+                (edit)="eventEdited.emit($event)"
               />
             }
           </div>

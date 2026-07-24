@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { PlannerCategory, PlannerEventDraft } from '../../models';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { PlannerCategory, PlannerEvent, PlannerEventDraft } from '../../models';
 
 const CATEGORY_OPTIONS: Array<{ value: PlannerCategory; label: string }> = [
   { value: 'work', label: 'Trabalho' },
@@ -18,7 +26,10 @@ const CATEGORY_OPTIONS: Array<{ value: PlannerCategory; label: string }> = [
 export class PlannerEventForm {
   readonly open = input(false);
   readonly date = input.required<Date>();
+  readonly event = input<PlannerEvent | null>(null);
   readonly created = output<PlannerEventDraft>();
+  readonly updated = output<PlannerEventDraft>();
+  readonly removed = output<number>();
   readonly cancelled = output<void>();
   readonly categories = CATEGORY_OPTIONS;
 
@@ -28,6 +39,39 @@ export class PlannerEventForm {
   readonly endTime = signal('10:00');
   readonly category = signal<PlannerCategory>('work');
   readonly errorMessage = signal('');
+  readonly editingEvent = computed(() => this.event());
+  readonly isDirty = computed(() => {
+    const event = this.editingEvent();
+
+    if (!event) {
+      return true;
+    }
+
+    return (
+      this.title().trim() !== event.title ||
+      this.description().trim() !== (event.description ?? '') ||
+      this.startTime() !== event.startTime ||
+      this.endTime() !== event.endTime ||
+      this.category() !== event.category
+    );
+  });
+  readonly heading = computed(() => {
+    const event = this.editingEvent();
+    if (!event) {
+      return {
+        eyebrow: 'Novo evento',
+        title: 'Planeje um bloco no seu dia',
+        submit: 'Criar evento',
+      };
+    }
+
+    const itemName = event.kind === 'task' ? 'tarefa' : 'evento';
+    return {
+      eyebrow: `Editar ${itemName}`,
+      title: `Atualize esta ${itemName}`,
+      submit: 'Salvar alterações',
+    };
+  });
   readonly dateLabel = computed(() =>
     new Intl.DateTimeFormat('pt-BR', {
       weekday: 'long',
@@ -37,24 +81,37 @@ export class PlannerEventForm {
     }).format(this.date()),
   );
 
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.populate(this.event());
+      }
+    });
+  }
+
   updateTitle(event: Event): void {
     this.title.set((event.target as HTMLInputElement).value);
+    this.errorMessage.set('');
   }
 
   updateDescription(event: Event): void {
     this.description.set((event.target as HTMLTextAreaElement).value);
+    this.errorMessage.set('');
   }
 
   updateStartTime(event: Event): void {
     this.startTime.set((event.target as HTMLInputElement).value);
+    this.errorMessage.set('');
   }
 
   updateEndTime(event: Event): void {
     this.endTime.set((event.target as HTMLInputElement).value);
+    this.errorMessage.set('');
   }
 
   updateCategory(event: Event): void {
     this.category.set((event.target as HTMLSelectElement).value as PlannerCategory);
+    this.errorMessage.set('');
   }
 
   submit(event: SubmitEvent): void {
@@ -70,14 +127,31 @@ export class PlannerEventForm {
       return;
     }
 
-    this.created.emit({
+    const draft = {
       title: this.title().trim(),
       description: this.description().trim(),
       startTime: this.startTime(),
       endTime: this.endTime(),
       category: this.category(),
-    });
+    };
+
+    if (this.editingEvent()) {
+      if (!this.isDirty()) {
+        return;
+      }
+      this.updated.emit(draft);
+    } else {
+      this.created.emit(draft);
+    }
+
     this.reset();
+  }
+
+  remove(): void {
+    const event = this.editingEvent();
+    if (event) {
+      this.removed.emit(event.id);
+    }
   }
 
   cancel(): void {
@@ -97,6 +171,15 @@ export class PlannerEventForm {
     this.startTime.set('09:00');
     this.endTime.set('10:00');
     this.category.set('work');
+    this.errorMessage.set('');
+  }
+
+  private populate(event: PlannerEvent | null): void {
+    this.title.set(event?.title ?? '');
+    this.description.set(event?.description ?? '');
+    this.startTime.set(event?.startTime ?? '09:00');
+    this.endTime.set(event?.endTime ?? '10:00');
+    this.category.set(event?.category ?? 'work');
     this.errorMessage.set('');
   }
 }

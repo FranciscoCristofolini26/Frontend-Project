@@ -1,4 +1,11 @@
-<section class="planner-day-view card" aria-label="Visualização diária">
+<section
+  class="planner-day-view card"
+  aria-label="Visualização diária"
+  [style.--planner-half-hour-height]="halfHourHeight() + 'px'"
+  [style.--planner-hour-height]="hourHeight() + 'px'"
+  [style.--planner-canvas-height]="canvasHeight() + 'px'"
+  [style.--planner-event-min-height]="eventMinHeight() + 'px'"
+>
   <header class="planner-day-view__header">
     <div>
       <p class="planner-day-view__eyebrow">Visão diária</p>
@@ -24,6 +31,7 @@
             [style.left.%]="eventLeft(event)"
             [style.width.%]="eventWidth(event)"
             (remove)="eventRemoved.emit($event)"
+            (edit)="eventEdited.emit($event)"
           />
         }
       </div>

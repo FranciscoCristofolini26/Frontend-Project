@@ -142,6 +142,7 @@ export class Planning {
   readonly viewMode = input<PlannerViewMode>('daily');
   readonly newEventRequest = input(0);
   readonly eventFormOpen = signal(false);
+  readonly editingEvent = signal<PlannerEvent | null>(null);
 
   readonly events = signal<PlannerEvent[]>(createPlannerEvents(startOfDay(new Date())));
   readonly unscheduledTasks = signal<PlannerTask[]>([
@@ -185,6 +186,7 @@ export class Planning {
   constructor() {
     effect(() => {
       if (this.newEventRequest() > 0) {
+        this.editingEvent.set(null);
         this.eventFormOpen.set(true);
       }
     });
@@ -207,10 +209,37 @@ export class Planning {
         kind: 'event',
       },
     ]);
-    this.eventFormOpen.set(false);
+    this.closeEventForm();
   }
 
   removeEvent(id: number): void {
     this.events.update((events) => events.filter((event) => event.id !== id));
+  }
+
+  openEventEditor(event: PlannerEvent): void {
+    this.editingEvent.set(event);
+    this.eventFormOpen.set(true);
+  }
+
+  updateEvent(draft: PlannerEventDraft): void {
+    const event = this.editingEvent();
+    if (!event) {
+      return;
+    }
+
+    this.events.update((events) =>
+      events.map((item) => (item.id === event.id ? { ...item, ...draft } : item)),
+    );
+    this.closeEventForm();
+  }
+
+  removeEditingEvent(id: number): void {
+    this.removeEvent(id);
+    this.closeEventForm();
+  }
+
+  closeEventForm(): void {
+    this.eventFormOpen.set(false);
+    this.editingEvent.set(null);
   }
 }
