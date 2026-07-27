@@ -1,9 +1,10 @@
 export interface NoteModel {
-  id: number;
+  id?: number;
   title: string;
   description: string;
-  edited: Date;
-  favourite: boolean;
-  fixed: boolean;
-  fixedAt: Date | null;
+  edited?: Date;
+  favourite?: boolean;
+  fixed?: boolean;
+  fixedAt?: Date | null;
 }
+
