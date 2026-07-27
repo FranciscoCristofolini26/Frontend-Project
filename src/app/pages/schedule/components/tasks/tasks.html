@@ -5,11 +5,19 @@
         type="button"
         class="flex items-center gap-2 rounded-xl bg-brand-primary font-medium text-white shadow-sm transition hover:bg-brand-hover"
         [class]="buttonClasses()"
+        (click)="openNewTaskDialog()"
       >
         <mat-icon class="icon-lg">add</mat-icon>
         Nova tarefa
       </button>
     </div>
+
+    @if (showNewTaskDialog()) {
+      <app-tasks-properties
+        (close)="closeNewTaskDialog()"
+        (save)="addTask($event)"
+      ></app-tasks-properties>
+    }
 
     @if (tasks().length === 0) {
       <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">

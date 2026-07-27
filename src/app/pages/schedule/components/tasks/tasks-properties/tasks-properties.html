@@ -1,0 +1,104 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2 class="modal-title">Nova Tarefa</h2>
+      <button type="button" class="modal-close" (click)="onClose()" aria-label="Fechar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="modal-body">
+      <div class="form-field">
+        <label for="title">Título *</label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          class="input-control"
+          placeholder="Digite o título da tarefa"
+        />
+        @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+          <span class="error-message">Título é obrigatório (mínimo 3 caracteres)</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="priority">Prioridade *</label>
+          <select id="priority" formControlName="priority" class="input-control">
+            @for (priority of priorities; track priority) {
+              <option [value]="priority">{{ priority }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="period">Período *</label>
+          <select id="period" formControlName="period" class="input-control">
+            @for (period of periods; track period.value) {
+              <option [value]="period.value">{{ period.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="dueDate">Data</label>
+          <input
+            id="dueDate"
+            type="date"
+            formControlName="dueDate"
+            class="input-control"
+            (change)="onDateChange($event.target.valueAsDate)"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="dueTime">Horário</label>
+          <input
+            id="dueTime"
+            type="time"
+            formControlName="dueTime"
+            class="input-control"
+            (change)="onTimeChange($event.target.value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="project">Projeto</label>
+        <input
+          id="project"
+          type="text"
+          formControlName="project"
+          class="input-control"
+          placeholder="Nome do projeto (opcional)"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="notes">Notas</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          class="input-control textarea"
+          placeholder="Adicione observações (opcional)"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="completed" class="checkbox-input" />
+          <span class="checkbox-text">Marcar como concluída</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="onClose()">Fechar</button>
+        <button type="submit" class="btn-primary" [disabled]="taskForm.invalid">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
