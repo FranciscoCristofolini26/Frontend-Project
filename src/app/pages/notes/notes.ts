@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { NoteModel } from './models/NoteModel';
@@ -14,7 +13,6 @@ import { NoteService } from './service/NoteService';
 export class Notes implements OnInit {
   private noteService = inject(NoteService);
   private changeDetectorRef = inject(ChangeDetectorRef);
-
 
   readonly notePreviewMaxLength = 180;
   notas: NoteModel[] = [];
