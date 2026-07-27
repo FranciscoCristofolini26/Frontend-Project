@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { NoteModel } from './models/NoteModel';
@@ -12,6 +12,7 @@ import { NoteService } from './service/NoteService';
 })
 export class Notes implements OnInit {
   private noteService = inject(NoteService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
 
   readonly notePreviewMaxLength = 180;
   notas: NoteModel[] = [];
@@ -31,12 +32,13 @@ export class Notes implements OnInit {
   loadNotes(): void {
     this.noteService.getNotes().subscribe({
       next: (data) => {
-        // Converte as strings de data recebidas do JSON para objetos Date
         this.notas = data.map(nota => ({
           ...nota,
           edited: nota.edited ? new Date(nota.edited) : new Date(),
           fixedAt: nota.fixedAt ? new Date(nota.fixedAt) : null
         }));
+
+        this.changeDetectorRef.detectChanges();
       },
       error: (err) => console.error('Erro ao carregar notas:', err)
     });
