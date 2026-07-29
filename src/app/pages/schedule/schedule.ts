@@ -22,6 +22,19 @@ export class Schedule {
 
   readonly activeContent = (): PlannerContent =>
     this.view() === 'planejamento' ? 'planning' : 'tasks';
+  private readonly sidebarState = inject(SidebarState);
+
+  view = signal<ScheduleView>('tarefas');
+  tasksDetailOpen = signal(false);
+
+  readonly layoutTier = computed<LayoutTier>(() => {
+    const openSidebars =
+      (this.sidebarState.occupiesLayout() ? 1 : 0) + (this.tasksDetailOpen() ? 1 : 0);
+
+    if (openSidebars >= 2) return 'compact';
+    if (openSidebars === 1) return 'balanced';
+    return 'spacious';
+  });
 
   setView(view: ScheduleView) {
     this.view.set(view);
