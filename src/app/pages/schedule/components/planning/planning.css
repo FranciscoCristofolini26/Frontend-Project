@@ -10,7 +10,9 @@
 }
 
 .planner-layout__timeline {
+  container-type: inline-size;
   min-width: 0;
+  width: 100%;
 }
 
 @media (max-width: 72rem) {
@@ -22,12 +24,14 @@
 
 @media (max-width: 58rem) {
   .planner-layout {
+    align-items: stretch;
     display: flex;
     flex-direction: column;
   }
 
   .planner-layout__timeline,
   .planner-layout__daily-aside,
+
   app-planner-sidebar {
     width: 100%;
   }

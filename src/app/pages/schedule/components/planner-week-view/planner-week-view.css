@@ -1,5 +1,13 @@
 :host {
   display: block;
+  max-width: 100%;
+  width: 100%;
+}
+
+.planner-week-view {
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
 }
 
 .planner-week-view__header {
@@ -111,7 +119,7 @@
   display: none;
 }
 
-@media (max-width: 62.5rem) {
+@container (max-width: 55rem) {
   .planner-week-view__header {
     align-items: flex-start;
     flex-direction: column;
@@ -125,6 +133,6 @@
 
   .planner-week-view__mobile-day {
     display: block;
-    padding: 0 0.875rem 0.875rem;
+    padding: 0.625rem;
   }
 }

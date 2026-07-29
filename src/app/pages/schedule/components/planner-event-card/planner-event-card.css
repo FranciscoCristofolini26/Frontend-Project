@@ -7,8 +7,10 @@
 }
 
 .planner-event-card {
+  align-items: stretch;
+  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
 
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
@@ -20,20 +22,20 @@
   color: var(--color-text-main);
   cursor: pointer;
   height: 100%;
-  width: 250px;
   min-height: var(--planner-event-min-height, 2.75rem);
+  min-width: 0;
   overflow: hidden;
   padding: 8.8px 10px;
   position: relative;
-  transition:
-    box-shadow 180ms ease,
-    transform 180ms ease;
+  transition: box-shadow 180ms ease, transform 180ms ease;
   width: 100%;
 }
 
+}
+
 .planner-event-card:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
-  outline-offset: 1px;
+  outline: 0.1875rem solid color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
+  outline-offset: 0.0625rem;
 }
 
 :host(:hover),
@@ -43,13 +45,8 @@
 
 :host(:hover) .planner-event-card,
 :host(:focus-within) .planner-event-card {
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--color-text-main) 15%, transparent);
-  transform: translateY(-0.2000px);
-}
-
-.planner-event-card:focus-visible {
-  outline: 0.1875rem solid color-mix(in srgb, var(--color-brand-primary) 45%, transparent);
-  outline-offset: 0.0625rem;
+  box-shadow: 0 0.5rem 1rem color-mix(in srgb, var(--color-text-main) 15%, transparent);
+  transform: translateY(-0.25rem);
 }
 
 .planner-event-card--study {
@@ -166,6 +163,17 @@
   padding: 6.4px;
 }
 
+:host(.planner-event-card--week.planner-event-card--stacked) {
+  animation: planner-week-event-stack-in 260ms ease-out both;
+  z-index: calc(10 - var(--planner-overlap-index, 0));
+}
+
+:host(.planner-event-card--week:hover) .planner-event-card,
+:host(.planner-event-card--week:focus-within) .planner-event-card {
+  box-shadow: 0 0.625rem 1.125rem color-mix(in srgb, var(--color-text-main) 18%, transparent);
+  transform: translateY(-0.5rem);
+}
+
 :host(.planner-event-card--week) .planner-event-card__title {
   display: -webkit-box;
   font-size: 11px;
@@ -230,6 +238,18 @@
   }
 }
 
+@keyframes planner-week-event-stack-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.625rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 24rem) {
   .planner-event-card {
     padding: 0.4rem 0.45rem;
@@ -253,5 +273,13 @@
   .planner-event-card__remove {
     right: 0.2rem;
     top: 0.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planner-event-card,
+  :host(.planner-event-card--week) {
+    animation: none;
+    transition: none;
   }
 }
