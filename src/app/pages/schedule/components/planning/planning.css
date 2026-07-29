@@ -1,21 +1,54 @@
-mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
+:host {
+  display: block;
 }
 
-mat-icon.icon-lg {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+.planner-layout {
+  align-items: start;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) 18rem;
 }
 
-mat-icon.icon-sm {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+.planner-layout__timeline {
+  container-type: inline-size;
+  min-width: 0;
+  width: 100%;
+}
+
+.planner-layout__daily-aside {
+  align-self: start;
+  display: grid;
+  gap: 0.875rem;
+  min-width: 0;
+}
+
+@media (max-width: 72rem) {
+  .planner-layout {
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 15.5rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .planner-layout {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .planner-layout__timeline,
+  .planner-layout__daily-aside,
+  app-planner-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 93.75rem) {
+  .planner-layout--weekly {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .planner-layout--weekly app-planner-sidebar {
+    width: 100%;
+  }
 }

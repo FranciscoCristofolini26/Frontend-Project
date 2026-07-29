@@ -14,22 +14,60 @@
   transition: background-color .2s, border-color .2s, color .2s, transform .2s;
 }
 
-.button:hover:not(:disabled) { transform: translateY(-1px); }
-.button:focus-visible { outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent); outline-offset: 2px; }
-.button:disabled { cursor: not-allowed; opacity: .75; }
+.button:hover:not(:disabled) {
+   transform: translateY(-1px); 
+  }
 
-.button--primary { background: var(--color-brand-primary); color: #fff; }
-.button--primary:hover:not(:disabled) { background: var(--color-brand-hover); }
+.button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%,transparent); outline-offset: 2px; 
+}
 
-.button--secondary { background: var(--color-surface-elevated); color: var(--color-text-main); }
-.button--secondary:hover:not(:disabled) { background: var(--color-border); }
+.button:disabled { 
+  cursor: not-allowed; opacity: .75; 
+}
 
-.button--danger { background: transparent; color: var(--color-error); }
-.button--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error) 13%, transparent); }
+.button--primary {
+  background: var(--color-brand-primary); color: var(--color-card-surface); 
+}
 
-.button--ghost { background: transparent; color: var(--color-text-disabled); }
-.button--ghost:hover:not(:disabled) { background: var(--color-surface-elevated); color: var(--color-text-main); }
+.button--primary:hover:not(:disabled) {
+  background: var(--color-brand-hover); 
+}
 
-.button--icon { border-radius: .45rem; min-height: 2rem; min-width: 2rem; padding: .4rem; }
+.button--secondary {
+  background: var(--color-surface-elevated); color: var(--color-text-main); 
+}
+
+.button--secondary:hover:not(:disabled) {
+  background: var(--color-border); 
+}
+
+.button--danger {
+  background: transparent; color: var(--color-error); 
+}
+
+.button--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-error) 13%, transparent); 
+}
+
+.button--ghost {
+  background: transparent; color: var(--color-text-disabled); 
+}
+
+.button--ghost:hover:not(:disabled) {
+  background: var(--color-surface-elevated); color: var(--color-text-main); 
+}
+
+.button--icon {
+  border-radius: .45rem; min-height: 2rem; min-width: 2rem; padding: .4rem; 
+}
+
+.button--compact {
+  border-radius: .625rem; font-size: .8125rem; min-height: 2.25rem; padding: .5rem .75rem; 
+}
+
+.button--compact.button--icon {
+   min-width: 2.25rem; padding: .5rem; 
+}
 
 .button--full { width: 100%; }

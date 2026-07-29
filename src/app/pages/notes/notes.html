@@ -18,11 +18,11 @@
     </label>
 
     <main class="notes-grid">
-      @for (nota of filteredNotes; track nota) {
+      @for (nota of filteredNotes; track nota.id) {
         <article class="card card--padded card--interactive note-card" tabindex="0" role="button" (click)="openEditEditor(nota)" (keydown.enter)="openEditEditor(nota)">
 
           <h2>{{ nota.title }}</h2>
-          <p>{{ previewContent(nota.content) }}</p>
+          <p>{{ previewContent(nota.description) }}</p>
 
           <footer>
             <span>Editada {{ timeAgo(nota.edited) }}</span>
