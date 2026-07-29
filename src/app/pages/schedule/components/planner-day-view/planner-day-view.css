@@ -1,9 +1,13 @@
 :host {
   display: block;
+  max-width: 100%;
+  width: 100%;
 }
 
 .planner-day-view {
+  box-sizing: border-box;
   overflow: hidden;
+  width: 100%;
 }
 
 .planner-day-view__header {
@@ -94,8 +98,18 @@
     padding: 0.875rem 1rem;
   }
 
+  .planner-day-view__scroll {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
   .planner-day-view__grid {
-    grid-template-columns: 3.25rem minmax(0, 1fr);
+    grid-template-columns: clamp(2.75rem, 11vw, 3.25rem) minmax(0, 1fr);
+    min-width: 0;
+    width: 100%;
+  }
+
+  .planner-day-view__canvas {
     min-width: 0;
   }
 

@@ -62,11 +62,12 @@ export class PlannerWeekView {
     const selectedKey = dateKey(this.date());
     return this.weekDays().find((day) => day.key === selectedKey) ?? this.weekDays()[0];
   });
-  readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2));
+  // The weekly cards need room for a title and its time on separate lines.
+  readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2.25));
   readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
   readonly hourHeight = computed(() => this.pixelsPerMinute() * 60);
   readonly canvasHeight = computed(() => this.hourHeight() * 13);
-  readonly eventMinHeight = computed(() => (this.compactTimeline() ? 38 : 42));
+  readonly eventMinHeight = computed(() => (this.compactTimeline() ? 38 : 54));
 
   @HostListener('window:resize')
   updateTimelineScale(): void {
@@ -75,7 +76,8 @@ export class PlannerWeekView {
 
   eventTop(event: PositionedPlannerEvent): number {
     const offsetInMinutes = toMinutes(event.startTime) - DAY_START_HOUR * 60;
-    return offsetInMinutes * this.pixelsPerMinute();
+    const stackOffset = event.columnCount > 1 ? event.column * 8 : 0;
+    return offsetInMinutes * this.pixelsPerMinute() + stackOffset;
   }
 
   eventHeight(event: PositionedPlannerEvent): number {
@@ -83,11 +85,11 @@ export class PlannerWeekView {
   }
 
   eventLeft(event: PositionedPlannerEvent): number {
-    return 3 + (event.column * 94) / event.columnCount;
+    return event.columnCount > 1 ? 4 : 3;
   }
 
   eventWidth(event: PositionedPlannerEvent): number {
-    return 94 / event.columnCount - 2;
+    return event.columnCount > 1 ? 92 : 94;
   }
 
   private isCompactViewport(): boolean {
