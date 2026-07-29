@@ -108,14 +108,16 @@
 .planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-receiving,
 .planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-dragging {
   background: color-mix(in srgb, var(--color-brand-primary) 12%, transparent);
-  box-shadow: inset 0 0 0 2px var(--color-brand-primary);
+  box-shadow: inset 0 0 0 0.125rem var(--color-brand-primary);
+
 }
 
 app-planner-event-card {
   z-index: 2;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 40rem) {
+
   .planner-day-view__header {
     align-items: flex-start;
     flex-direction: column;
