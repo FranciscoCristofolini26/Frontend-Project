@@ -1,0 +1,19 @@
+<section class="card planner-habits-card" aria-labelledby="habits-title">
+  <h2 id="habits-title">Hábitos</h2>
+  <ul>
+    @for (habit of habits(); track habit.id) {
+      <li>
+        <label [class.planner-habits-card__label--done]="habit.completed">
+          <input
+            type="checkbox"
+            [checked]="habit.completed"
+            (change)="habitToggled.emit(habit.id)"
+          />
+          <span>{{ habit.title }}</span>
+        </label>
+      </li>
+    } @empty {
+      <li class="planner-habits-card__empty">Nenhum hábito para hoje.</li>
+    }
+  </ul>
+</section>

@@ -57,7 +57,7 @@ export class Sidebar implements OnDestroy {
       items: [
         {
           icon: 'view_kanban', label: 'Planner',
-          url: ''
+          url: 'schedule'
         },
         {
           icon: 'calendar_month', label: 'Calendário',
@@ -65,7 +65,7 @@ export class Sidebar implements OnDestroy {
         },
         {
           icon: 'check_circle', label: 'Tarefas',
-          url: ''
+          url: 'schedule'
         },
         {
           icon: 'target', label: 'Metas Semanais',
@@ -77,7 +77,7 @@ export class Sidebar implements OnDestroy {
         },
         {
           icon: 'note', label: 'Notas',
-          url: ''
+          url: 'notes'
         },
         {
           icon: 'schedule', label: 'Time Blocking',

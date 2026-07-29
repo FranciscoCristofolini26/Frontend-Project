@@ -1,0 +1,73 @@
+<section
+  class="planner-week-view card"
+  aria-label="Visualização semanal"
+  [style.--planner-half-hour-height]="halfHourHeight() + 'px'"
+  [style.--planner-hour-height]="hourHeight() + 'px'"
+  [style.--planner-canvas-height]="canvasHeight() + 'px'"
+  [style.--planner-event-min-height]="eventMinHeight() + 'px'"
+>
+  <header class="planner-week-view__header">
+    <div>
+      <p class="planner-week-view__eyebrow">Visão semanal</p>
+      <h2 class="planner-week-view__title">Sua semana planejada</h2>
+    </div>
+    <span class="planner-week-view__half-hour">Intervalos de 30 min</span>
+  </header>
+
+  @if (mobileSelectedDay(); as selectedDay) {
+    <div class="planner-week-view__mobile-day">
+      <app-planner-day-view
+        [date]="selectedDay.date"
+        [events]="selectedDay.events"
+        (eventRemoved)="eventRemoved.emit($event)"
+        (eventEdited)="eventEdited.emit($event)"
+      />
+    </div>
+  }
+
+  <div class="planner-week-view__scroll">
+    <div class="planner-week-view__grid">
+      <div class="planner-week-view__days" aria-hidden="true">
+        <span></span>
+        @for (day of weekDays(); track day.key) {
+          <span class="planner-week-view__day"
+            ><strong>{{ day.label }}</strong
+            >{{ day.dayNumber }}</span
+          >
+        }
+      </div>
+
+      <div class="planner-week-view__body">
+        <div class="planner-week-view__hours" aria-hidden="true">
+          @for (hour of hours; track hour) {
+            <span>{{ hour.toString().padStart(2, '0') }}:00</span>
+          }
+        </div>
+
+        @for (day of weekDays(); track day.key) {
+          <div
+            class="planner-week-view__day-canvas"
+            [attr.aria-label]="day.label + ' ' + day.dayNumber"
+          >
+            @for (event of day.events; track event.id) {
+              <app-planner-event-card
+                class="planner-event-card--week"
+                [class.planner-event-card--stacked]="event.columnCount > 1"
+                [event]="event"
+                [compact]="true"
+                [style.top.px]="eventTop(event)"
+                [style.height.px]="eventHeight(event)"
+                [style.left.%]="eventLeft(event)"
+                [style.width.%]="eventWidth(event)"
+                [style.--planner-overlap-index]="event.column"
+                [style.animation-delay.ms]="event.column * 45"
+                (remove)="eventRemoved.emit($event)"
+                (edit)="eventEdited.emit($event)"
+              />
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

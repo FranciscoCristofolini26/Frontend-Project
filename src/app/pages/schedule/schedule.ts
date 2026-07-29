@@ -1,19 +1,27 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { SidebarState } from '../../shared/sidebar/sidebar-state';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Planning } from './components/planning/planning';
 import { Tasks } from './components/tasks/tasks';
-import { LayoutTier } from './models';
+import { Header, PlannerContent, PlannerViewMode } from './components/header/header';
+import { startOfDay } from './models/planner.utils';
 
 type ScheduleView = 'planejamento' | 'tarefas';
 
 @Component({
   selector: 'app-schedule',
-  imports: [MatIconModule, Planning, Tasks],
+  imports: [Planning, Tasks, Header],
   templateUrl: './schedule.html',
   styleUrl: './schedule.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Schedule {
+  readonly view = signal<ScheduleView>('planejamento');
+  readonly selectedDate = signal(startOfDay(new Date()));
+  readonly plannerViewMode = signal<PlannerViewMode>('daily');
+  readonly tasksDetailOpen = signal(false);
+  readonly newEventRequest = signal(0);
+
+  readonly activeContent = (): PlannerContent =>
+    this.view() === 'planejamento' ? 'planning' : 'tasks';
   private readonly sidebarState = inject(SidebarState);
 
   view = signal<ScheduleView>('tarefas');
@@ -30,5 +38,11 @@ export class Schedule {
 
   setView(view: ScheduleView) {
     this.view.set(view);
+  }
+
+  onPrimaryAction(content: PlannerContent): void {
+    if (content === 'planning') {
+      this.newEventRequest.update((request) => request + 1);
+    }
   }
 }

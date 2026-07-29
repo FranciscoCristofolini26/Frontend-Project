@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { Nota } from '../models';
+import { NoteModel } from './models/NoteModel';
+import { NoteService } from './service/NoteService';
 
 @Component({
   selector: 'app-notes',
@@ -9,18 +10,39 @@ import { Nota } from '../models';
   templateUrl: './notes.html',
   styleUrls: ['./notes.css'],
 })
-export class Notes {
-  private readonly storageKey = 'agenda-notes';
+export class Notes implements OnInit {
+  private noteService = inject(NoteService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+
   readonly notePreviewMaxLength = 180;
-  notas: Nota[] = [];
+  notas: NoteModel[] = [];
   searchTerm = '';
   isEditorOpen = false;
   isCreating = false;
-  editingId: string | null = null;
+  editingId: number | null = null;
   draftTitle = '';
   draftContent = '';
   private originalTitle = '';
   private originalContent = '';
+
+  ngOnInit(): void {
+    this.loadNotes();
+  }
+
+  loadNotes(): void {
+    this.noteService.getNotes().subscribe({
+      next: (data) => {
+        this.notas = data.map(nota => ({
+          ...nota,
+          edited: nota.edited ? new Date(nota.edited) : new Date(),
+          fixedAt: nota.fixedAt ? new Date(nota.fixedAt) : null
+        }));
+
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (err) => console.error('Erro ao carregar notas:', err)
+    });
+  }
 
   private setDraft(title: string, content: string): void {
     this.draftTitle = title;
@@ -29,21 +51,12 @@ export class Notes {
     this.originalContent = content;
   }
 
-  private updateNote(id: string, changes: Partial<Nota>): void {
-    this.notas = this.notas.map((nota) => (nota.id === id ? { ...nota, ...changes } : nota));
-    this.persistNotes();
-  }
-
-  private persistNotes(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.notas));
-  }
-
-  get filteredNotes(): Nota[] {
+  get filteredNotes(): NoteModel[] {
     const query = this.searchTerm.trim().toLocaleLowerCase();
     const notes = !query
       ? this.notas
-      : this.notas.filter(({ title, content }) =>
-          `${title} ${content}`.toLocaleLowerCase().includes(query),
+      : this.notas.filter(({ title, description }) =>
+          `${title} ${description}`.toLocaleLowerCase().includes(query)
         );
 
     return [...notes].sort((first, second) => {
@@ -69,10 +82,10 @@ export class Notes {
     this.isEditorOpen = true;
   }
 
-  openEditEditor(nota: Nota): void {
+  openEditEditor(nota: NoteModel): void {
     this.isCreating = false;
     this.editingId = nota.id;
-    this.setDraft(nota.title, nota.content);
+    this.setDraft(nota.title, nota.description);
     this.isEditorOpen = true;
   }
 
@@ -85,48 +98,62 @@ export class Notes {
     if (!title || !this.hasChanges) return;
 
     if (this.isCreating) {
-      this.notas = [
-        {
-          id: crypto.randomUUID(),
-          title,
-          content: this.draftContent,
-          edited: new Date(),
-          favourite: false,
-          fixed: false,
-          fixedAt: null,
-        },
-        ...this.notas,
-      ];
-    } else {
-      this.notas = this.notas.map((nota) =>
-        nota.id === this.editingId
-          ? { ...nota, title, content: this.draftContent, edited: new Date() }
-          : nota,
-      );
+      const newNote: Partial<NoteModel> = {
+        title,
+        description: this.draftContent,
+        edited: new Date(),
+        favourite: false,
+        fixed: false,
+        fixedAt: null,
+      };
+
+      this.noteService.createNote(newNote).subscribe(() => {
+        this.loadNotes();
+        this.closeEditor();
+      });
+
+    } else if (this.editingId !== null) {
+      const updatedData: Partial<NoteModel> = {
+        title,
+        description: this.draftContent,
+        edited: new Date(),
+      };
+
+      this.noteService.updateNote(this.editingId, updatedData).subscribe(() => {
+        this.loadNotes();
+        this.closeEditor();
+      });
     }
-    this.persistNotes();
-    this.closeEditor();
   }
 
   deleteNote(): void {
-    if (this.isCreating || !this.editingId) return;
-    this.notas = this.notas.filter((nota) => nota.id !== this.editingId);
-    this.persistNotes();
-    this.closeEditor();
+    if (this.isCreating || this.editingId === null) return;
+
+    this.noteService.deleteNote(this.editingId).subscribe(() => {
+      this.loadNotes();
+      this.closeEditor();
+    });
   }
 
-  toggleFavourite(nota: Nota, event: MouseEvent): void {
+  toggleFavourite(nota: NoteModel, event: MouseEvent): void {
     event.stopPropagation();
-    this.updateNote(nota.id, { favourite: !nota.favourite });
+    this.noteService.updateNote(nota.id, { favourite: !nota.favourite }).subscribe(() => {
+      this.loadNotes();
+    });
   }
 
-  toggleFixed(nota: Nota, event: MouseEvent): void {
+  toggleFixed(nota: NoteModel, event: MouseEvent): void {
     event.stopPropagation();
     const fixed = !nota.fixed;
-    this.updateNote(nota.id, { fixed, fixedAt: fixed ? new Date() : null });
+    const fixedAt = fixed ? new Date() : null;
+
+    this.noteService.updateNote(nota.id, { fixed, fixedAt }).subscribe(() => {
+      this.loadNotes();
+    });
   }
 
   timeAgo(date: Date): string {
+    if (!(date instanceof Date) || isNaN(date.getTime())) return '';
     const diffMin = Math.floor((Date.now() - date.getTime()) / 60000);
     if (diffMin < 60) return `há ${Math.max(diffMin, 1)} min`;
     const diffHours = Math.floor(diffMin / 60);
