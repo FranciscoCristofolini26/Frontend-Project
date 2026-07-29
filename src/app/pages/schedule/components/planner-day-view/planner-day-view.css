@@ -90,6 +90,31 @@
   position: relative;
 }
 
+.planner-day-view__drop-slots {
+  display: grid;
+  grid-template-rows: repeat(13, var(--planner-hour-height));
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.planner-day-view__drop-slot {
+  min-height: var(--planner-hour-height);
+  pointer-events: auto;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+
+.planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-receiving,
+.planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-dragging {
+  background: color-mix(in srgb, var(--color-brand-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 0.125rem var(--color-brand-primary);
+}
+
+app-planner-event-card {
+  z-index: 2;
+}
+
 @media (max-width: 40rem) {
   .planner-day-view__header {
     align-items: flex-start;

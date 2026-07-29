@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  computed,
+  effect,
+  input,
+  signal,
+} from '@angular/core';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PlannerViewMode } from '../header/header';
 import {
   DAY_END_HOUR,
@@ -143,6 +152,12 @@ export class Planning {
   readonly newEventRequest = input(0);
   readonly eventFormOpen = signal(false);
   readonly editingEvent = signal<PlannerEvent | null>(null);
+  readonly isDesktop = signal(this.isDesktopViewport());
+  readonly dailyDropListIds = Array.from(
+    { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
+    (_, index) => `daily-slot-${DAY_START_HOUR + index}`,
+  );
+  readonly dragAndDropEnabled = computed(() => this.viewMode() === 'daily' && this.isDesktop());
 
   readonly events = signal<PlannerEvent[]>(createPlannerEvents(startOfDay(new Date())));
   readonly unscheduledTasks = signal<PlannerTask[]>([
@@ -241,5 +256,42 @@ export class Planning {
   closeEventForm(): void {
     this.eventFormOpen.set(false);
     this.editingEvent.set(null);
+  }
+
+  @HostListener('window:resize')
+  updateDesktopMode(): void {
+    this.isDesktop.set(this.isDesktopViewport());
+  }
+
+  onTaskDropped(
+    event: CdkDragDrop<unknown, PlannerTask[], PlannerTask>,
+    slotTime: string,
+  ): void {
+    if (!this.dragAndDropEnabled() || event.previousContainer.id !== 'unplanned-tasks') {
+      return;
+    }
+
+    const task = event.item.data;
+    const startHour = Number(slotTime.slice(0, 2));
+    const endTime = `${Math.min(startHour + 1, DAY_END_HOUR + 1).toString().padStart(2, '0')}:00`;
+    const nextId = Math.max(0, ...this.events().map((plannerEvent) => plannerEvent.id)) + 1;
+
+    this.events.update((events) => [
+      ...events,
+      {
+        id: nextId,
+        date: dateKey(this.selectedDate()),
+        title: task.title,
+        startTime: slotTime,
+        endTime,
+        category: task.category,
+        kind: 'task',
+      },
+    ]);
+    this.unscheduledTasks.update((tasks) => tasks.filter((item) => item.id !== task.id));
+  }
+
+  private isDesktopViewport(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth >= 1024;
   }
 }

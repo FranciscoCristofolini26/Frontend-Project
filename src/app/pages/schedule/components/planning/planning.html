@@ -8,10 +8,11 @@
       <app-planner-day-view
         [date]="selectedDate()"
         [events]="dayEvents()"
+        [dragEnabled]="dragAndDropEnabled()"
+        (taskDropped)="onTaskDropped($event.event, $event.slotTime)"
         (eventRemoved)="removeEvent($event)"
         (eventEdited)="openEventEditor($event)"
       />
-      <app-planner-unscheduled-tasks [tasks]="unscheduledTasks()" />
     } @else {
       <app-planner-week-view
         [date]="selectedDate()"
@@ -22,17 +23,39 @@
     }
   </div>
 
-  <app-planner-sidebar
-    [date]="selectedDate()"
-    [events]="dayEvents()"
-    [taskCount]="taskCount()"
-    [eventCount]="eventCount()"
-    [habits]="habits()"
-    [plannedHours]="plannedHours()"
-    [freeTime]="freeTime()"
-    [freeTimePercentage]="freeTimePercentage()"
-    (habitToggled)="toggleHabit($event)"
-  />
+  @if (viewMode() === 'daily') {
+    <aside class="planner-layout__daily-aside" aria-label="Painel lateral do planejador">
+      <app-planner-unscheduled-tasks
+        [tasks]="unscheduledTasks()"
+        [connectedDropListIds]="dailyDropListIds"
+        [dragEnabled]="dragAndDropEnabled()"
+      />
+
+      <app-planner-sidebar
+        [date]="selectedDate()"
+        [events]="dayEvents()"
+        [taskCount]="taskCount()"
+        [eventCount]="eventCount()"
+        [habits]="habits()"
+        [plannedHours]="plannedHours()"
+        [freeTime]="freeTime()"
+        [freeTimePercentage]="freeTimePercentage()"
+        (habitToggled)="toggleHabit($event)"
+      />
+    </aside>
+  } @else {
+    <app-planner-sidebar
+      [date]="selectedDate()"
+      [events]="dayEvents()"
+      [taskCount]="taskCount()"
+      [eventCount]="eventCount()"
+      [habits]="habits()"
+      [plannedHours]="plannedHours()"
+      [freeTime]="freeTime()"
+      [freeTimePercentage]="freeTimePercentage()"
+      (habitToggled)="toggleHabit($event)"
+    />
+  }
 
   <app-planner-event-form
     [open]="eventFormOpen()"

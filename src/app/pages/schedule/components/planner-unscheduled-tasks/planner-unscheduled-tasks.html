@@ -8,9 +8,24 @@
   </header>
 
   @if (tasks().length > 0) {
-    <div class="planner-unscheduled-tasks__list">
+    <div
+      cdkDropList
+      #unplannedList="cdkDropList"
+      id="unplanned-tasks"
+      class="planner-unscheduled-tasks__list"
+      [cdkDropListData]="tasks()"
+      [cdkDropListConnectedTo]="connectedDropListIds()"
+      [cdkDropListDisabled]="!dragEnabled()"
+    >
       @for (task of tasks(); track task.id) {
-        <article class="planner-unscheduled-task" draggable="true" tabindex="0">
+        <article
+          cdkDrag
+          class="planner-unscheduled-task"
+          [cdkDragData]="task"
+          [cdkDragDisabled]="!dragEnabled()"
+          [class.planner-unscheduled-task--drag-disabled]="!dragEnabled()"
+          tabindex="0"
+        >
           <mat-icon class="planner-unscheduled-task__drag" aria-hidden="true"
             >drag_indicator</mat-icon
           >

@@ -7,10 +7,12 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import {
   DAY_END_HOUR,
   DAY_START_HOUR,
   PlannerEvent,
+  PlannerTask,
   PositionedPlannerEvent,
   durationInMinutes,
   layoutEvents,
@@ -20,7 +22,7 @@ import { PlannerEventCard } from '../planner-event-card/planner-event-card';
 
 @Component({
   selector: 'app-planner-day-view',
-  imports: [PlannerEventCard],
+  imports: [DragDropModule, PlannerEventCard],
   templateUrl: './planner-day-view.html',
   styleUrl: './planner-day-view.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,8 +30,13 @@ import { PlannerEventCard } from '../planner-event-card/planner-event-card';
 export class PlannerDayView {
   readonly date = input.required<Date>();
   readonly events = input<PlannerEvent[]>([]);
+  readonly dragEnabled = input(false);
   readonly eventRemoved = output<number>();
   readonly eventEdited = output<PlannerEvent>();
+  readonly taskDropped = output<{
+    event: CdkDragDrop<unknown, PlannerTask[], PlannerTask>;
+    slotTime: string;
+  }>();
   readonly compactTimeline = signal(this.isCompactViewport());
   readonly hours = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
@@ -69,6 +76,13 @@ export class PlannerDayView {
 
   eventWidth(event: PositionedPlannerEvent): number {
     return 100 / event.columnCount - 1;
+  }
+
+  dropTask(event: CdkDragDrop<unknown, PlannerTask[], PlannerTask>, hour: number): void {
+    this.taskDropped.emit({
+      event,
+      slotTime: `${hour.toString().padStart(2, '0')}:00`,
+    });
   }
 
   private isCompactViewport(): boolean {

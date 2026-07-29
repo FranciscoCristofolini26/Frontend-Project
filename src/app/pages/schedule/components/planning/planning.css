@@ -15,6 +15,13 @@
   width: 100%;
 }
 
+.planner-layout__daily-aside {
+  align-self: start;
+  display: grid;
+  gap: 0.875rem;
+  min-width: 0;
+}
+
 @media (max-width: 72rem) {
   .planner-layout {
     gap: 1rem;
@@ -22,7 +29,7 @@
   }
 }
 
-@media (max-width: 58rem) {
+@media (max-width: 64rem) {
   .planner-layout {
     align-items: stretch;
     display: flex;
@@ -30,6 +37,7 @@
   }
 
   .planner-layout__timeline,
+  .planner-layout__daily-aside,
   app-planner-sidebar {
     width: 100%;
   }
