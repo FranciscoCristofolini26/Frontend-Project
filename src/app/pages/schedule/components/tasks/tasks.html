@@ -30,7 +30,13 @@
 
             <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
               @for (task of section.tasks; track task.id) {
-                <li [class]="rowClasses(task.id)" (click)="selectTask(task.id)">
+                <li
+                  [class]="rowClasses(task.id)"
+                  role="button"
+                  tabindex="0"
+                  (click)="selectTask(task.id)"
+                  (keydown.enter)="selectTask(task.id)"
+                >
                   <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-text-disabled hover:text-brand-primary">
                     <mat-icon [class]="iconClasses()">radio_button_unchecked</mat-icon>
                   </button>
@@ -61,7 +67,13 @@
 <<<<<<< HEAD
             <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
               @for (task of completedTasks(); track task.id) {
-                <li [class]="rowClasses(task.id) + ' opacity-70'" (click)="selectTask(task.id)">
+                <li
+                  [class]="rowClasses(task.id) + ' opacity-70'"
+                  role="button"
+                  tabindex="0"
+                  (click)="selectTask(task.id)"
+                  (keydown.enter)="selectTask(task.id)"
+                >
                   <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
                     <mat-icon [class]="iconClasses()">check_circle</mat-icon>
                   </button>
