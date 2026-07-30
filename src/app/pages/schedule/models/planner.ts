@@ -38,3 +38,10 @@ export interface PositionedPlannerEvent extends PlannerEvent {
   column: number;
   columnCount: number;
 }
+
+export interface PlannerOverlapGroup {
+  id: string;
+  events: PlannerEvent[];
+  startTime: string;
+  endTime: string;
+}

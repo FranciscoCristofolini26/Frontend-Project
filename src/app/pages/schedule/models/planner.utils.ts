@@ -1,8 +1,9 @@
-import { PlannerEvent, PositionedPlannerEvent } from './planner';
+import { PlannerEvent, PlannerOverlapGroup, PositionedPlannerEvent } from './planner';
 
 export const DAY_START_HOUR = 8;
 export const DAY_END_HOUR = 20;
 export const PIXELS_PER_MINUTE = 2;
+export const MAX_CONCURRENT_EVENTS = 3;
 
 export function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -80,4 +81,45 @@ export function layoutEvents(events: PlannerEvent[]): PositionedPlannerEvent[] {
 
     return positioned.map((event) => ({ ...event, columnCount: columnsEnd.length }));
   });
+}
+
+/** Groups events whose intervals intersect, keeping the DOM order chronological. */
+export function groupOverlappingEvents(events: PlannerEvent[]): PlannerOverlapGroup[] {
+  const sorted = [...events].sort(
+    (first, second) => toMinutes(first.startTime) - toMinutes(second.startTime),
+  );
+  const groups: PlannerOverlapGroup[] = [];
+  let groupEvents: PlannerEvent[] = [];
+  let groupEnd = 0;
+
+  const saveGroup = () => {
+    if (groupEvents.length === 0) {
+      return;
+    }
+
+    groups.push({
+      id: groupEvents.map((event) => event.id).join('-'),
+      events: groupEvents,
+      startTime: groupEvents[0].startTime,
+      endTime: `${Math.floor(groupEnd / 60).toString().padStart(2, '0')}:${(groupEnd % 60)
+        .toString()
+        .padStart(2, '0')}`,
+    });
+  };
+
+  for (const event of sorted) {
+    const start = toMinutes(event.startTime);
+
+    if (groupEvents.length > 0 && start >= groupEnd) {
+      saveGroup();
+      groupEvents = [];
+      groupEnd = 0;
+    }
+
+    groupEvents.push(event);
+    groupEnd = Math.max(groupEnd, toMinutes(event.endTime));
+  }
+
+  saveGroup();
+  return groups;
 }

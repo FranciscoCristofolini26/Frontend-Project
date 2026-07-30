@@ -18,7 +18,7 @@
     <div class="planner-week-view__mobile-day">
       <app-planner-day-view
         [date]="selectedDay.date"
-        [events]="selectedDay.events"
+        [events]="mobileDayEvents()"
         (eventRemoved)="eventRemoved.emit($event)"
         (eventEdited)="eventEdited.emit($event)"
       />
@@ -49,21 +49,29 @@
             class="planner-week-view__day-canvas"
             [attr.aria-label]="day.label + ' ' + day.dayNumber"
           >
-            @for (event of day.events; track event.id) {
-              <app-planner-event-card
-                class="planner-event-card--week"
-                [class.planner-event-card--stacked]="event.columnCount > 1"
-                [event]="event"
-                [compact]="true"
-                [style.top.px]="eventTop(event)"
-                [style.height.px]="eventHeight(event)"
-                [style.left.%]="eventLeft(event)"
-                [style.width.%]="eventWidth(event)"
-                [style.--planner-overlap-index]="event.column"
-                [style.animation-delay.ms]="event.column * 45"
-                (remove)="eventRemoved.emit($event)"
-                (edit)="eventEdited.emit($event)"
-              />
+            @for (group of day.eventGroups; track group.id) {
+              @if (group.events.length === 1) {
+                <app-planner-event-card
+                  class="planner-event-card--week"
+                  [event]="group.events[0]"
+                  [compact]="true"
+                  [style.top.px]="eventTop(group)"
+                  [style.height.px]="eventHeight(group)"
+                  [style.left.%]="1"
+                  [style.width.%]="98"
+                  (remove)="eventRemoved.emit($event)"
+                  (edit)="eventEdited.emit($event)"
+                />
+              } @else {
+                <app-planner-overlap-accordion
+                  class="planner-week-view__overlap-group"
+                  [events]="group.events"
+                  [style.top.px]="eventTop(group)"
+                  [style.height.px]="overlapGroupHeight(group)"
+                  (eventRemoved)="eventRemoved.emit($event)"
+                  (eventEdited)="eventEdited.emit($event)"
+                />
+              }
             }
           </div>
         }

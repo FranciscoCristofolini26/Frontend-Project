@@ -1,0 +1,36 @@
+<section class="planner-overlap-accordion" aria-label="Eventos no mesmo horário">
+  @for (event of events(); track event.id) {
+    <article
+      #accordionItem
+      class="planner-overlap-accordion__item"
+      [class.planner-overlap-accordion__item--expanded]="expandedEventId() === event.id"
+      [class]="'planner-overlap-accordion__item planner-overlap-accordion__item--' + event.category + (expandedEventId() === event.id ? ' planner-overlap-accordion__item--expanded' : '')"
+    >
+      <button
+        type="button"
+        class="planner-overlap-accordion__tab"
+        [attr.aria-expanded]="expandedEventId() === event.id"
+        [attr.aria-controls]="'overlap-event-' + event.id"
+        (click)="toggle(event)"
+        (mouseenter)="expandOnHover(event)"
+      >
+        <span class="planner-overlap-accordion__time">{{ event.startTime }}</span>
+        <span class="planner-overlap-accordion__title">{{ event.title }}</span>
+      </button>
+
+      @if (expandedEventId() === event.id) {
+        <div class="planner-overlap-accordion__details" [id]="'overlap-event-' + event.id">
+          <span>{{ event.startTime }} – {{ event.endTime }}</span>
+          <span>{{ event.category }}</span>
+          @if (event.description) {
+            <p>{{ event.description }}</p>
+          }
+          <div class="planner-overlap-accordion__actions">
+            <button type="button" (click)="edit(event, $event)">Editar</button>
+            <button type="button" (click)="remove(event, $event)">Remover</button>
+          </div>
+        </div>
+      }
+    </article>
+  }
+</section>

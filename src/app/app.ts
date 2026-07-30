@@ -5,7 +5,7 @@ import { MainLayout } from "./shared/main-layout/main-layout";
   selector: 'app-root',
   imports: [MainLayout],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
 export class App {

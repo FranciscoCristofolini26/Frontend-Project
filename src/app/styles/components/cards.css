@@ -1,10 +1,10 @@
 .card {
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
-  border-radius: 1rem;
+  border-radius: 16px;
 }
 
-.card--padded { padding: 1.25rem; }
+.card--padded { padding: 20px; }
 
 .card--interactive {
   cursor: pointer;

@@ -1,6 +1,6 @@
 <article
   class="planner-event-card"
-  [class]="'planner-event-card planner-event-card--' + event().category"
+  [class]="'planner-event-card planner-event-card--' + event().category + (compact() ? ' planner-event-card--compact' : '')"
   role="button"
   tabindex="0"
   (click)="editEvent()"
@@ -15,12 +15,16 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-  <p class="planner-event-card__title">{{ event().title }}</p>
-  <p class="planner-event-card__time">{{ event().startTime }} – {{ event().endTime }}</p>
-  @if (!compact() && event().description) {
-    <p class="planner-event-card__description">{{ event().description }}</p>
-  }
-  @if (!compact()) {
+
+  <div class="planner-event-card__main">
+    <p class="planner-event-card__title">{{ event().title }}</p>
+    @if (!compact() && event().description) {
+      <p class="planner-event-card__description">{{ event().description }}</p>
+    }
+  </div>
+
+  <div class="planner-event-card__metadata">
+    <p class="planner-event-card__time">{{ event().startTime }} - {{ event().endTime }}</p>
     <span class="planner-event-card__category">{{ categoryLabel() }}</span>
-  }
+  </div>
 </article>

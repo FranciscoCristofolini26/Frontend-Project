@@ -2,11 +2,11 @@
   align-items: center;
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
-  border-radius: .75rem;
+  border-radius: 12px;
   color: var(--color-text-disabled);
   display: flex;
-  gap: .65rem;
-  padding: 0 .9rem;
+  gap: 10.4px;
+  padding: 0 14.4px;
   transition: border-color .2s, box-shadow .2s;
 }
 
@@ -25,22 +25,22 @@
   width: 100%;
 }
 
-.input-shell .input-control { padding: .85rem 0; }
+.input-shell .input-control { padding: 13.6px 0; }
 
 .form-field {
   color: var(--color-text-sub);
   display: block;
-  font-size: .9rem;
+  font-size: 14.4px;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 16px;
 }
 
 .form-field .input-control {
   border: 1px solid var(--color-border);
-  border-radius: .65rem;
+  border-radius: 10.4px;
   box-sizing: border-box;
-  margin-top: .45rem;
-  padding: .7rem .8rem;
+  margin-top: 7.2px;
+  padding: 11.2px 12.8px;
   transition: border-color .2s, box-shadow .2s;
 }
 
@@ -51,4 +51,4 @@
 
 .input-control::placeholder { color: var(--color-text-disabled); }
 
-.textarea { min-height: 12rem; resize: vertical; }
+.textarea { min-height: 192px; resize: vertical; }

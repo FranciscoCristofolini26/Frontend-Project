@@ -93,6 +93,12 @@ export class Notes implements OnInit {
     this.isEditorOpen = false;
   }
 
+  closeFromBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.closeEditor();
+    }
+  }
+
   saveNote(): void {
     const title = this.draftTitle.trim();
     if (!title || !this.hasChanges) return;

@@ -15,7 +15,7 @@
   border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  padding: 16px 20px;
 }
 
 .planner-day-view__eyebrow,
@@ -25,24 +25,24 @@
 
 .planner-day-view__eyebrow {
   color: var(--color-text-sub);
-  font-size: 0.6875rem;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 1.28px;
   text-transform: uppercase;
 }
 
 .planner-day-view__title {
   color: var(--color-text-main);
   font-family: var(--font-title);
-  font-size: 1.125rem;
+  font-size: 18px;
   font-weight: 700;
-  margin-top: 0.25rem;
+  margin-top: 4px;
   text-transform: capitalize;
 }
 
 .planner-day-view__half-hour {
   color: var(--color-text-disabled);
-  font-size: 0.6875rem;
+  font-size: 11px;
 }
 
 .planner-day-view__scroll {
@@ -51,29 +51,29 @@
 
 .planner-day-view__grid {
   display: grid;
-  grid-template-columns: 4.25rem minmax(30rem, 1fr);
-  min-width: 34rem;
+  grid-template-columns: 68px minmax(480px, 1fr);
+  min-width: 544px;
 }
 
 .planner-day-view__hours {
   color: var(--color-text-sub);
   display: grid;
-  font-size: 0.6875rem;
+  font-size: 11px;
   font-weight: 600;
   grid-template-rows: repeat(13, var(--planner-hour-height));
   text-align: right;
 }
 
 .planner-day-view__hours span {
-  padding: 0.45rem 0.75rem 0 0;
+  padding: 7.2px 12px 0 0;
 }
 
 .planner-day-view__canvas {
   background-image:
     repeating-linear-gradient(
       to bottom,
-      var(--color-border) 0,
-      var(--color-border) 1px,
+      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 0,
+      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 1px,
       transparent 1px,
       transparent var(--planner-half-hour-height)
     ),
@@ -81,9 +81,9 @@
       to bottom,
       transparent 0,
       transparent calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main))
+      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
         calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main)) var(--planner-hour-height)
+      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
     );
   border-left: 1px solid var(--color-border);
   min-height: var(--planner-canvas-height);
@@ -108,19 +108,19 @@
 .planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-receiving,
 .planner-day-view__canvas--drop-enabled .planner-day-view__drop-slot.cdk-drop-list-dragging {
   background: color-mix(in srgb, var(--color-brand-primary) 12%, transparent);
-  box-shadow: inset 0 0 0 0.125rem var(--color-brand-primary);
+  box-shadow: inset 0 0 0 2px var(--color-brand-primary);
 }
 
 app-planner-event-card {
   z-index: 2;
 }
 
-@media (max-width: 40rem) {
+@media (max-width: 640px) {
   .planner-day-view__header {
     align-items: flex-start;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.875rem 1rem;
+    gap: 8px;
+    padding: 14px 16px;
   }
 
   .planner-day-view__scroll {
@@ -129,7 +129,7 @@ app-planner-event-card {
   }
 
   .planner-day-view__grid {
-    grid-template-columns: clamp(2.75rem, 11vw, 3.25rem) minmax(0, 1fr);
+    grid-template-columns: clamp(44px, 11vw, 52px) minmax(0, 1fr);
     min-width: 0;
     width: 100%;
   }
@@ -139,17 +139,17 @@ app-planner-event-card {
   }
 
   .planner-day-view__hours span {
-    padding-right: 0.5rem;
+    padding-right: 8px;
   }
 }
 
-@media (max-width: 24rem) {
+@media (max-width: 384px) {
   .planner-day-view__header {
-    padding: 0.75rem;
+    padding: 12px;
   }
 
   .planner-day-view__title {
-    font-size: 1rem;
+    font-size: 16px;
   }
 
   .planner-day-view__half-hour {
@@ -157,14 +157,14 @@ app-planner-event-card {
   }
 
   .planner-day-view__grid {
-    grid-template-columns: 2.75rem minmax(0, 1fr);
+    grid-template-columns: 44px minmax(0, 1fr);
   }
 
   .planner-day-view__hours {
-    font-size: 0.625rem;
+    font-size: 10px;
   }
 
   .planner-day-view__hours span {
-    padding-right: 0.35rem;
+    padding-right: 5.6px;
   }
 }

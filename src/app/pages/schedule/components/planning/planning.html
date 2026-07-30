@@ -66,4 +66,19 @@
     (updated)="updateEvent($event)"
     (removed)="removeEditingEvent($event)"
   />
+
+  @if (aiOrganizationPrompt()) {
+    <div class="planner-ai-alert" role="dialog" aria-modal="true" aria-labelledby="planner-ai-alert-title">
+      <div class="planner-ai-alert__content">
+        <p id="planner-ai-alert-title">Este horário já possui três eventos concorrentes.</p>
+        <p>Deseja que a IA organize suas tarefas para um tempo livre ou otimizado?</p>
+        <div class="planner-ai-alert__actions">
+          <button type="button" (click)="aiOrganizationPrompt.set(false)">Agora não</button>
+          <button type="button" class="planner-ai-alert__primary" (click)="aiOrganizationPrompt.set(false)">
+            Organizar com IA
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </section>

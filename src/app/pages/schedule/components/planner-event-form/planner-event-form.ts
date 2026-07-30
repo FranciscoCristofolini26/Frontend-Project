@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { PlannerCategory, PlannerEvent, PlannerEventDraft } from '../../models';
 
-const CATEGORY_OPTIONS: Array<{ value: PlannerCategory; label: string }> = [
+const CATEGORY_OPTIONS: { value: PlannerCategory; label: string }[] = [
   { value: 'work', label: 'Trabalho' },
   { value: 'personal', label: 'Pessoal' },
   { value: 'habit', label: 'Hábito' },
