@@ -43,7 +43,7 @@
           [newEventRequest]="newEventRequest()"
         />
       } @else {
-        <app-tasks (detailOpenChange)="tasksDetailOpen.set($event)" />
+        <app-tasks [layoutTier]="layoutTier()" (detailOpenChange)="tasksDetailOpen.set($event)" />
       }
     </main>
   </div>

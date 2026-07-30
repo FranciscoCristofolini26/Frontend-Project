@@ -13,3 +13,9 @@ mat-icon.icon-lg {
   width: 20px;
   height: 20px;
 }
+
+mat-icon.icon-xl {
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+}
