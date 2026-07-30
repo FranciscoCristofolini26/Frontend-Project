@@ -55,6 +55,21 @@
               (click)="toggleGroup('concluidas')"
               [attr.aria-expanded]="!isGroupCollapsed('concluidas')"
             >
+              Concluídas · {{ completedTasks().length }}
+            </button>
+            <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
+              @for (task of completedTasks(); track task.id) {
+                <li
+                  [class]="rowClasses(task.id) + ' opacity-70'"
+                  role="button"
+                  tabindex="0"
+                  (click)="selectTask(task.id)"
+                  (keydown.enter)="selectTask(task.id)"
+                >
+                  <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
+                    <mat-icon [class]="iconClasses()">check_circle</mat-icon>
+                  </button>
+            >
               <mat-icon
                 class="icon-lg flex-none transition-transform duration-150"
                 [class.-rotate-90]="isGroupCollapsed('concluidas')"
