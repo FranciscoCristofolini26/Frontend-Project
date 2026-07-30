@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Planning } from './components/planning/planning';
 import { Tasks } from './components/tasks/tasks';
 import { Header, PlannerContent, PlannerViewMode } from './components/header/header';
 import { startOfDay } from './models/planner.utils';
+import { LayoutTier } from './models';
+import { SidebarState } from '../../shared/sidebar/sidebar-state';
 
 type ScheduleView = 'planejamento' | 'tarefas';
 
@@ -20,12 +22,10 @@ export class Schedule {
   readonly tasksDetailOpen = signal(false);
   readonly newEventRequest = signal(0);
 
-  readonly activeContent = (): PlannerContent =>
-    this.view() === 'planejamento' ? 'planning' : 'tasks';
   private readonly sidebarState = inject(SidebarState);
 
-  view = signal<ScheduleView>('tarefas');
-  tasksDetailOpen = signal(false);
+  readonly activeContent = (): PlannerContent =>
+    this.view() === 'planejamento' ? 'planning' : 'tasks';
 
   readonly layoutTier = computed<LayoutTier>(() => {
     const openSidebars =
