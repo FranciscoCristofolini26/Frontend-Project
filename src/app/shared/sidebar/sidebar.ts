@@ -1,7 +1,6 @@
 import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { IconModel } from './models/IconModel';
 import { NavigationSectionsModel } from './models/NavigationSectionsModel';
 import { SidebarState } from './sidebar-state';
 

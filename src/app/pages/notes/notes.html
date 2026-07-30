@@ -47,8 +47,14 @@
 </section>
 
 @if (isEditorOpen) {
-  <div class="modal-backdrop" (click)="closeEditor()">
-    <section class="modal-dialog note-editor" role="dialog" aria-modal="true" [attr.aria-label]="isCreating ? 'Criar nota' : 'Editar nota'" (click)="$event.stopPropagation()">
+  <div
+    class="modal-backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="closeFromBackdrop($event)"
+    (keydown.escape)="closeEditor()"
+  >
+    <section class="modal-dialog note-editor" role="dialog" aria-modal="true" [attr.aria-label]="isCreating ? 'Criar nota' : 'Editar nota'">
       <button type="button" class="button button--ghost button--icon close-button" aria-label="Fechar editor" (click)="closeEditor()">
         <mat-icon>close</mat-icon>
       </button>
