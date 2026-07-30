@@ -5,6 +5,11 @@
 @import './app/styles/components/inputs.css';
 @import './app/styles/components/modal.css';
 
+body {
+  min-width: 310px;
+  overflow-x: hidden;
+}
+
 @theme {
   --font-title: 'Inter', sans-serif;
   --font-body: 'Roboto', sans-serif;

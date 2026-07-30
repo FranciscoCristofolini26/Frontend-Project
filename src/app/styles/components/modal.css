@@ -4,7 +4,7 @@
   display: flex;
   inset: 0;
   justify-content: center;
-  padding: 1rem;
+  padding: 16px;
   position: fixed;
   z-index: 100;
 }
@@ -12,8 +12,8 @@
 .modal-dialog {
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
-  border-radius: 1rem;
+  border-radius: 16px;
   box-shadow: 0 20px 45px rgb(0 0 0 / .3);
   position: relative;
-  width: min(100%, 38rem);
+  width: min(100%, 608px);
 }

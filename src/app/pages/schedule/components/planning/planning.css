@@ -5,8 +5,8 @@
 .planner-layout {
   align-items: start;
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 288px;
 }
 
 .planner-layout__timeline {
@@ -18,7 +18,7 @@
 .planner-layout__daily-aside {
   align-self: start;
   display: grid;
-  gap: 0.875rem;
+  gap: 14px;
   min-width: 0;
 }
 
@@ -28,7 +28,7 @@
   display: flex;
   inset: 0;
   justify-content: center;
-  padding: 1rem;
+  padding: 16px;
   position: fixed;
   z-index: 100;
 }
@@ -36,44 +36,44 @@
 .planner-ai-alert__content {
   background: var(--color-card-surface);
   border: 1px solid var(--color-border);
-  border-radius: 0.875rem;
-  box-shadow: 0 1rem 3rem color-mix(in srgb, var(--color-text-main) 28%, transparent);
-  max-width: 28rem;
-  padding: 1.25rem;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--color-text-main) 28%, transparent);
+  max-width: 448px;
+  padding: 20px;
 }
 
 .planner-ai-alert__content p {
   color: var(--color-text-sub);
-  font-size: 0.875rem;
+  font-size: 14px;
   line-height: 1.5;
-  margin: 0.5rem 0 0;
+  margin: 8px 0 0;
 }
 
 .planner-ai-alert__content p:first-child {
   color: var(--color-text-main);
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 800;
   margin-top: 0;
 }
 
 .planner-ai-alert__actions {
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 16px;
 }
 
 .planner-ai-alert__actions button {
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: 8px;
   color: var(--color-text-main);
   cursor: pointer;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 13px;
   font-weight: 700;
-  min-height: 2.75rem;
-  padding: 0.5rem 0.75rem;
+  min-height: 44px;
+  padding: 8px 12px;
 }
 
 .planner-ai-alert__actions .planner-ai-alert__primary {
@@ -82,14 +82,14 @@
   color: var(--color-card-surface);
 }
 
-@media (max-width: 72rem) {
+@media (max-width: 1152px) {
   .planner-layout {
-    gap: 1rem;
-    grid-template-columns: minmax(0, 1fr) 15.5rem;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) 248px;
   }
 }
 
-@media (max-width: 64rem) {
+@media (max-width: 1024px) {
   .planner-layout {
     align-items: stretch;
     display: flex;
@@ -103,7 +103,7 @@
   }
 }
 
-@media (max-width: 93.75rem) {
+@media (max-width: 1500px) {
   .planner-layout--weekly {
     grid-template-columns: minmax(0, 1fr);
   }
