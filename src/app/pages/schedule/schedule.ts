@@ -16,10 +16,10 @@ type ScheduleView = 'planejamento' | 'tarefas';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Schedule {
-  readonly view = signal<ScheduleView>('planejamento');
+  readonly scheduleView = signal<ScheduleView>('planejamento');
   readonly selectedDate = signal(startOfDay(new Date()));
   readonly plannerViewMode = signal<PlannerViewMode>('daily');
-  readonly tasksDetailOpen = signal(false);
+  readonly tasksDetailOpe = signal(false);
   readonly newEventRequest = signal(0);
   readonly newTaskRequest = signal(0);
 

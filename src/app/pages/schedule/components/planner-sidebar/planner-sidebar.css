@@ -10,7 +10,6 @@
 }
 
 @media (max-width: 64rem) {
-
   .planner-sidebar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     position: static;

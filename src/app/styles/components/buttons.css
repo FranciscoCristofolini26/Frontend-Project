@@ -59,15 +59,15 @@
 }
 
 .button--icon {
-  border-radius: .45rem; min-height: 2rem; min-width: 2rem; padding: .4rem; 
+  border-radius: 7.2px; min-height: 32px; min-width: 32px; padding: 6.4px;
 }
 
 .button--compact {
-  border-radius: .625rem; font-size: .8125rem; min-height: 2.25rem; padding: .5rem .75rem; 
+  border-radius: 10px; font-size: 13px; min-height: 36px; padding: 8px 12px;
 }
 
 .button--compact.button--icon {
-   min-width: 2.25rem; padding: .5rem; 
+   min-width: 36px; padding: 8px;
 }
 
 .button--full { width: 100%; }
