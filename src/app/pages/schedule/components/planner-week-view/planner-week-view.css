@@ -97,8 +97,8 @@
   background-image:
     repeating-linear-gradient(
       to bottom,
-      var(--color-border) 0,
-      var(--color-border) 1px,
+      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 0,
+      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 1px,
       transparent 1px,
       transparent var(--planner-half-hour-height)
     ),
@@ -106,13 +106,20 @@
       to bottom,
       transparent 0,
       transparent calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main))
+      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
         calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 85%, var(--color-text-main)) var(--planner-hour-height)
+      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
     );
   border-left: 1px solid var(--color-border);
   min-height: var(--planner-canvas-height);
   position: relative;
+}
+
+.planner-week-view__overlap-group {
+  left: 1%;
+  position: absolute;
+  width: 98%;
+  z-index: 3;
 }
 
 .planner-week-view__mobile-day {

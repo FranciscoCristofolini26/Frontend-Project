@@ -11,27 +11,28 @@ import {
   DAY_END_HOUR,
   DAY_START_HOUR,
   PlannerEvent,
-  PositionedPlannerEvent,
+  PlannerOverlapGroup,
   durationInMinutes,
   dateKey,
   getWeekDays,
-  layoutEvents,
+  groupOverlappingEvents,
   toMinutes,
 } from '../../models';
 import { PlannerEventCard } from '../planner-event-card/planner-event-card';
 import { PlannerDayView } from '../planner-day-view/planner-day-view';
+import { PlannerOverlapAccordion } from '../planner-overlap-accordion/planner-overlap-accordion';
 
 interface WeekDay {
   date: Date;
   key: string;
   label: string;
   dayNumber: string;
-  events: PositionedPlannerEvent[];
+  eventGroups: PlannerOverlapGroup[];
 }
 
 @Component({
   selector: 'app-planner-week-view',
-  imports: [PlannerEventCard, PlannerDayView],
+  imports: [PlannerEventCard, PlannerDayView, PlannerOverlapAccordion],
   templateUrl: './planner-week-view.html',
   styleUrl: './planner-week-view.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,7 +55,7 @@ export class PlannerWeekView {
         key,
         label: new Intl.DateTimeFormat('pt-BR', { weekday: 'short' }).format(date).replace('.', ''),
         dayNumber: `${date.getDate()}`,
-        events: layoutEvents(this.events().filter((event) => event.date === key)),
+        eventGroups: groupOverlappingEvents(this.events().filter((event) => event.date === key)),
       };
     }),
   );
@@ -62,6 +63,9 @@ export class PlannerWeekView {
     const selectedKey = dateKey(this.date());
     return this.weekDays().find((day) => day.key === selectedKey) ?? this.weekDays()[0];
   });
+  readonly mobileDayEvents = computed(() =>
+    this.mobileSelectedDay()?.eventGroups.flatMap((group) => group.events) ?? [],
+  );
   // The weekly cards need room for a title and its time on separate lines.
   readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2.25));
   readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
@@ -74,22 +78,18 @@ export class PlannerWeekView {
     this.compactTimeline.set(this.isCompactViewport());
   }
 
-  eventTop(event: PositionedPlannerEvent): number {
+  eventTop(event: Pick<PlannerEvent, 'startTime'>): number {
     const offsetInMinutes = toMinutes(event.startTime) - DAY_START_HOUR * 60;
-    const stackOffset = event.columnCount > 1 ? event.column * 8 : 0;
-    return offsetInMinutes * this.pixelsPerMinute() + stackOffset;
+    return offsetInMinutes * this.pixelsPerMinute();
   }
 
-  eventHeight(event: PositionedPlannerEvent): number {
-    return Math.max(durationInMinutes(event) * this.pixelsPerMinute() - 6, this.eventMinHeight());
+  eventHeight(event: Pick<PlannerEvent, 'startTime' | 'endTime'>): number {
+    return durationInMinutes(event) * this.pixelsPerMinute();
   }
 
-  eventLeft(event: PositionedPlannerEvent): number {
-    return event.columnCount > 1 ? 4 : 3;
-  }
-
-  eventWidth(event: PositionedPlannerEvent): number {
-    return event.columnCount > 1 ? 92 : 94;
+  overlapGroupHeight(group: PlannerOverlapGroup): number {
+    const groupDuration = durationInMinutes(group) * this.pixelsPerMinute();
+    return Math.max(groupDuration, group.events.length * 44 + (group.events.length - 1) * 4);
   }
 
   private isCompactViewport(): boolean {

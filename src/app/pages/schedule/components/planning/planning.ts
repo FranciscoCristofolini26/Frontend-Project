@@ -12,6 +12,7 @@ import { PlannerViewMode } from '../header/header';
 import {
   DAY_END_HOUR,
   DAY_START_HOUR,
+  MAX_CONCURRENT_EVENTS,
   PlannerEvent,
   PlannerEventDraft,
   PlannerHabit,
@@ -152,6 +153,7 @@ export class Planning {
   readonly newEventRequest = input(0);
   readonly eventFormOpen = signal(false);
   readonly editingEvent = signal<PlannerEvent | null>(null);
+  readonly aiOrganizationPrompt = signal(false);
   readonly isDesktop = signal(this.isDesktopViewport());
   readonly dailyDropListIds = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
@@ -214,6 +216,12 @@ export class Planning {
   }
 
   createEvent(draft: PlannerEventDraft): void {
+    const candidate = { ...draft, date: dateKey(this.selectedDate()) };
+    if (this.wouldExceedConcurrentLimit(candidate)) {
+      this.aiOrganizationPrompt.set(true);
+      return;
+    }
+
     const nextId = Math.max(0, ...this.events().map((event) => event.id)) + 1;
     this.events.update((events) => [
       ...events,
@@ -239,6 +247,11 @@ export class Planning {
   updateEvent(draft: PlannerEventDraft): void {
     const event = this.editingEvent();
     if (!event) {
+      return;
+    }
+
+    if (this.wouldExceedConcurrentLimit({ ...draft, date: event.date }, event.id)) {
+      this.aiOrganizationPrompt.set(true);
       return;
     }
 
@@ -274,6 +287,17 @@ export class Planning {
     const task = event.item.data;
     const startHour = Number(slotTime.slice(0, 2));
     const endTime = `${Math.min(startHour + 1, DAY_END_HOUR + 1).toString().padStart(2, '0')}:00`;
+    if (
+      this.wouldExceedConcurrentLimit({
+        date: dateKey(this.selectedDate()),
+        startTime: slotTime,
+        endTime,
+      })
+    ) {
+      this.aiOrganizationPrompt.set(true);
+      return;
+    }
+
     const nextId = Math.max(0, ...this.events().map((plannerEvent) => plannerEvent.id)) + 1;
 
     this.events.update((events) => [
@@ -293,5 +317,47 @@ export class Planning {
 
   private isDesktopViewport(): boolean {
     return typeof window !== 'undefined' && window.innerWidth >= 1024;
+  }
+
+  private wouldExceedConcurrentLimit(
+    candidate: Pick<PlannerEvent, 'date' | 'startTime' | 'endTime'>,
+    ignoredEventId?: number,
+  ): boolean {
+    const candidateStart = this.timeToMinutes(candidate.startTime);
+    const candidateEnd = this.timeToMinutes(candidate.endTime);
+    const relevantEvents = this.events().filter(
+      (event) =>
+        event.id !== ignoredEventId &&
+        event.date === candidate.date &&
+        this.timeToMinutes(event.startTime) < candidateEnd &&
+        this.timeToMinutes(event.endTime) > candidateStart,
+    );
+    const boundaries = [
+      candidateStart,
+      candidateEnd,
+      ...relevantEvents.flatMap((event) => [
+        Math.max(candidateStart, this.timeToMinutes(event.startTime)),
+        Math.min(candidateEnd, this.timeToMinutes(event.endTime)),
+      ]),
+    ].sort((first, second) => first - second);
+
+    return boundaries.some((boundary, index) => {
+      const nextBoundary = boundaries[index + 1];
+      if (nextBoundary === undefined || nextBoundary === boundary) {
+        return false;
+      }
+
+      const probe = boundary + (nextBoundary - boundary) / 2;
+      const simultaneous = relevantEvents.filter(
+        (event) =>
+          this.timeToMinutes(event.startTime) < probe && this.timeToMinutes(event.endTime) > probe,
+      ).length;
+      return simultaneous >= MAX_CONCURRENT_EVENTS;
+    });
+  }
+
+  private timeToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
   }
 }
