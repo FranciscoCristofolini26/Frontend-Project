@@ -12,23 +12,8 @@
         <p class="text-text-sub">Nenhuma tarefa cadastrada ainda.</p>
       </div>
     } @else {
-      <div class="mt-6">
-        @for (section of taskSections(); track section.key) {
-          <div class="mt-8 first:mt-0">
-            <button
-              type="button"
-              class="flex w-full items-center gap-1.5 text-left text-xs font-semibold uppercase tracking-wide text-text-sub hover:text-text-main"
-              (click)="toggleGroup(section.key)"
-              [attr.aria-expanded]="!isGroupCollapsed(section.key)"
-            >
-              <mat-icon
-                class="icon-lg flex-none transition-transform duration-150"
-                [class.-rotate-90]="isGroupCollapsed(section.key)"
-              >
-                expand_more
-              </mat-icon>
-              {{ section.label }} · {{ section.tasks.length }} {{ section.tasks.length === 1 ? 'tarefa' : 'tarefas' }}
             </button>
+>>>>>>> dcc1fb4 (Lint Correction)
 
             @if (!isGroupCollapsed(section.key)) {
               <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
@@ -92,6 +77,7 @@
                     <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
                       <mat-icon [class]="iconClasses()">check_circle</mat-icon>
                     </button>
+>>>>>>> dcc1fb4 (Lint Correction)
 
                     <p class="min-w-0 flex-1 truncate font-medium text-text-main line-through">{{ task.title }}</p>
 
