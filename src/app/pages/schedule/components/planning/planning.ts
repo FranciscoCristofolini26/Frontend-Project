@@ -154,7 +154,6 @@ export class Planning {
   readonly eventFormOpen = signal(false);
   readonly editingEvent = signal<PlannerEvent | null>(null);
   readonly aiOrganizationPrompt = signal(false);
-
   readonly isDesktop = signal(this.isDesktopViewport());
   readonly dailyDropListIds = Array.from(
     { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
@@ -297,7 +296,6 @@ export class Planning {
       return;
     }
 
-
     const nextId = Math.max(0, ...this.events().map((plannerEvent) => plannerEvent.id)) + 1;
 
     this.events.update((events) => [
@@ -359,5 +357,4 @@ export class Planning {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
   }
-
 }

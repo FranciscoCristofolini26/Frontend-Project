@@ -66,7 +66,6 @@ export class PlannerWeekView {
   readonly mobileDayEvents = computed(() =>
     this.mobileSelectedDay()?.eventGroups.flatMap((group) => group.events) ?? [],
   );
-
   // The weekly cards need room for a title and its time on separate lines.
   readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2.25));
   readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
@@ -81,20 +80,16 @@ export class PlannerWeekView {
 
   eventTop(event: Pick<PlannerEvent, 'startTime'>): number {
     const offsetInMinutes = toMinutes(event.startTime) - DAY_START_HOUR * 60;
-    const stackOffset = event.columnCount > 1 ? event.column * 8 : 0;
-    return offsetInMinutes * this.pixelsPerMinute() + stackOffset;
+    return offsetInMinutes * this.pixelsPerMinute();
   }
 
   eventHeight(event: Pick<PlannerEvent, 'startTime' | 'endTime'>): number {
     return durationInMinutes(event) * this.pixelsPerMinute();
   }
 
-  eventLeft(event: PositionedPlannerEvent): number {
-    return event.columnCount > 1 ? 4 : 3;
-  }
-
-  eventWidth(event: PositionedPlannerEvent): number {
-    return event.columnCount > 1 ? 92 : 94;
+  overlapGroupHeight(group: PlannerOverlapGroup): number {
+    const groupDuration = durationInMinutes(group) * this.pixelsPerMinute();
+    return Math.max(groupDuration, group.events.length * 44 + (group.events.length - 1) * 4);
   }
 
   overlapGroupHeight(group: PlannerOverlapGroup): number {
