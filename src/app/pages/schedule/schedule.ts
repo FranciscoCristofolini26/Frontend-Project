@@ -3,8 +3,8 @@ import { Planning } from './components/planning/planning';
 import { Tasks } from './components/tasks/tasks';
 import { Header, PlannerContent, PlannerViewMode } from './components/header/header';
 import { startOfDay } from './models/planner.utils';
-import { SidebarState } from '../../shared/sidebar/sidebar-state';
 import { LayoutTier } from './models';
+import { SidebarState } from '../../shared/sidebar/sidebar-state';
 
 type ScheduleView = 'planejamento' | 'tarefas';
 
@@ -16,18 +16,16 @@ type ScheduleView = 'planejamento' | 'tarefas';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Schedule {
-  readonly scheduleView = signal<ScheduleView>('planejamento');
+  readonly view = signal<ScheduleView>('planejamento');
   readonly selectedDate = signal(startOfDay(new Date()));
   readonly plannerViewMode = signal<PlannerViewMode>('daily');
-  readonly tasksDetailOpe = signal(false);
+  readonly tasksDetailOpen = signal(false);
   readonly newEventRequest = signal(0);
+
+  private readonly sidebarState = inject(SidebarState);
 
   readonly activeContent = (): PlannerContent =>
     this.view() === 'planejamento' ? 'planning' : 'tasks';
-  private readonly sidebarState = inject(SidebarState);
-
-  view = signal<ScheduleView>('tarefas');
-  tasksDetailOpen = signal(false);
 
   readonly layoutTier = computed<LayoutTier>(() => {
     const openSidebars =

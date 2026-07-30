@@ -1,6 +1,7 @@
 import { Component, computed, effect, input, signal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LayoutTier, Task, TaskPeriod, TaskPriority } from '../../models';
+import { TasksProperties } from './tasks-properties/tasks-properties';
 
 const PRIORITY_CLASSES: Record<TaskPriority, string> = {
   [TaskPriority.ALTA]: 'bg-error/10 text-error',
@@ -54,7 +55,7 @@ const TIER_ICON_CLASSES: Record<LayoutTier, string> = {
 
 @Component({
   selector: 'app-tasks',
-  imports: [MatIconModule],
+  imports: [MatIconModule, TasksProperties],
   templateUrl: './tasks.html',
   styleUrl: './tasks.css',
 })
@@ -126,6 +127,7 @@ export class Tasks {
 
   selectedTaskId = signal<number | null>(null);
   detailOpenChange = output<boolean>();
+  showNewTaskDialog = signal<boolean>(false);
 
   pendingTasks = computed(() => this.tasks().filter((task) => !task.completed));
   completedTasks = computed(() => this.tasks().filter((task) => task.completed));
@@ -160,6 +162,20 @@ export class Tasks {
     this.tasks.update((list) =>
       list.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
     );
+  }
+
+  openNewTaskDialog() {
+    this.showNewTaskDialog.set(true);
+  }
+
+  closeNewTaskDialog() {
+    this.showNewTaskDialog.set(false);
+  }
+
+  addTask(task: Omit<Task, 'id'>) {
+    const newId = Math.max(...this.tasks().map((t) => t.id), 0) + 1;
+    const newTask: Task = { ...task, id: newId };
+    this.tasks.update((list) => [...list, newTask]);
   }
 
   priorityClasses(priority: TaskPriority): string {

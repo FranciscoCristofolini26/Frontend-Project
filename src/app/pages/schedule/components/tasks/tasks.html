@@ -1,32 +1,36 @@
 <section>
   <div class="min-w-0">
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="flex items-center gap-2 rounded-xl bg-brand-primary font-medium text-white shadow-sm transition hover:bg-brand-hover"
+        [class]="buttonClasses()"
+        (click)="openNewTaskDialog()"
+      >
+        <mat-icon class="icon-lg">add</mat-icon>
+        Nova tarefa
+      </button>
+    </div>
+
+    @if (showNewTaskDialog()) {
+      <app-tasks-properties
+        (close)="closeNewTaskDialog()"
+        (save)="addTask($event)"
+      ></app-tasks-properties>
+    }
+
     @if (tasks().length === 0) {
       <div class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
         <mat-icon class="icon-lg text-text-sub">task_alt</mat-icon>
         <p class="text-text-sub">Nenhuma tarefa cadastrada ainda.</p>
       </div>
     } @else {
-<<<<<<< HEAD
       <div class="mt-6">
         @for (section of taskSections(); track section.key) {
           <div class="mt-8 first:mt-0">
             <p class="text-xs font-semibold uppercase tracking-wide text-text-sub">
               {{ section.label }} · {{ section.tasks.length }} {{ section.tasks.length === 1 ? 'tarefa' : 'tarefas' }}
             </p>
-=======
-      <ul class="mt-6 space-y-3">
-        @for (task of pendingTasks(); track task.id) {
-          <li
-            [class]="rowClasses(task.id)"
-            role="button"
-            tabindex="0"
-            (click)="selectTask(task.id)"
-            (keydown.enter)="selectTask(task.id)"
-          >
-            <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-text-disabled hover:text-brand-primary">
-              <mat-icon class="icon-lg">radio_button_unchecked</mat-icon>
-            </button>
->>>>>>> a213be0 (Lint Correction)
 
             <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
               @for (task of section.tasks; track task.id) {
@@ -64,7 +68,6 @@
               Concluídas · {{ completedTasks().length }}
             </p>
 
-<<<<<<< HEAD
             <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
               @for (task of completedTasks(); track task.id) {
                 <li
@@ -77,19 +80,6 @@
                   <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
                     <mat-icon [class]="iconClasses()">check_circle</mat-icon>
                   </button>
-=======
-          @for (task of completedTasks(); track task.id) {
-            <li
-              [class]="rowClasses(task.id) + ' opacity-70'"
-              role="button"
-              tabindex="0"
-              (click)="selectTask(task.id)"
-              (keydown.enter)="selectTask(task.id)"
-            >
-              <button type="button" (click)="toggleTask(task.id, $event)" class="flex-none text-success">
-                <mat-icon class="icon-lg">check_circle</mat-icon>
-              </button>
->>>>>>> a213be0 (Lint Correction)
 
                   <p class="min-w-0 flex-1 truncate font-medium text-text-main line-through">{{ task.title }}</p>
 
