@@ -1,0 +1,113 @@
+<article class="habit-card card" [class.habit-card--paused]="habit().status === 'paused'">
+  <div
+    class="habit-card__overview"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="expanded()"
+    [attr.aria-label]="'Ver detalhes de ' + habit().name"
+    (click)="toggleExpanded()"
+    (keydown)="onOverviewKeydown($event)"
+  >
+    <header class="habit-card__header">
+      <span class="habit-card__icon" aria-hidden="true"
+        ><mat-icon>{{ habit().icon }}</mat-icon></span
+      >
+      <div class="habit-card__identity">
+        <div>
+          <h2>{{ habit().name }}</h2>
+          @if (habit().status === 'paused') {
+            <span class="habit-card__status">Pausado</span>
+          }
+        </div>
+        <span>{{ frequencyLabel() }}</span>
+      </div>
+      <mat-icon class="habit-card__chevron" aria-hidden="true">{{
+        expanded() ? 'expand_less' : 'expand_more'
+      }}</mat-icon>
+    </header>
+
+    <div class="habit-card__streak">
+      <span
+        ><mat-icon aria-hidden="true">local_fire_department</mat-icon
+        >{{ metrics().currentStreak }} dias</span
+      >
+      <span>recorde {{ metrics().bestStreak }}</span>
+    </div>
+
+    <div class="habit-card__heatmap" aria-label="Últimos 21 dias">
+      @for (day of miniHeatmap(); track day.date) {
+        <span
+          class="habit-card__heatmap-day"
+          [class.habit-card__heatmap-day--completed]="day.completed"
+          [attr.aria-label]="day.label + (day.completed ? ': concluído' : ': não concluído')"
+          [title]="day.label"
+        ></span>
+      }
+    </div>
+
+    <footer class="habit-card__metrics">
+      <span class="habit-card__consistency">{{ metrics().consistency }}% de consistência</span>
+      @if (metrics().milestone; as milestone) {
+        <span class="habit-card__milestone"
+          ><mat-icon aria-hidden="true">emoji_events</mat-icon>{{ milestone }} dias</span
+        >
+      }
+    </footer>
+  </div>
+
+  @if (expanded()) {
+    <section class="habit-card__details" [attr.aria-label]="'Detalhes de ' + habit().name">
+      <div class="habit-card__detail-text">
+        <div>
+          <span>Objetivo</span>
+          <p>{{ habit().goal || 'Nenhum objetivo específico definido.' }}</p>
+        </div>
+        <div>
+          <span>Observação</span>
+          <p>{{ habit().note || 'Nenhuma observação adicionada.' }}</p>
+        </div>
+      </div>
+
+      <div class="habit-card__full-heatmap" aria-label="Histórico dos últimos 60 dias">
+        @for (day of fullHeatmap(); track day.date) {
+          <span
+            class="habit-card__heatmap-day habit-card__heatmap-day--large"
+            [class.habit-card__heatmap-day--completed]="day.completed"
+            [attr.aria-label]="day.label + (day.completed ? ': concluído' : ': não concluído')"
+            [title]="day.label"
+          ></span>
+        }
+      </div>
+    </section>
+  }
+
+  <footer class="habit-card__actions">
+    <button
+      type="button"
+      class="button button--ghost button--compact button--icon"
+      [attr.aria-label]="habit().status === 'active' ? 'Pausar hábito' : 'Ativar hábito'"
+      [title]="habit().status === 'active' ? 'Pausar' : 'Ativar'"
+      (click)="statusChange.emit(habit())"
+    >
+      <mat-icon>{{ habit().status === 'active' ? 'pause_circle' : 'play_circle' }}</mat-icon>
+    </button>
+    <button
+      type="button"
+      class="button button--ghost button--compact button--icon"
+      aria-label="Editar hábito"
+      title="Editar"
+      (click)="edit.emit(habit())"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      type="button"
+      class="button button--ghost button--compact button--icon habit-card__delete"
+      aria-label="Excluir hábito"
+      title="Excluir"
+      (click)="remove.emit(habit())"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </footer>
+</article>

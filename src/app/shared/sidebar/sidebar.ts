@@ -72,7 +72,7 @@ export class Sidebar implements OnDestroy {
         },
         {
           icon: 'self_improvement', label: 'Hábitos',
-          url: ''
+          url: 'habits'
         },
         {
           icon: 'note', label: 'Notas',
