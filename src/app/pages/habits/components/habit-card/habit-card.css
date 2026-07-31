@@ -1,0 +1,223 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.habit-card {
+  min-width: 0;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.habit-card:hover {
+  border-color: color-mix(in srgb, var(--color-brand-accent) 52%, var(--color-border));
+}
+
+.habit-card--paused {
+  opacity: 0.76;
+}
+
+.habit-card__overview {
+  cursor: pointer;
+  padding: 18px 18px 12px;
+}
+
+.habit-card__overview:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+  outline-offset: -3px;
+}
+
+.habit-card__header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+
+.habit-card__icon {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-brand-primary) 12%, transparent);
+  border-radius: 50%;
+  color: var(--color-brand-primary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.habit-card__identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.habit-card__identity > div {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+  min-width: 0;
+}
+
+.habit-card h2 {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 16px;
+  line-height: 1.25;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.habit-card__identity > span {
+  color: var(--color-text-sub);
+  display: block;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.habit-card__status {
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border-radius: 99px;
+  color: var(--color-warning);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+}
+
+.habit-card__chevron {
+  color: var(--color-text-disabled);
+  flex: 0 0 auto;
+}
+
+.habit-card__streak {
+  align-items: center;
+  color: var(--color-text-sub);
+  display: flex;
+  font-size: 12px;
+  gap: 7px;
+  margin-top: 17px;
+}
+
+.habit-card__streak > span:first-child {
+  align-items: center;
+  color: var(--color-brand-accent);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 4px;
+}
+
+.habit-card__streak mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.habit-card__heatmap,
+.habit-card__full-heatmap {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(21, minmax(0, 1fr));
+  margin-top: 15px;
+}
+
+.habit-card__heatmap-day {
+  aspect-ratio: 1;
+  background: var(--color-bg-sub);
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  border-radius: 3px;
+  display: block;
+  min-width: 0;
+}
+
+.habit-card__heatmap-day--completed {
+  background: var(--color-brand-accent);
+  border-color: var(--color-brand-accent);
+}
+
+.habit-card__metrics {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 13px;
+}
+
+.habit-card__consistency {
+  color: var(--color-brand-accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.habit-card__milestone {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-brand-accent) 12%, transparent);
+  border-radius: 99px;
+  color: var(--color-brand-accent);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 3px;
+  padding: 4px 7px;
+}
+
+.habit-card__milestone mat-icon {
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+}
+
+.habit-card__details {
+  border-top: 1px solid var(--color-border);
+  padding: 16px 18px;
+}
+
+.habit-card__detail-text {
+  display: grid;
+  gap: 13px;
+}
+
+.habit-card__detail-text span {
+  color: var(--color-text-disabled);
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.habit-card__detail-text p {
+  color: var(--color-text-main);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.habit-card__full-heatmap {
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  margin-top: 17px;
+}
+
+.habit-card__heatmap-day--large {
+  border-radius: 3px;
+}
+
+.habit-card__actions {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  padding: 8px 10px;
+}
+
+.habit-card__delete {
+  color: var(--color-error);
+}
+
+@media (min-width: 640px) {
+  .habit-card__full-heatmap {
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+  }
+}

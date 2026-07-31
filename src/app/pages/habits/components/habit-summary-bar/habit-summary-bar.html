@@ -1,0 +1,37 @@
+<section class="habit-summary" aria-label="Resumo dos hábitos">
+  <article class="habit-summary__item card">
+    <span class="habit-summary__icon" aria-hidden="true"><mat-icon>check_circle</mat-icon></span>
+    <div>
+      <span>Hábitos ativos</span>
+      <strong>{{ summary().activeCount }}</strong>
+    </div>
+  </article>
+
+  <article class="habit-summary__item card">
+    <span class="habit-summary__icon habit-summary__icon--accent" aria-hidden="true"
+      ><mat-icon>local_fire_department</mat-icon></span
+    >
+    <div>
+      <span>Maior sequência atual</span>
+      <strong>{{ summary().highestCurrentStreak }} dias</strong>
+    </div>
+  </article>
+
+  <article class="habit-summary__item card">
+    <span class="habit-summary__icon" aria-hidden="true"><mat-icon>calendar_month</mat-icon></span>
+    <div>
+      <span>Dias acumulados</span>
+      <strong>{{ summary().accumulatedDays }}</strong>
+    </div>
+  </article>
+
+  <article class="habit-summary__item card">
+    <span class="habit-summary__icon habit-summary__icon--accent" aria-hidden="true"
+      ><mat-icon>trending_up</mat-icon></span
+    >
+    <div>
+      <span>Consistência média</span>
+      <strong>{{ summary().averageConsistency }}%</strong>
+    </div>
+  </article>
+</section>
