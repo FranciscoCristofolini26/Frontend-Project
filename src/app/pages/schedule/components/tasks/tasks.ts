@@ -29,12 +29,6 @@ const TIER_BADGE_CLASSES: Record<LayoutTier, string> = {
   spacious: 'px-3.5 py-1.5 text-sm',
 };
 
-const TIER_BUTTON_CLASSES: Record<LayoutTier, string> = {
-  compact: 'px-5 py-3',
-  balanced: 'px-5 py-3',
-  spacious: 'px-6 py-3.5 text-base',
-};
-
 const TIER_LIST_GAP_CLASSES: Record<LayoutTier, string> = {
   compact: 'space-y-3',
   balanced: 'space-y-3',
@@ -61,6 +55,7 @@ const TIER_ICON_CLASSES: Record<LayoutTier, string> = {
 })
 export class Tasks {
   layoutTier = input<LayoutTier>('balanced');
+  newTaskRequest = input(0);
   tasks = signal<Task[]>([
     {
       id: 1,
@@ -128,6 +123,7 @@ export class Tasks {
   selectedTaskId = signal<number | null>(null);
   detailOpenChange = output<boolean>();
   showNewTaskDialog = signal<boolean>(false);
+  collapsedGroups = signal<Set<string>>(new Set());
 
   pendingTasks = computed(() => this.tasks().filter((task) => !task.completed));
   completedTasks = computed(() => this.tasks().filter((task) => task.completed));
@@ -147,6 +143,27 @@ export class Tasks {
 
   constructor() {
     effect(() => this.detailOpenChange.emit(this.selectedTaskId() !== null));
+    effect(() => {
+      if (this.newTaskRequest() > 0) {
+        this.showNewTaskDialog.set(true);
+      }
+    });
+  }
+
+  isGroupCollapsed(key: string): boolean {
+    return this.collapsedGroups().has(key);
+  }
+
+  toggleGroup(key: string) {
+    this.collapsedGroups.update((current) => {
+      const next = new Set(current);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
   }
 
   selectTask(id: number) {
@@ -184,10 +201,6 @@ export class Tasks {
 
   badgeClasses(): string {
     return `rounded-full font-semibold ${TIER_BADGE_CLASSES[this.layoutTier()]}`;
-  }
-
-  buttonClasses(): string {
-    return TIER_BUTTON_CLASSES[this.layoutTier()];
   }
 
   listGapClasses(): string {

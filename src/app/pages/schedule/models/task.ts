@@ -15,4 +15,5 @@ export interface Task {
   project?: string;
   completed: boolean;
   notes?: string;
+  assignee?: string;
 }

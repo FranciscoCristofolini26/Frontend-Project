@@ -2,6 +2,7 @@
   <div
     class="schedule-page__content"
     [class.schedule-page__content--task-detail]="view() === 'tarefas' && tasksDetailOpen()"
+    [class.schedule-page__content--full]="edgeToEdge()"
   >
     <app-header
       [activeContent]="activeContent()"
@@ -43,7 +44,11 @@
           [newEventRequest]="newEventRequest()"
         />
       } @else {
-        <app-tasks [layoutTier]="layoutTier()" (detailOpenChange)="tasksDetailOpen.set($event)" />
+        <app-tasks
+          [layoutTier]="layoutTier()"
+          [newTaskRequest]="newTaskRequest()"
+          (detailOpenChange)="tasksDetailOpen.set($event)"
+        />
       }
     </main>
   </div>
