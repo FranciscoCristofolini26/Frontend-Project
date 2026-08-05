@@ -1,6 +1,3 @@
-export const HABIT_CATEGORIES = ['Saúde', 'Mente', 'Estudo', 'Bem-estar'] as const;
-
-export type HabitCategory = (typeof HABIT_CATEGORIES)[number];
 export type HabitFrequencyType = 'daily' | 'weekdays' | 'custom';
 export type HabitStatus = 'active' | 'paused';
 
@@ -8,7 +5,7 @@ export interface Habit {
   id: number;
   name: string;
   icon: string;
-  category: HabitCategory;
+  categoryId: string;
   frequencyType: HabitFrequencyType;
   time?: string;
   goal?: string;
@@ -21,7 +18,7 @@ export interface Habit {
 export interface HabitDraft {
   name: string;
   icon: string;
-  category: HabitCategory;
+  categoryId: string;
   frequencyType: HabitFrequencyType;
   time: string;
   goal: string;
@@ -47,7 +44,7 @@ export function emptyHabitDraft(): HabitDraft {
   return {
     name: '',
     icon: 'self_improvement',
-    category: 'Saúde',
+    categoryId: 'saude',
     frequencyType: 'daily',
     time: '',
     goal: '',
@@ -59,7 +56,7 @@ export function habitToDraft(habit: Habit): HabitDraft {
   return {
     name: habit.name,
     icon: habit.icon,
-    category: habit.category,
+    categoryId: habit.categoryId,
     frequencyType: habit.frequencyType,
     time: habit.time ?? '',
     goal: habit.goal ?? '',

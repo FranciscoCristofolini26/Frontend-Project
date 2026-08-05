@@ -4,10 +4,11 @@ import { HabitDrawer } from './components/habit-drawer/habit-drawer';
 import { HabitEmptyState } from './components/habit-empty-state/habit-empty-state';
 import { HabitGrid } from './components/habit-grid/habit-grid';
 import { HabitSummaryBar } from './components/habit-summary-bar/habit-summary-bar';
-import { HABIT_CATEGORIES, Habit, HabitCategory, HabitDraft } from './models/habit';
+import { CategoryService } from '../../shared/categories';
+import { Habit, HabitDraft } from './models/habit';
 import { HabitService } from './service/habit.service';
 
-type HabitFilter = 'all' | 'active' | 'paused' | HabitCategory;
+type HabitFilter = 'all' | 'active' | 'paused' | string;
 
 interface HabitTab {
   id: HabitFilter;
@@ -23,19 +24,21 @@ interface HabitTab {
 })
 export class Habits {
   private readonly habitService = inject(HabitService);
+  private readonly categoryService = inject(CategoryService);
 
   readonly habits = this.habitService.habits;
+  readonly categories = this.categoryService.categories;
   readonly searchTerm = signal('');
   readonly activeFilter = signal<HabitFilter>('all');
   readonly drawerOpen = signal(false);
   readonly editingHabit = signal<Habit | null>(null);
   readonly deleteCandidate = signal<Habit | null>(null);
-  readonly tabs: HabitTab[] = [
+  readonly tabs = computed<HabitTab[]>(() => [
     { id: 'all', label: 'Todos' },
     { id: 'active', label: 'Ativos' },
     { id: 'paused', label: 'Pausados' },
-    ...HABIT_CATEGORIES.map((category) => ({ id: category, label: category })),
-  ];
+    ...this.categories().map((category) => ({ id: category.id, label: category.name })),
+  ]);
 
   readonly filteredHabits = computed(() => {
     const searchTerm = this.searchTerm().trim().toLocaleLowerCase();
@@ -47,7 +50,7 @@ export class Habits {
         activeFilter === 'all' ||
         (activeFilter === 'active' && habit.status === 'active') ||
         (activeFilter === 'paused' && habit.status === 'paused') ||
-        habit.category === activeFilter;
+        habit.categoryId === activeFilter;
 
       return matchesSearch && matchesFilter;
     });

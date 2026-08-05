@@ -1,0 +1,20 @@
+<nav
+  class="goal-week-navigation"
+  [class.goal-week-navigation--current]="isCurrent()"
+  aria-label="Navegação entre semanas"
+>
+  <button type="button" class="button button--ghost button--compact" (click)="previous.emit()">
+    <mat-icon>arrow_back</mat-icon><span>Semana anterior</span>
+  </button>
+  <div>
+    <strong>{{ label() }}</strong>
+    @if (isCurrent()) {
+      <span>Semana atual</span>
+    } @else {
+      <button type="button" (click)="current.emit()">Voltar à semana atual</button>
+    }
+  </div>
+  <button type="button" class="button button--ghost button--compact" (click)="next.emit()">
+    <span>Próxima semana</span><mat-icon>arrow_forward</mat-icon>
+  </button>
+</nav>

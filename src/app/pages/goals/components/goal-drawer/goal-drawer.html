@@ -1,0 +1,124 @@
+<div
+  class="goal-drawer-backdrop"
+  (click)="closeFromBackdrop($event)"
+  (keydown.escape)="close.emit()"
+>
+  <aside
+    class="goal-drawer"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="goal() ? 'Editar meta semanal' : 'Nova meta semanal'"
+  >
+    <header class="goal-drawer__header">
+      <div>
+        <h2>{{ goal() ? 'Editar meta' : 'Nova meta' }}</h2>
+        <p>Descreva o resultado que você quer alcançar nesta semana.</p>
+      </div>
+      <button
+        type="button"
+        class="button button--ghost button--icon"
+        aria-label="Fechar drawer"
+        (click)="close.emit()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form class="goal-drawer__form" (ngSubmit)="submit()">
+      <label class="form-field"
+        >Nome da meta <span aria-hidden="true">*</span>
+        <input
+          class="input-control"
+          type="text"
+          name="goal-title"
+          [(ngModel)]="draft.title"
+          placeholder="Ex.: Avançar no curso de Spring"
+          autocomplete="off"
+        />
+        @if (submitted && !draft.title.trim()) {
+          <small class="goal-drawer__error">Informe o nome da meta.</small>
+        }
+      </label>
+
+      <label class="form-field"
+        >Resultado esperado <span aria-hidden="true">*</span>
+        <textarea
+          class="input-control textarea goal-drawer__textarea"
+          name="expected-result"
+          [(ngModel)]="draft.expectedResult"
+          placeholder="O que significa concluir esta meta?"
+        ></textarea>
+        @if (submitted && !draft.expectedResult.trim()) {
+          <small class="goal-drawer__error">Descreva o resultado esperado.</small>
+        }
+      </label>
+
+      <label class="form-field"
+        >Prioridade
+        <select class="input-control" name="priority" [(ngModel)]="draft.priority">
+          <option value="ALTA">Alta</option>
+          <option value="MEDIA">Média</option>
+          <option value="BAIXA">Baixa</option>
+        </select>
+      </label>
+
+      <label class="form-field"
+        >Categoria
+        <select class="input-control" name="category" [(ngModel)]="draft.categoryId">
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </label>
+
+      @if (hasTaskLinks()) {
+        <div class="goal-drawer__linked-note">
+          <mat-icon aria-hidden="true">account_tree</mat-icon>Esta meta já tem etapas vinculadas. O
+          progresso continua sendo calculado por elas.
+        </div>
+      } @else {
+        <label class="form-field"
+          >Relacionar a um hábito <span class="goal-drawer__optional">Opcional</span>
+          <select
+            class="input-control"
+            name="habit"
+            [value]="draft.habitId ?? ''"
+            (change)="onHabitChange(habit.value)"
+            #habit
+          >
+            <option value="">Sem hábito vinculado</option>
+            @for (item of habits(); track item.id) {
+              <option [value]="item.id">{{ item.name }}</option>
+            }
+          </select>
+        </label>
+
+        @if (draft.habitId) {
+          <label class="form-field"
+            >Meta de execuções na semana
+            <input
+              class="input-control"
+              type="number"
+              name="habit-target"
+              min="1"
+              step="1"
+              [(ngModel)]="draft.habitTargetCount"
+            />
+            <small class="goal-drawer__hint"
+              >A contagem vem das execuções registradas no Planner.</small
+            >
+          </label>
+        }
+      }
+
+      <footer class="goal-drawer__actions">
+        <button type="button" class="button button--secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button type="submit" class="button button--primary">
+          <mat-icon>save</mat-icon>Salvar
+        </button>
+      </footer>
+    </form>
+  </aside>
+</div>
