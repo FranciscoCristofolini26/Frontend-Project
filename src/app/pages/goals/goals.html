@@ -2,6 +2,7 @@
   <div class="goals-page__content">
     <header class="goals-page__header">
       <div>
+<<<<<<< Updated upstream
         <h1>Metas Semanais</h1>
         <p>Escolha os resultados que merecem sua atenção nos próximos dias.</p>
       </div>
@@ -36,6 +37,107 @@
         <button
           type="button"
           [class.goals-page__state-tab--active]="stateFilter() === 'all'"
+=======
+        <p class="goals-page__eyebrow">Planejamento semanal</p>
+        <h1>Metas Semanais</h1>
+        <p class="goals-page__subtitle">Defina os resultados que realmente importam nos próximos dias.</p>
+      </div>
+      <button type="button" class="button button--primary goals-page__new-button" (click)="openCreate()">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        Nova meta
+      </button>
+    </header>
+
+    <nav class="week-navigation" aria-label="Navegação entre semanas">
+      <button type="button" class="week-navigation__button" (click)="previousWeek()">
+        <mat-icon aria-hidden="true">arrow_back</mat-icon>
+        <span>Semana anterior</span>
+      </button>
+      <div class="week-navigation__current" [class.week-navigation__current--today]="isCurrentWeek()">
+        <span>{{ weekRangeLabel() }}</span>
+        @if (isCurrentWeek()) {
+          <small>Semana atual</small>
+        }
+      </div>
+      <button type="button" class="week-navigation__button week-navigation__button--next" (click)="nextWeek()">
+        <span>Próxima semana</span>
+        <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+      </button>
+    </nav>
+
+    <section class="weekly-focus card" aria-labelledby="weekly-focus-title">
+      <div class="weekly-focus__heading">
+        <div>
+          <span class="weekly-focus__label">Foco da Semana</span>
+          @if (!focusEditing()) {
+            @if (currentFocus().focus) {
+              <h2 id="weekly-focus-title">{{ currentFocus().focus }}</h2>
+              @if (currentFocus().note) {
+                <p>{{ currentFocus().note }}</p>
+              }
+            } @else {
+              <h2 id="weekly-focus-title">Escolha uma prioridade para a semana.</h2>
+              <p>Uma frase ajuda a proteger o que merece sua atenção.</p>
+            }
+          }
+        </div>
+        @if (!focusEditing()) {
+          <button type="button" class="button button--ghost button--compact" (click)="startFocusEditing()">
+            <mat-icon aria-hidden="true">edit</mat-icon>
+            {{ currentFocus().focus ? 'Editar foco' : 'Definir foco' }}
+          </button>
+        }
+      </div>
+
+      @if (focusEditing()) {
+        <form class="weekly-focus__form" (ngSubmit)="saveFocus()">
+          <label class="form-field">
+            Prioridade principal da semana
+            <input
+              class="input-control"
+              type="text"
+              name="weekly-focus"
+              [(ngModel)]="focusDraft.focus"
+              placeholder="Ex.: Finalizar a entrega principal antes de sexta"
+              autocomplete="off"
+            />
+          </label>
+          <label class="form-field">
+            Mensagem para você <span class="weekly-focus__optional">Opcional</span>
+            <input
+              class="input-control"
+              type="text"
+              name="weekly-focus-note"
+              [(ngModel)]="focusDraft.note"
+              placeholder="Um lembrete curto e motivador"
+              autocomplete="off"
+            />
+          </label>
+          <footer class="weekly-focus__actions">
+            <button type="button" class="button button--secondary button--compact" (click)="cancelFocusEditing()">
+              Cancelar
+            </button>
+            <button type="submit" class="button button--primary button--compact" [disabled]="!focusDraft.focus.trim()">
+              Salvar foco
+            </button>
+          </footer>
+        </form>
+      }
+    </section>
+
+    <div class="goals-page__summary" aria-live="polite">
+      <span>{{ summary().completed }} de {{ summary().total }} metas concluídas</span>
+      <i aria-hidden="true"></i>
+      <span>{{ summary().percentage }}%</span>
+    </div>
+
+    <section class="goals-filters" aria-label="Filtros das metas">
+      <div class="goals-filters__states" role="group" aria-label="Filtrar por estado">
+        <button
+          type="button"
+          class="goals-filters__filter"
+          [class.goals-filters__filter--active]="stateFilter() === 'all'"
+>>>>>>> Stashed changes
           [attr.aria-pressed]="stateFilter() === 'all'"
           (click)="setStateFilter('all')"
         >
@@ -43,7 +145,12 @@
         </button>
         <button
           type="button"
+<<<<<<< Updated upstream
           [class.goals-page__state-tab--active]="stateFilter() === 'in-progress'"
+=======
+          class="goals-filters__filter"
+          [class.goals-filters__filter--active]="stateFilter() === 'in-progress'"
+>>>>>>> Stashed changes
           [attr.aria-pressed]="stateFilter() === 'in-progress'"
           (click)="setStateFilter('in-progress')"
         >
@@ -51,12 +158,18 @@
         </button>
         <button
           type="button"
+<<<<<<< Updated upstream
           [class.goals-page__state-tab--active]="stateFilter() === 'completed'"
+=======
+          class="goals-filters__filter"
+          [class.goals-filters__filter--active]="stateFilter() === 'completed'"
+>>>>>>> Stashed changes
           [attr.aria-pressed]="stateFilter() === 'completed'"
           (click)="setStateFilter('completed')"
         >
           Concluídas
         </button>
+<<<<<<< Updated upstream
       </nav>
       <label class="goals-page__category-filter"
         >Categoria
@@ -86,10 +199,246 @@
       />
     } @else {
       <app-goal-empty-state (create)="openCreateDrawer()" />
+=======
+      </div>
+
+      <label class="goals-filters__category">
+        <span class="sr-only">Filtrar por categoria</span>
+        <select
+          class="input-control"
+          [value]="categoryFilter()"
+          (change)="setCategoryFilter($any($event.target).value)"
+        >
+          <option value="all">Todas as categorias</option>
+          @for (category of categories; track category) {
+            <option [value]="category">{{ category }}</option>
+          }
+        </select>
+        <mat-icon aria-hidden="true">expand_more</mat-icon>
+      </label>
+    </section>
+
+    @if (filteredGoals().length) {
+      <section class="goals-list" aria-label="Metas da semana">
+        @for (goal of filteredGoals(); track goal.id) {
+          <article
+            class="goals-card card"
+            [class.goals-card--alta]="goal.priority === 'ALTA'"
+            [class.goals-card--media]="goal.priority === 'MEDIA'"
+            [class.goals-card--baixa]="goal.priority === 'BAIXA'"
+            [class.goals-card--completed]="goal.status === 'CONCLUIDA'"
+          >
+            <div
+              class="goals-card__overview"
+              role="button"
+              tabindex="0"
+              [attr.aria-expanded]="expandedGoalId() === goal.id"
+              [attr.aria-controls]="'goal-details-' + goal.id"
+              [attr.aria-label]="'Ver detalhes de ' + goal.title"
+              (click)="toggleExpanded(goal.id)"
+              (keydown)="onGoalKeydown($event, goal.id)"
+            >
+              <header class="goals-card__header">
+                <span class="goals-card__priority-marker" aria-hidden="true">◉</span>
+                <div class="goals-card__title">
+                  <h2>{{ goal.title }}</h2>
+                  <span class="goals-card__category">{{ goal.category }}</span>
+                </div>
+                <span class="goals-card__priority">{{ priorityLabel(goal.priority) }}</span>
+                <mat-icon class="goals-card__chevron" aria-hidden="true">
+                  {{ expandedGoalId() === goal.id ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+              </header>
+
+              <p class="goals-card__result">{{ goal.expectedResult }}</p>
+
+              @if (getProgress(goal); as progress) {
+                <div class="goals-card__progress" [attr.aria-label]="'Progresso: ' + progress.percent + '%'">
+                  <div class="goals-card__progress-track" aria-hidden="true">
+                    <span [style.width.%]="progress.percent"></span>
+                  </div>
+                  <strong>{{ progress.percent }}%</strong>
+                </div>
+                <footer class="goals-card__meta">
+                  <span>{{ progress.label }}</span>
+                  <span class="goals-card__status">{{ statusLabel(goal) }}</span>
+                </footer>
+              } @else {
+                <footer class="goals-card__meta goals-card__meta--binary">
+                  <span>Sem etapas vinculadas</span>
+                  <span class="goals-card__status">{{ statusLabel(goal) }}</span>
+                </footer>
+              }
+            </div>
+
+            @if (expandedGoalId() === goal.id) {
+              <section class="goals-card__details" [id]="'goal-details-' + goal.id">
+                <div class="goals-card__detail-section">
+                  <span>Resultado</span>
+                  <p>{{ goal.expectedResult }}</p>
+                </div>
+
+                @if (goal.tasks.length) {
+                  <div class="goals-card__detail-section">
+                    <span>Etapas</span>
+                    <ul class="goals-card__steps">
+                      @for (task of goal.tasks; track task.id) {
+                        <li [class.goals-card__step--done]="task.completed">
+                          <mat-icon aria-hidden="true">{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                          {{ task.title }}
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                } @else if (goal.habitTarget; as habitTarget) {
+                  <div class="goals-card__detail-section">
+                    <span>Etapas</span>
+                    <p class="goals-card__habit-target">
+                      <mat-icon aria-hidden="true">self_improvement</mat-icon>
+                      {{ habitTarget.habitName }} · {{ habitTarget.completedCount }} de {{ habitTarget.targetCount }} execuções
+                    </p>
+                  </div>
+                }
+
+                @if (getProgress(goal); as progress) {
+                  <div class="goals-card__detail-section goals-card__detail-section--progress">
+                    <span>Progresso</span>
+                    <div class="goals-card__progress">
+                      <div class="goals-card__progress-track" aria-hidden="true">
+                        <span [style.width.%]="progress.percent"></span>
+                      </div>
+                      <strong>{{ progress.percent }}%</strong>
+                    </div>
+                  </div>
+                }
+
+                <footer class="goals-card__actions">
+                  <button type="button" class="button button--secondary button--compact" (click)="openEdit(goal, $event)">
+                    <mat-icon aria-hidden="true">edit</mat-icon>
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--primary button--compact"
+                    [disabled]="goal.status === 'CONCLUIDA'"
+                    (click)="completeGoal(goal, $event)"
+                  >
+                    <mat-icon aria-hidden="true">check</mat-icon>
+                    {{ goal.status === 'CONCLUIDA' ? 'Concluída' : 'Concluir' }}
+                  </button>
+                  <button type="button" class="button button--ghost button--compact" (click)="deferGoal(goal, $event)">
+                    <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+                    Adiar para próxima semana
+                  </button>
+                </footer>
+              </section>
+            }
+          </article>
+        }
+      </section>
+    } @else {
+      <section class="goals-empty card">
+        <span class="goals-empty__icon" aria-hidden="true"><mat-icon>track_changes</mat-icon></span>
+        @if (weekGoals().length) {
+          <h2>Nenhuma meta encontrada.</h2>
+          <p>Altere os filtros para ver outras metas desta semana.</p>
+          <button type="button" class="button button--secondary" (click)="setStateFilter('all'); setCategoryFilter('all')">
+            Limpar filtros
+          </button>
+        } @else {
+          <h2>Nenhuma meta para esta semana.</h2>
+          <p>Defina o que realmente importa para os próximos dias.</p>
+          <button type="button" class="button button--primary" (click)="openCreate()">
+            <mat-icon aria-hidden="true">add</mat-icon>
+            Nova meta
+          </button>
+        }
+      </section>
+>>>>>>> Stashed changes
     }
   </div>
 </section>
 
 @if (drawerOpen()) {
+<<<<<<< Updated upstream
   <app-goal-drawer [goal]="editingGoal()" (close)="closeDrawer()" (save)="saveGoal($event)" />
+=======
+  <div class="goal-drawer-backdrop" (click)="closeDrawerFromBackdrop($event)" (keydown.escape)="closeDrawer()">
+    <aside class="goal-drawer" role="dialog" aria-modal="true" [attr.aria-label]="editingGoal() ? 'Editar meta' : 'Nova meta'">
+      <header class="goal-drawer__header">
+        <div>
+          <h2>{{ editingGoal() ? 'Editar meta' : 'Nova meta' }}</h2>
+          <p>Descreva o resultado que você quer alcançar nesta semana.</p>
+        </div>
+        <button type="button" class="button button--ghost button--icon" aria-label="Fechar" (click)="closeDrawer()">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </header>
+
+      <form class="goal-drawer__form" (ngSubmit)="saveGoal()">
+        <label class="form-field">
+          Meta <span aria-hidden="true">*</span>
+          <input
+            class="input-control"
+            type="text"
+            name="goal-title"
+            [(ngModel)]="draft.title"
+            placeholder="Ex.: Estruturar a proposta do cliente"
+            autocomplete="off"
+          />
+          @if (isSubmitting() && !draft.title.trim()) {
+            <small class="goal-drawer__error">Informe uma meta.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          Resultado esperado <span aria-hidden="true">*</span>
+          <textarea
+            class="input-control textarea goal-drawer__textarea"
+            name="goal-result"
+            [(ngModel)]="draft.expectedResult"
+            placeholder="O que significa terminar isto até o fim da semana?"
+          ></textarea>
+          @if (isSubmitting() && !draft.expectedResult.trim()) {
+            <small class="goal-drawer__error">Descreva o resultado esperado.</small>
+          }
+        </label>
+
+        <fieldset class="goal-drawer__fieldset">
+          <legend>Prioridade</legend>
+          <div class="goal-drawer__priorities">
+            @for (priority of ['ALTA', 'MEDIA', 'BAIXA']; track priority) {
+              <label class="goal-drawer__priority-option" [class.goal-drawer__priority-option--selected]="draft.priority === priority">
+                <input type="radio" name="goal-priority" [value]="priority" [(ngModel)]="draft.priority" />
+                <i [class]="'goal-drawer__priority-dot goal-drawer__priority-dot--' + priority.toLowerCase()" aria-hidden="true">◉</i>
+                {{ priority === 'ALTA' ? 'Alta' : priority === 'MEDIA' ? 'Média' : 'Baixa' }}
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <label class="form-field">
+          Categoria
+          <select class="input-control" name="goal-category" [(ngModel)]="draft.category">
+            @for (category of categories; track category) {
+              <option [value]="category">{{ category }}</option>
+            }
+          </select>
+        </label>
+
+        <p class="goal-drawer__helper">
+          Metas sem tarefas ou hábito vinculados permanecem pendentes até você escolher <strong>Concluir</strong>.
+        </p>
+
+        <footer class="goal-drawer__actions">
+          <button type="button" class="button button--secondary" (click)="closeDrawer()">Cancelar</button>
+          <button type="submit" class="button button--primary">
+            <mat-icon aria-hidden="true">save</mat-icon>
+            Salvar meta
+          </button>
+        </footer>
+      </form>
+    </aside>
+  </div>
+>>>>>>> Stashed changes
 }
