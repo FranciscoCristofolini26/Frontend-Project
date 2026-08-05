@@ -1,0 +1,10 @@
+<section class="goal-list" aria-label="Metas da semana">
+  @for (goal of goals(); track goal.id) {
+    <app-goal-card
+      [goal]="goal"
+      (edit)="edit.emit($event)"
+      (complete)="complete.emit($event)"
+      (defer)="defer.emit($event)"
+    />
+  }
+</section>

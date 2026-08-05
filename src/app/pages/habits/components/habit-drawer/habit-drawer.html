@@ -61,15 +61,15 @@
       <fieldset class="habit-drawer__fieldset">
         <legend>Categoria</legend>
         <div class="habit-drawer__category-picker">
-          @for (category of categories; track category) {
+          @for (category of categories(); track category.id) {
             <button
               type="button"
               class="habit-drawer__category-option"
-              [class.habit-drawer__category-option--selected]="draft.category === category"
-              [attr.aria-pressed]="draft.category === category"
-              (click)="setCategory(category)"
+              [class.habit-drawer__category-option--selected]="draft.categoryId === category.id"
+              [attr.aria-pressed]="draft.categoryId === category.id"
+              (click)="setCategory(category.id)"
             >
-              {{ category }}
+              {{ category.name }}
             </button>
           }
         </div>

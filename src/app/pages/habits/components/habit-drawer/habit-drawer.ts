@@ -1,14 +1,8 @@
-import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  HABIT_CATEGORIES,
-  Habit,
-  HabitCategory,
-  HabitDraft,
-  emptyHabitDraft,
-  habitToDraft,
-} from '../../models/habit';
+import { CategoryService } from '../../../../shared/categories';
+import { Habit, HabitDraft, emptyHabitDraft, habitToDraft } from '../../models/habit';
 
 const HABIT_ICONS = [
   'self_improvement',
@@ -31,10 +25,12 @@ const HABIT_ICONS = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HabitDrawer {
+  private readonly categoryService = inject(CategoryService);
+
   readonly habit = input<Habit | null>(null);
   readonly close = output<void>();
   readonly save = output<HabitDraft>();
-  readonly categories = HABIT_CATEGORIES;
+  readonly categories = this.categoryService.categories;
   readonly icons = HABIT_ICONS;
   draft: HabitDraft = emptyHabitDraft();
   submitted = false;
@@ -58,8 +54,8 @@ export class HabitDrawer {
     this.draft = { ...this.draft, icon };
   }
 
-  setCategory(category: HabitCategory): void {
-    this.draft = { ...this.draft, category };
+  setCategory(categoryId: string): void {
+    this.draft = { ...this.draft, categoryId };
   }
 
   closeFromBackdrop(event: MouseEvent): void {

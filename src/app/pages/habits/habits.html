@@ -31,7 +31,7 @@
 
     <div class="habits-page__filters">
       <nav class="habits-page__tabs" aria-label="Filtrar hábitos">
-        @for (tab of tabs; track tab.id) {
+        @for (tab of tabs(); track tab.id) {
           <button
             type="button"
             class="habits-page__tab"

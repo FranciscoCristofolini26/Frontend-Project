@@ -1,0 +1,59 @@
+<section class="goal-focus card" aria-labelledby="weekly-focus-title">
+  <div class="goal-focus__header">
+    <span class="goal-focus__eyebrow" id="weekly-focus-title">Foco da semana</span>
+    @if (!editing()) {
+      <button
+        type="button"
+        class="button button--ghost button--compact button--icon"
+        aria-label="Editar foco da semana"
+        (click)="startEditing()"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (editing()) {
+    <form (ngSubmit)="submit()">
+      <label class="form-field"
+        >Prioridade principal
+        <input
+          class="input-control"
+          type="text"
+          name="focus"
+          [(ngModel)]="draft.focus"
+          placeholder="O que realmente importa nesta semana?"
+        />
+      </label>
+      <label class="form-field"
+        >Frase de apoio <span>Opcional</span>
+        <input
+          class="input-control"
+          type="text"
+          name="message"
+          [(ngModel)]="draft.message"
+          placeholder="Uma mensagem curta para a semana"
+        />
+      </label>
+      <footer>
+        <button type="button" class="button button--secondary button--compact" (click)="cancel()">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="button button--primary button--compact"
+          [disabled]="!draft.focus.trim()"
+        >
+          Salvar foco
+        </button>
+      </footer>
+    </form>
+  } @else {
+    <p class="goal-focus__primary">
+      {{ focus()?.focus || 'Defina a prioridade que vai guiar sua semana.' }}
+    </p>
+    @if (focus()?.message) {
+      <p class="goal-focus__message">{{ focus()?.message }}</p>
+    }
+  }
+</section>

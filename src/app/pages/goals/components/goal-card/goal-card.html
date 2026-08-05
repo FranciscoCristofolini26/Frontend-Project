@@ -1,0 +1,129 @@
+<article
+  class="goal-card card"
+  [class.goal-card--priority-high]="goal().priority === 'ALTA'"
+  [class.goal-card--priority-medium]="goal().priority === 'MEDIA'"
+  [class.goal-card--priority-low]="goal().priority === 'BAIXA'"
+  [class.goal-card--completed]="goal().status === 'CONCLUIDA'"
+>
+  <div
+    class="goal-card__overview"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="expanded()"
+    [attr.aria-label]="'Ver detalhes de ' + goal().title"
+    (click)="toggleExpanded()"
+    (keydown)="onOverviewKeydown($event)"
+  >
+    <header class="goal-card__header">
+      <span class="goal-card__marker" aria-hidden="true">◉</span>
+      <div>
+        <h2>{{ goal().title }}</h2>
+        <span class="goal-card__status">{{ statusLabel() }}</span>
+      </div>
+      <span class="goal-card__priority">{{ priorityLabel() }}</span>
+      <mat-icon class="goal-card__chevron" aria-hidden="true">{{
+        expanded() ? 'expand_less' : 'expand_more'
+      }}</mat-icon>
+    </header>
+
+    <p class="goal-card__result">{{ goal().expectedResult }}</p>
+
+    @if (progress().type !== 'none') {
+      <div
+        class="goal-card__progress"
+        [attr.aria-label]="progressLabel() + ': ' + progress().percentage + '%'"
+      >
+        <span class="goal-card__progress-track" aria-hidden="true"
+          ><i [style.width.%]="progress().percentage"></i
+        ></span>
+        <strong>{{ progress().percentage }}%</strong>
+      </div>
+      <footer class="goal-card__meta">
+        <span>{{ progressLabel() }}</span>
+        <span>{{ category()?.name }}</span>
+      </footer>
+    } @else {
+      <footer class="goal-card__meta goal-card__meta--binary">
+        <span>Resultado de conclusão única</span>
+        <span>{{ category()?.name }}</span>
+      </footer>
+    }
+  </div>
+
+  @if (expanded()) {
+    <section class="goal-card__details" [attr.aria-label]="'Detalhes de ' + goal().title">
+      <div>
+        <span class="goal-card__eyebrow">Resultado</span>
+        <p>{{ goal().expectedResult }}</p>
+      </div>
+
+      @if (progress().type === 'tasks') {
+        <div class="goal-card__steps">
+          <span class="goal-card__eyebrow">Etapas</span>
+          <ul>
+            @for (task of goal().taskLinks; track task.taskId) {
+              <li [class.goal-card__step--done]="task.completed">
+                <mat-icon aria-hidden="true">{{
+                  task.completed ? 'check_circle' : 'radio_button_unchecked'
+                }}</mat-icon
+                ><span>{{ task.title }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      } @else if (progress().type === 'habit') {
+        <div class="goal-card__steps">
+          <span class="goal-card__eyebrow">Etapas</span>
+          <p class="goal-card__habit-step">
+            <mat-icon aria-hidden="true">{{ category()?.icon || 'self_improvement' }}</mat-icon
+            >{{ progressLabel() }} em {{ linkedHabitName() }}.
+          </p>
+        </div>
+      }
+
+      @if (progress().type !== 'none') {
+        <div class="goal-card__full-progress">
+          <span class="goal-card__eyebrow">Progresso</span>
+          <div class="goal-card__progress">
+            <span class="goal-card__progress-track" aria-hidden="true"
+              ><i [style.width.%]="progress().percentage"></i
+            ></span>
+            <strong>{{ progress().percentage }}%</strong>
+          </div>
+        </div>
+      }
+    </section>
+  }
+
+  @if (expanded()) {
+    <footer class="goal-card__actions">
+      <button
+        type="button"
+        class="button button--ghost button--compact"
+        (click)="edit.emit(goal())"
+      >
+        <mat-icon>edit</mat-icon>Editar
+      </button>
+      @if (goal().status === 'CONCLUIDA') {
+        <button type="button" class="button button--secondary button--compact" disabled>
+          <mat-icon>check_circle</mat-icon>Concluída
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="button button--primary button--compact"
+          (click)="complete.emit(goal())"
+        >
+          <mat-icon>check</mat-icon>Concluir
+        </button>
+        <button
+          type="button"
+          class="button button--ghost button--compact goal-card__defer"
+          (click)="defer.emit(goal())"
+        >
+          <mat-icon>calendar_forward</mat-icon>Adiar para próxima semana
+        </button>
+      }
+    </footer>
+  }
+</article>

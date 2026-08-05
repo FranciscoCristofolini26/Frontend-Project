@@ -25,7 +25,7 @@ function initialHabits(): Habit[] {
       id: 1,
       name: 'Beber água',
       icon: 'water_drop',
-      category: 'Saúde',
+      categoryId: 'saude',
       frequencyType: 'daily',
       time: '08:00',
       goal: 'Tomar pelo menos 2 litros de água por dia.',
@@ -38,7 +38,7 @@ function initialHabits(): Habit[] {
       id: 2,
       name: 'Exercício físico',
       icon: 'fitness_center',
-      category: 'Saúde',
+      categoryId: 'saude',
       frequencyType: 'daily',
       time: '07:00',
       goal: 'Movimentar o corpo por pelo menos 30 minutos.',
@@ -60,7 +60,7 @@ function initialHabits(): Habit[] {
       id: 3,
       name: 'Ler por 20 minutos',
       icon: 'auto_stories',
-      category: 'Estudo',
+      categoryId: 'estudo',
       frequencyType: 'daily',
       time: '21:30',
       goal: 'Ler ao menos 20 minutos, sem distrações.',
@@ -84,7 +84,7 @@ function initialHabits(): Habit[] {
       id: 4,
       name: 'Meditar',
       icon: 'self_improvement',
-      category: 'Mente',
+      categoryId: 'mente',
       frequencyType: 'daily',
       goal: 'Reservar 10 minutos para desacelerar.',
       note: 'Pausado durante as férias; retomar com sessões curtas.',
@@ -93,6 +93,26 @@ function initialHabits(): Habit[] {
       createdAt: toDateKey(new Date()),
     },
   ];
+}
+
+function categoryIdFromLegacyName(category?: string): string {
+  const categoryMap: Record<string, string> = {
+    Saúde: 'saude',
+    Mente: 'mente',
+    Estudo: 'estudo',
+    'Bem-estar': 'bem-estar',
+  };
+
+  return categoryMap[category ?? ''] ?? 'pessoal';
+}
+
+function normalizeStoredHabit(habit: Habit & { category?: string }): Habit {
+  return habit.categoryId
+    ? habit
+    : {
+        ...habit,
+        categoryId: categoryIdFromLegacyName(habit.category),
+      };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -105,7 +125,7 @@ export class HabitService {
       id: nextId,
       name: draft.name.trim(),
       icon: draft.icon,
-      category: draft.category,
+      categoryId: draft.categoryId,
       frequencyType: draft.frequencyType,
       time: draft.time || undefined,
       goal: draft.goal.trim() || undefined,
@@ -126,7 +146,7 @@ export class HabitService {
               ...habit,
               name: draft.name.trim(),
               icon: draft.icon,
-              category: draft.category,
+              categoryId: draft.categoryId,
               frequencyType: draft.frequencyType,
               time: draft.time || undefined,
               goal: draft.goal.trim() || undefined,
@@ -151,6 +171,23 @@ export class HabitService {
     );
   }
 
+  toggleCompletion(id: number, date: string): void {
+    this.setHabits(
+      this.habits().map((habit) => {
+        if (habit.id !== id) return habit;
+
+        const completed = new Set(habit.completedDates);
+        if (completed.has(date)) {
+          completed.delete(date);
+        } else {
+          completed.add(date);
+        }
+
+        return { ...habit, completedDates: [...completed].sort() };
+      }),
+    );
+  }
+
   private setHabits(habits: Habit[]): void {
     this.habits.set(habits);
     this.saveHabits(habits);
@@ -162,7 +199,9 @@ export class HabitService {
       if (!storedHabits) return initialHabits();
 
       const parsedHabits: unknown = JSON.parse(storedHabits);
-      return Array.isArray(parsedHabits) ? (parsedHabits as Habit[]) : initialHabits();
+      return Array.isArray(parsedHabits)
+        ? (parsedHabits as Array<Habit & { category?: string }>).map(normalizeStoredHabit)
+        : initialHabits();
     } catch {
       return initialHabits();
     }
