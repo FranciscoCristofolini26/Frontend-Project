@@ -1,0 +1,358 @@
+<section class="calendar-page">
+  <div class="calendar-page__content">
+    <header class="calendar-page__header">
+      <div>
+        <p class="calendar-page__eyebrow">Organização pessoal</p>
+        <h1>Calendário</h1>
+        <p class="calendar-page__subtitle">
+          Visualize seus compromissos e saiba o que acontece a seguir.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="button button--primary calendar-page__new-event"
+        (click)="openCreateForm()"
+      >
+        <mat-icon>add</mat-icon><span>Evento</span>
+      </button>
+    </header>
+
+    <div class="calendar-toolbar" aria-label="Controles do calendário">
+      <div class="calendar-toolbar__navigation">
+        <button
+          type="button"
+          class="button button--compact button--ghost button--icon"
+          (click)="previousPeriod()"
+          aria-label="Período anterior"
+          title="Período anterior"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ view() === 'month' ? monthLabel() : weekLabel() }}</h2>
+        <button
+          type="button"
+          class="button button--compact button--ghost button--icon"
+          (click)="nextPeriod()"
+          aria-label="Próximo período"
+          title="Próximo período"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+        <button
+          type="button"
+          class="button button--compact button--secondary"
+          (click)="goToToday()"
+        >
+          Hoje
+        </button>
+      </div>
+
+      <div class="calendar-toolbar__actions">
+        <div class="calendar-view-switcher" aria-label="Visualização do calendário">
+          <button
+            type="button"
+            [class.calendar-view-switcher__option--active]="view() === 'month'"
+            [attr.aria-pressed]="view() === 'month'"
+            (click)="setView('month')"
+          >
+            Mês
+          </button>
+          <button
+            type="button"
+            [class.calendar-view-switcher__option--active]="view() === 'week'"
+            [attr.aria-pressed]="view() === 'week'"
+            (click)="setView('week')"
+          >
+            Semana
+          </button>
+        </div>
+        <button
+          type="button"
+          class="button button--compact button--primary calendar-toolbar__new-event"
+          (click)="openCreateForm()"
+        >
+          <mat-icon>add</mat-icon><span>Evento</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="calendar-page__workspace">
+      <div class="calendar-page__view">
+        @if (view() === 'month') {
+          <section class="calendar-month" aria-label="Visualização mensal">
+            <div class="calendar-month__weekdays" role="row">
+              @for (weekday of ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']; track weekday) {
+                <span role="columnheader">{{ weekday }}</span>
+              }
+            </div>
+            <div class="calendar-month__grid" role="grid" aria-label="Dias do mês">
+              @for (day of monthDays(); track day.key) {
+                <div
+                  class="calendar-month__day"
+                  [class.calendar-month__day--outside]="!day.isCurrentMonth"
+                  [class.calendar-month__day--today]="isToday(day.date)"
+                  [class.calendar-month__day--selected]="isSelected(day.date)"
+                  role="gridcell"
+                  tabindex="0"
+                  [attr.aria-label]="dayAriaLabel(day.date)"
+                  [attr.aria-selected]="isSelected(day.date)"
+                  (click)="selectDay(day.date)"
+                  (keydown.enter)="selectDayFromKeyboard($event, day.date)"
+                  (keydown.space)="selectDayFromKeyboard($event, day.date)"
+                >
+                  <span class="calendar-month__date">{{ day.date.getDate() }}</span>
+                  <div class="calendar-month__events">
+                    @for (event of visibleMonthEvents(day.key); track event.id) {
+                      <button
+                        type="button"
+                        [class]="eventClass(event, 'calendar-month__event')"
+                        (click)="openEvent(event, $event)"
+                        [attr.aria-label]="event.title + ', ' + event.startTime"
+                      >
+                        <span>{{ event.startTime }}</span
+                        >{{ event.title }}
+                      </button>
+                    }
+                    @if (hiddenEventCount(day.key); as moreCount) {
+                      <button
+                        type="button"
+                        class="calendar-month__more"
+                        (click)="selectDay(day.date); $event.stopPropagation()"
+                      >
+                        + {{ moreCount }} {{ moreCount === 1 ? 'evento' : 'eventos' }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+        } @else {
+          <section class="calendar-week" aria-label="Visualização semanal">
+            <div class="calendar-week__scroll">
+              <div class="calendar-week__header">
+                <span aria-hidden="true"></span>
+                @for (day of weekDays(); track day.toISOString()) {
+                  <button
+                    type="button"
+                    [class.calendar-week__day-header--today]="isToday(day)"
+                    [class.calendar-week__day-header--selected]="isSelected(day)"
+                    (click)="selectDay(day)"
+                  >
+                    <span>{{ weekdayLabel(day) }}</span
+                    ><strong>{{ day.getDate() }}</strong>
+                  </button>
+                }
+              </div>
+              <div class="calendar-week__body">
+                <div class="calendar-week__times" aria-hidden="true">
+                  @for (hour of weekHours; track hour) {
+                    <span>{{ hour.toString().padStart(2, '0') }}:00</span>
+                  }
+                </div>
+                @for (day of weekDays(); track day.toISOString()) {
+                  <div
+                    class="calendar-week__day-column"
+                    [class.calendar-week__day-column--selected]="isSelected(day)"
+                    (click)="selectDay(day)"
+                    (keydown.enter)="selectDayFromKeyboard($event, day)"
+                    tabindex="0"
+                    role="gridcell"
+                    [attr.aria-label]="dayAriaLabel(day)"
+                  >
+                    @for (event of eventsForDate(toDateKey(day)); track event.id) {
+                      <button
+                        type="button"
+                        [class]="eventClass(event, 'calendar-week__event')"
+                        [style.top.px]="eventTop(event)"
+                        [style.height.px]="eventHeight(event)"
+                        (click)="openEvent(event, $event)"
+                        [attr.aria-label]="
+                          event.title + ', ' + event.startTime + ' até ' + event.endTime
+                        "
+                      >
+                        <strong>{{ event.title }}</strong
+                        ><span>{{ event.startTime }} – {{ event.endTime }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        }
+      </div>
+
+      <aside class="calendar-panel" aria-label="Agenda do dia selecionado">
+        @if (selectedEvent(); as event) {
+          <section class="calendar-panel__event-detail">
+            <button type="button" class="calendar-panel__back" (click)="selectedEvent.set(null)">
+              <mat-icon>arrow_back</mat-icon>Agenda do dia
+            </button>
+            <span [class]="eventClass(event, 'calendar-panel__event-source')">{{
+              eventSourceLabel(event)
+            }}</span>
+            <h2>{{ event.title }}</h2>
+            <p class="calendar-panel__event-time">
+              <mat-icon>schedule</mat-icon>{{ event.startTime }} – {{ event.endTime }}
+            </p>
+            <p class="calendar-panel__event-date">
+              <mat-icon>calendar_today</mat-icon>{{ selectedDateLabel() }}
+            </p>
+            @if (event.location) {
+              <p class="calendar-panel__event-location">
+                <mat-icon>location_on</mat-icon>{{ event.location }}
+              </p>
+            }
+            @if (event.description) {
+              <p class="calendar-panel__event-description">{{ event.description }}</p>
+            }
+            <div class="calendar-panel__event-actions">
+              <button
+                type="button"
+                class="button button--secondary button--compact"
+                (click)="openEditForm(event)"
+              >
+                <mat-icon>edit</mat-icon>Editar
+              </button>
+              <button
+                type="button"
+                class="button button--danger button--compact"
+                (click)="requestDeletion(event)"
+              >
+                <mat-icon>delete</mat-icon>Excluir
+              </button>
+            </div>
+          </section>
+        } @else {
+          <section class="calendar-panel__day-agenda">
+            <header class="calendar-panel__heading">
+              <div>
+                <p>Agenda do dia</p>
+                <h2>{{ selectedDateLabel() }}</h2>
+              </div>
+              <button
+                type="button"
+                class="button button--ghost button--icon button--compact"
+                (click)="openCreateForm()"
+                aria-label="Adicionar evento neste dia"
+                title="Adicionar evento"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </header>
+            @if (selectedDayEvents().length) {
+              <div class="calendar-panel__agenda-list">
+                @for (event of selectedDayEvents(); track event.id) {
+                  <button
+                    type="button"
+                    [class]="eventClass(event, 'calendar-panel__agenda-event')"
+                    (click)="openEvent(event)"
+                  >
+                    <time>{{ event.startTime }}</time
+                    ><span
+                      ><strong>{{ event.title }}</strong
+                      ><small>{{ event.endTime }} · {{ eventSourceLabel(event) }}</small></span
+                    >
+                  </button>
+                }
+              </div>
+            } @else {
+              <div class="calendar-panel__empty">
+                <mat-icon>event_available</mat-icon>
+                <p>Nenhum compromisso para este dia.</p>
+                <button
+                  type="button"
+                  class="button button--secondary button--compact"
+                  (click)="openCreateForm()"
+                >
+                  Adicionar evento
+                </button>
+              </div>
+            }
+          </section>
+        }
+
+        <section class="calendar-panel__calendars">
+          <h2>Calendários</h2>
+          <p class="calendar-panel__calendar">
+            <i class="calendar-panel__calendar-dot"></i>Meu calendário
+          </p>
+          <div class="calendar-panel__google">
+            <p>
+              <i class="calendar-panel__calendar-dot calendar-panel__calendar-dot--google"></i
+              >Google Calendar
+            </p>
+            @if (googleConnected()) {
+              <span>Conectado</span>
+            } @else {
+              <button type="button" (click)="googleConnectOpen.set(true)">Conectar</button>
+            }
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</section>
+
+@if (formOpen()) {
+  <app-calendar-event-form
+    [event]="editingEvent()"
+    [initialDate]="toDateKey(selectedDate())"
+    (save)="saveEvent($event)"
+    (close)="closeForm()"
+  />
+}
+
+@if (eventPendingDeletion(); as event) {
+  <div class="modal-backdrop calendar-confirmation" (keydown.escape)="cancelDeletion()">
+    <section
+      class="modal-dialog calendar-confirmation__dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-event-title"
+    >
+      <mat-icon>delete_outline</mat-icon>
+      <h2 id="delete-event-title">Excluir evento?</h2>
+      <p>“{{ event.title }}” será removido do seu calendário.</p>
+      <div>
+        <button type="button" class="button button--secondary" (click)="cancelDeletion()">
+          Cancelar
+        </button>
+        <button type="button" class="button button--danger" (click)="deleteEvent()">Excluir</button>
+      </div>
+    </section>
+  </div>
+}
+
+@if (googleConnectOpen()) {
+  <div
+    class="modal-backdrop calendar-google-dialog"
+    (click)="googleConnectOpen.set(false)"
+    (keydown.escape)="googleConnectOpen.set(false)"
+  >
+    <section
+      class="modal-dialog calendar-google-dialog__content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="google-connect-title"
+      (click)="$event.stopPropagation()"
+    >
+      <span class="calendar-google-dialog__icon"><mat-icon>calendar_month</mat-icon></span>
+      <h2 id="google-connect-title">Conectar Google Calendar</h2>
+      <p>Sincronize seus eventos do Google Calendar com seu Workspace.</p>
+      <div>
+        <button
+          type="button"
+          class="button button--secondary"
+          (click)="googleConnectOpen.set(false)"
+        >
+          Agora não
+        </button>
+        <button type="button" class="button button--primary" (click)="connectGoogleCalendar()">
+          <mat-icon>login</mat-icon>Continuar com Google
+        </button>
+      </div>
+    </section>
+  </div>
+}
