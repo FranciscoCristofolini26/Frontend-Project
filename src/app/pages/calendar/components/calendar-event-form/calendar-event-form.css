@@ -1,0 +1,112 @@
+:host {
+  display: block;
+}
+
+.calendar-event-form__backdrop {
+  padding: 24px;
+}
+
+.calendar-event-form__dialog {
+  max-height: min(90dvh, 760px);
+  max-width: 600px;
+  overflow: auto;
+}
+
+.calendar-event-form__header {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 24px 26px 20px;
+}
+
+.calendar-event-form__header p,
+.calendar-event-form__header h2 {
+  margin: 0;
+}
+
+.calendar-event-form__header p {
+  color: var(--color-brand-primary);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calendar-event-form__header h2 {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-top: 6px;
+}
+
+.calendar-event-form__body {
+  padding: 4px 26px 24px;
+}
+
+.calendar-event-form__schedule-fields,
+.calendar-event-form__meta-fields {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1.25fr 1fr 1fr;
+}
+
+.calendar-event-form__meta-fields {
+  grid-template-columns: 1fr 1fr;
+}
+
+.calendar-event-form__description {
+  min-height: 100px;
+}
+
+.calendar-event-form__optional {
+  color: var(--color-text-disabled);
+  font-weight: 400;
+}
+
+.calendar-event-form__error {
+  color: var(--color-error);
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.calendar-event-form__footer {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 26px;
+}
+
+@media (max-width: 639px) {
+  .calendar-event-form__backdrop {
+    padding: 0;
+  }
+
+  .calendar-event-form__dialog {
+    border-radius: 0;
+    max-height: none;
+    min-height: 100dvh;
+    width: 100%;
+  }
+
+  .calendar-event-form__header,
+  .calendar-event-form__body,
+  .calendar-event-form__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .calendar-event-form__schedule-fields,
+  .calendar-event-form__meta-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-event-form__schedule-fields .form-field:first-child {
+    grid-column: 1 / -1;
+  }
+}
