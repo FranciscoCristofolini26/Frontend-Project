@@ -1,11 +1,3 @@
-<<<<<<< Updated upstream
-=======
-import { CATEGORY_NAMES, CategoryName } from '../../models/category';
-
-export const HABIT_CATEGORIES = CATEGORY_NAMES;
-
-export type HabitCategory = CategoryName;
->>>>>>> Stashed changes
 export type HabitFrequencyType = 'daily' | 'weekdays' | 'custom';
 export type HabitStatus = 'active' | 'paused';
 
