@@ -1,7 +1,8 @@
-import { Component, computed, effect, input, signal, output } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, input, signal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LayoutTier, Task, TaskPeriod, TaskPriority } from '../../models';
 import { TasksProperties } from './tasks-properties/tasks-properties';
+import { TasksService } from './service/tasks.service';
 
 const PRIORITY_CLASSES: Record<TaskPriority, string> = {
   [TaskPriority.ALTA]: 'bg-error/10 text-error',
@@ -53,73 +54,12 @@ const TIER_ICON_CLASSES: Record<LayoutTier, string> = {
   templateUrl: './tasks.html',
   styleUrl: './tasks.css',
 })
-export class Tasks {
+export class Tasks implements OnInit {
+  private tasksService = inject(TasksService);
+
   layoutTier = input<LayoutTier>('balanced');
   newTaskRequest = input(0);
-  tasks = signal<Task[]>([
-    {
-      id: 1,
-      title: 'Revisar proposta comercial da Acme',
-      priority: TaskPriority.ALTA,
-      dueLabel: 'Hoje, 09:30',
-      period: 'hoje',
-      project: 'Vendas Q3',
-      completed: false,
-      notes: 'Aguardando parecer jurídico antes de enviar a versão final ao cliente.',
-    },
-    {
-      id: 2,
-      title: 'Sessão de foco: refatorar módulo de billing',
-      priority: TaskPriority.MEDIA,
-      dueLabel: 'Hoje, 14:00',
-      period: 'hoje',
-      project: 'Plataforma',
-      completed: false,
-    },
-    {
-      id: 3,
-      title: 'Confirmar consulta médica',
-      priority: TaskPriority.NORMAL,
-      dueLabel: 'Hoje, 14:30',
-      period: 'hoje',
-      completed: false,
-    },
-    {
-      id: 4,
-      title: 'Escrever roteiro do onboarding',
-      priority: TaskPriority.NORMAL,
-      dueLabel: 'Amanhã',
-      period: 'proximas',
-      project: 'Ativação',
-      completed: false,
-      notes: 'Focar nos três primeiros passos do fluxo de boas-vindas.',
-    },
-    {
-      id: 5,
-      title: 'Reunião de planejamento semanal',
-      priority: TaskPriority.ALTA,
-      dueLabel: 'Amanhã, 10:00',
-      period: 'proximas',
-      completed: false,
-    },
-    {
-      id: 6,
-      title: 'Planejar férias de fim de ano',
-      priority: TaskPriority.NORMAL,
-      dueLabel: 'Sem data',
-      period: 'mais-tarde',
-      completed: false,
-    },
-    {
-      id: 7,
-      title: 'Ler artigo sobre design systems',
-      priority: TaskPriority.NORMAL,
-      dueLabel: 'Sem data',
-      period: 'mais-tarde',
-      completed: true,
-    },
-  ]);
-
+  tasks = signal<Task[]>([]);
   selectedTaskId = signal<number | null>(null);
   detailOpenChange = output<boolean>();
   showNewTaskDialog = signal<boolean>(false);
@@ -150,6 +90,10 @@ export class Tasks {
     });
   }
 
+  ngOnInit(): void {
+    this.tasksService.getTasks().subscribe((tasks) => this.tasks.set(tasks));
+  }
+
   isGroupCollapsed(key: string): boolean {
     return this.collapsedGroups().has(key);
   }
@@ -176,9 +120,14 @@ export class Tasks {
 
   toggleTask(id: number, event?: Event) {
     event?.stopPropagation();
-    this.tasks.update((list) =>
-      list.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
-    );
+    const task = this.tasks().find((t) => t.id === id);
+    if (!task) {
+      return;
+    }
+
+    const completed = !task.completed;
+    this.tasks.update((list) => list.map((t) => (t.id === id ? { ...t, completed } : t)));
+    this.tasksService.updateTask(id, { completed }).subscribe();
   }
 
   openNewTaskDialog() {
@@ -190,9 +139,9 @@ export class Tasks {
   }
 
   addTask(task: Omit<Task, 'id'>) {
-    const newId = Math.max(...this.tasks().map((t) => t.id), 0) + 1;
-    const newTask: Task = { ...task, id: newId };
-    this.tasks.update((list) => [...list, newTask]);
+    this.tasksService.createTask(task).subscribe((newTask) => {
+      this.tasks.update((list) => [...list, newTask]);
+    });
   }
 
   priorityClasses(priority: TaskPriority): string {
