@@ -52,9 +52,15 @@
   margin-top: 16px;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 1024px) {
   .schedule-page__content--task-detail {
-    padding-right: 384px;
+    padding-right: 368px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .schedule-page {
+    padding: 16px;
   }
 }
 
@@ -67,5 +73,9 @@
   .schedule-page__main {
     max-width: 100%;
     width: 100%;
+  }
+
+  .schedule-content-switcher {
+    margin-top: 12px;
   }
 }

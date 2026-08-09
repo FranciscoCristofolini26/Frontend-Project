@@ -47,6 +47,7 @@ export class TasksProperties {
       dueDate: [null],
       dueTime: [''],
       project: [''],
+      assignee: [''],
       notes: [''],
       completed: [false],
     });
@@ -109,6 +110,7 @@ export class TasksProperties {
         period: formValue.period,
         dueLabel: this.getDueLabel(),
         project: formValue.project || undefined,
+        assignee: formValue.assignee || undefined,
         notes: formValue.notes || undefined,
         completed: formValue.completed,
       };
@@ -154,7 +156,7 @@ export class TasksProperties {
     this.close.emit();
   }
 
-  onBackdropClick(event: MouseEvent) {
+  onBackdropClick(event: Event) {
     if (event.target === event.currentTarget) {
       this.onClose();
     }

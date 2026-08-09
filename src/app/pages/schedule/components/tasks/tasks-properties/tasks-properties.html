@@ -1,4 +1,4 @@
-<div class="modal-backdrop" (click)="onBackdropClick($event)">
+<div class="modal-backdrop" (click)="onBackdropClick($event)" (keydown.enter)="onBackdropClick($event)" tabindex="0" role="button">
   <div class="modal-dialog">
     <div class="modal-header">
       <h2 class="modal-title">Nova Tarefa</h2>
@@ -66,15 +66,28 @@
         </div>
       </div>
 
-      <div class="form-field">
-        <label for="project">Projeto</label>
-        <input
-          id="project"
-          type="text"
-          formControlName="project"
-          class="input-control"
-          placeholder="Nome do projeto (opcional)"
-        />
+      <div class="form-row">
+        <div class="form-field">
+          <label for="project">Projeto</label>
+          <input
+            id="project"
+            type="text"
+            formControlName="project"
+            class="input-control"
+            placeholder="Nome do projeto (opcional)"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="assignee">Responsável</label>
+          <input
+            id="assignee"
+            type="text"
+            formControlName="assignee"
+            class="input-control"
+            placeholder="Nome do responsável (opcional)"
+          />
+        </div>
       </div>
 
       <div class="form-field">
