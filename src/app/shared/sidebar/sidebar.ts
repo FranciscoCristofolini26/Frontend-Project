@@ -42,49 +42,56 @@ export class Sidebar implements OnDestroy {
     this.isDesktop() && this.sidebarOpen() ? this.sidebarWidth() : 0,
   );
 
-
   readonly navigationSections: NavigationSectionsModel[] = [
     {
       title: 'INÍCIO',
       items: [
-        { icon: 'home', label: 'Home', active: true, url: ''},
-        { icon: 'dashboard', label: 'Dashboard', url: ''},
+        { icon: 'home', label: 'Home', active: true, url: '' },
+        { icon: 'dashboard', label: 'Dashboard', url: '' },
       ],
     },
     {
       title: 'PLANEJAMENTO',
       items: [
         {
-          icon: 'view_kanban', label: 'Planner',
-          url: 'schedule'
+          icon: 'view_kanban',
+          label: 'Planner',
+          url: 'schedule',
         },
         {
-          icon: 'calendar_month', label: 'Calendário',
-          url: ''
+          icon: 'calendar_month',
+          label: 'Calendário',
+          url: 'calendar',
         },
         {
-          icon: 'check_circle', label: 'Tarefas',
-          url: 'schedule'
+          icon: 'check_circle',
+          label: 'Tarefas',
+          url: 'schedule',
         },
         {
-          icon: 'target', label: 'Metas Semanais',
-          url: ''
+          icon: 'target',
+          label: 'Metas Semanais',
+          url: 'goals',
         },
         {
-          icon: 'self_improvement', label: 'Hábitos',
-          url: ''
+          icon: 'self_improvement',
+          label: 'Hábitos',
+          url: 'habits',
         },
         {
-          icon: 'note', label: 'Notas',
-          url: 'notes'
+          icon: 'note',
+          label: 'Notas',
+          url: 'notes',
         },
         {
-          icon: 'schedule', label: 'Time Blocking',
-          url: ''
+          icon: 'schedule',
+          label: 'Time Blocking',
+          url: '',
         },
         {
-          icon: 'folder', label: 'Projetos',
-          url: ''
+          icon: 'folder',
+          label: 'Projetos',
+          url: '',
         },
       ],
     },
@@ -92,28 +99,34 @@ export class Sidebar implements OnDestroy {
       title: 'PRODUTIVIDADE',
       items: [
         {
-          icon: 'inbox', label: 'Inbox',
-          url: ''
+          icon: 'inbox',
+          label: 'Inbox',
+          url: '',
         },
         {
-          icon: 'priority_high', label: 'Prioridades',
-          url: ''
+          icon: 'priority_high',
+          label: 'Prioridades',
+          url: '',
         },
         {
-          icon: 'trending_up', label: 'Progresso',
-          url: ''
+          icon: 'trending_up',
+          label: 'Progresso',
+          url: '',
         },
         {
-          icon: 'analytics', label: 'Estatísticas',
-          url: ''
+          icon: 'analytics',
+          label: 'Estatísticas',
+          url: '',
         },
         {
-          icon: 'today', label: 'Revisão Diária',
-          url: ''
+          icon: 'today',
+          label: 'Revisão Diária',
+          url: '',
         },
         {
-          icon: 'description', label: 'Templates',
-          url: ''
+          icon: 'description',
+          label: 'Templates',
+          url: '',
         },
       ],
     },
@@ -121,16 +134,19 @@ export class Sidebar implements OnDestroy {
       title: 'ASSISTENTE IA',
       items: [
         {
-          icon: 'psychology', label: 'Planejamento Inteligente',
-          url: ''
+          icon: 'psychology',
+          label: 'Planejamento Inteligente',
+          url: '',
         },
         {
-          icon: 'lightbulb', label: 'Sugestões',
-          url: ''
+          icon: 'lightbulb',
+          label: 'Sugestões',
+          url: '',
         },
         {
-          icon: 'insights', label: 'Insights',
-          url: ''
+          icon: 'insights',
+          label: 'Insights',
+          url: '',
         },
       ],
     },
@@ -138,24 +154,29 @@ export class Sidebar implements OnDestroy {
       title: 'CONFIGURAÇÕES',
       items: [
         {
-          icon: 'settings', label: 'Configurações',
-          url: ''
+          icon: 'settings',
+          label: 'Configurações',
+          url: '',
         },
         {
-          icon: 'palette', label: 'Aparência',
-          url: ''
+          icon: 'palette',
+          label: 'Aparência',
+          url: '',
         },
         {
-          icon: 'notifications', label: 'Notificações',
-          url: ''
+          icon: 'notifications',
+          label: 'Notificações',
+          url: '',
         },
         {
-          icon: 'groups', label: 'Equipe',
-          url: ''
+          icon: 'groups',
+          label: 'Equipe',
+          url: '',
         },
         {
-          icon: 'apps', label: 'Ícones',
-          url: ''
+          icon: 'apps',
+          label: 'Ícones',
+          url: '',
         },
       ],
     },
@@ -236,9 +257,7 @@ export class Sidebar implements OnDestroy {
   private getStoredSidebarWidth() {
     try {
       const storedWidth = Number(localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY));
-      return Number.isFinite(storedWidth)
-        ? this.clampWidth(storedWidth)
-        : DEFAULT_SIDEBAR_WIDTH;
+      return Number.isFinite(storedWidth) ? this.clampWidth(storedWidth) : DEFAULT_SIDEBAR_WIDTH;
     } catch {
       return DEFAULT_SIDEBAR_WIDTH;
     }

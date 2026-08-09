@@ -1,0 +1,95 @@
+<section class="goals-page">
+  <div class="goals-page__content">
+    <header class="goals-page__header">
+      <div>
+        <h1>Metas Semanais</h1>
+        <p>Escolha os resultados que merecem sua atenção nos próximos dias.</p>
+      </div>
+      <button
+        type="button"
+        class="button button--primary goals-page__new-button"
+        (click)="openCreateDrawer()"
+      >
+        <mat-icon>add</mat-icon>Nova meta
+      </button>
+    </header>
+
+    <app-goal-week-navigation
+      [selectedDate]="selectedDate()"
+      (previous)="previousWeek()"
+      (next)="nextWeek()"
+      (current)="goToCurrentWeek()"
+    />
+    <app-goal-focus [focus]="focus()" (save)="saveFocus($event)" />
+
+    @if (summary().total) {
+      <p class="goals-page__summary">
+        {{ summary().completed }} de {{ summary().total }} metas concluídas
+        <span aria-hidden="true">·</span> {{ summary().percentage }}%
+      </p>
+    } @else {
+      <p class="goals-page__summary">Sua semana ainda está aberta para o que realmente importa.</p>
+    }
+
+    <div class="goals-page__filters">
+      <nav class="goals-page__state-tabs" aria-label="Filtrar metas por estado">
+        <button
+          type="button"
+          [class.goals-page__state-tab--active]="stateFilter() === 'all'"
+          [attr.aria-pressed]="stateFilter() === 'all'"
+          (click)="setStateFilter('all')"
+        >
+          Todas
+        </button>
+        <button
+          type="button"
+          [class.goals-page__state-tab--active]="stateFilter() === 'in-progress'"
+          [attr.aria-pressed]="stateFilter() === 'in-progress'"
+          (click)="setStateFilter('in-progress')"
+        >
+          Em andamento
+        </button>
+        <button
+          type="button"
+          [class.goals-page__state-tab--active]="stateFilter() === 'completed'"
+          [attr.aria-pressed]="stateFilter() === 'completed'"
+          (click)="setStateFilter('completed')"
+        >
+          Concluídas
+        </button>
+      </nav>
+      <label class="goals-page__category-filter"
+        >Categoria
+        <select [value]="categoryFilter()" (change)="setCategoryFilter(category.value)" #category>
+          <option value="all">Todas as categorias</option>
+          @for (item of categories(); track item.id) {
+            <option [value]="item.id">{{ item.name }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (loading()) {
+      <section class="goals-page__feedback card" aria-live="polite">
+        <mat-icon>progress_activity</mat-icon>Carregando metas da semana…
+      </section>
+    } @else if (error()) {
+      <section class="goals-page__feedback goals-page__feedback--error card" role="alert">
+        <mat-icon>error</mat-icon>{{ error() }}
+      </section>
+    } @else if (filteredGoals().length) {
+      <app-goal-list
+        [goals]="filteredGoals()"
+        (edit)="openEditDrawer($event)"
+        (complete)="completeGoal($event)"
+        (defer)="deferGoal($event)"
+      />
+    } @else {
+      <app-goal-empty-state (create)="openCreateDrawer()" />
+    }
+  </div>
+</section>
+
+@if (drawerOpen()) {
+  <app-goal-drawer [goal]="editingGoal()" (close)="closeDrawer()" (save)="saveGoal($event)" />
+}

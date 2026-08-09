@@ -1,0 +1,10 @@
+<section class="habit-grid" aria-label="Lista de hábitos">
+  @for (habit of habits(); track habit.id) {
+    <app-habit-card
+      [habit]="habit"
+      (edit)="edit.emit($event)"
+      (remove)="remove.emit($event)"
+      (statusChange)="statusChange.emit($event)"
+    />
+  }
+</section>

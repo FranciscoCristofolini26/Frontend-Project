@@ -1,0 +1,123 @@
+<div
+  class="modal-backdrop calendar-event-form__backdrop"
+  (click)="closeFromBackdrop($event)"
+  (keydown.escape)="close.emit()"
+>
+  <section
+    class="modal-dialog calendar-event-form__dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="event() ? 'Editar evento' : 'Novo evento'"
+  >
+    <form class="calendar-event-form" (ngSubmit)="submit()">
+      <header class="calendar-event-form__header">
+        <div>
+          <p>{{ event() ? 'Editar evento' : 'Novo evento' }}</p>
+          <h2>{{ event() ? 'Atualize seu compromisso' : 'Reserve um momento no calendário' }}</h2>
+        </div>
+        <button
+          type="button"
+          class="button button--ghost button--icon"
+          (click)="close.emit()"
+          aria-label="Fechar formulário"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+
+      <div class="calendar-event-form__body">
+        <label class="form-field">
+          Título <span aria-hidden="true">*</span>
+          <input
+            class="input-control"
+            type="text"
+            name="event-title"
+            [(ngModel)]="draft.title"
+            placeholder="Ex.: Reunião de alinhamento"
+            autocomplete="off"
+          />
+          @if (submitted && !draft.title.trim()) {
+            <small class="calendar-event-form__error">Informe o título do evento.</small>
+          }
+        </label>
+
+        <div class="calendar-event-form__schedule-fields">
+          <label class="form-field">
+            Data <span aria-hidden="true">*</span>
+            <input class="input-control" type="date" name="event-date" [(ngModel)]="draft.date" />
+            @if (submitted && !draft.date) {
+              <small class="calendar-event-form__error">Escolha uma data.</small>
+            }
+          </label>
+          <label class="form-field">
+            Início <span aria-hidden="true">*</span>
+            <input
+              class="input-control"
+              type="time"
+              name="event-start"
+              [(ngModel)]="draft.startTime"
+            />
+          </label>
+          <label class="form-field">
+            Término <span aria-hidden="true">*</span>
+            <input class="input-control" type="time" name="event-end" [(ngModel)]="draft.endTime" />
+          </label>
+        </div>
+        @if (submitted && draft.startTime >= draft.endTime) {
+          <small class="calendar-event-form__error"
+            >O horário final deve ser posterior ao horário inicial.</small
+          >
+        }
+
+        <div class="calendar-event-form__meta-fields">
+          <label class="form-field">
+            Calendário
+            <select class="input-control" name="event-source" [(ngModel)]="draft.source">
+              <option value="internal">Meu calendário</option>
+              <option value="google">Google Calendar</option>
+            </select>
+          </label>
+          <label class="form-field">
+            Categoria
+            <select class="input-control" name="event-category" [(ngModel)]="draft.category">
+              @for (category of categories; track category.value) {
+                <option [value]="category.value">{{ category.label }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <label class="form-field">
+          Descrição
+          <textarea
+            class="input-control textarea calendar-event-form__description"
+            name="event-description"
+            [(ngModel)]="draft.description"
+            placeholder="Adicione os detalhes importantes deste compromisso."
+          ></textarea>
+        </label>
+
+        <label class="form-field">
+          Localização <span class="calendar-event-form__optional">Opcional</span>
+          <input
+            class="input-control"
+            type="text"
+            name="event-location"
+            [(ngModel)]="draft.location"
+            placeholder="Ex.: Sala 204 ou link da reunião"
+            autocomplete="off"
+          />
+        </label>
+      </div>
+
+      <footer class="calendar-event-form__footer">
+        <button type="button" class="button button--secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button type="submit" class="button button--primary">
+          {{ event() ? 'Salvar alterações' : 'Criar evento' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

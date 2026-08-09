@@ -4,6 +4,7 @@ import {
   HostListener,
   computed,
   effect,
+  inject,
   input,
   signal,
 } from '@angular/core';
@@ -22,6 +23,7 @@ import {
   durationInMinutes,
   startOfDay,
 } from '../../models';
+import { HabitService } from '../../../habits/service/habit.service';
 import { PlannerDayView } from '../planner-day-view/planner-day-view';
 import { PlannerSidebar } from '../planner-sidebar/planner-sidebar';
 import { PlannerUnscheduledTasks } from '../planner-unscheduled-tasks/planner-unscheduled-tasks';
@@ -148,6 +150,8 @@ function createPlannerEvents(today: Date): PlannerEvent[] {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Planning {
+  private readonly habitService = inject(HabitService);
+
   readonly selectedDate = input<Date>(startOfDay(new Date()));
   readonly viewMode = input<PlannerViewMode>('daily');
   readonly newEventRequest = input(0);
@@ -167,12 +171,17 @@ export class Planning {
     { id: 2, title: 'Ler capítulo 4 do curso', category: 'study', project: 'Angular' },
     { id: 3, title: 'Responder e-mails pendentes', category: 'personal' },
   ]);
-  readonly habits = signal<PlannerHabit[]>([
-    { id: 1, title: 'Beber água', completed: true },
-    { id: 2, title: 'Exercício físico', completed: false },
-    { id: 3, title: 'Ler por 20 minutos', completed: false },
-    { id: 4, title: 'Planejar o dia seguinte', completed: false },
-  ]);
+  readonly habits = computed<PlannerHabit[]>(() => {
+    const activeDate = dateKey(this.selectedDate());
+    return this.habitService
+      .habits()
+      .filter((habit) => habit.status === 'active')
+      .map((habit) => ({
+        id: habit.id,
+        title: habit.name,
+        completed: habit.completedDates.includes(activeDate),
+      }));
+  });
 
   readonly dayEvents = computed(() => {
     const activeDate = dateKey(this.selectedDate());
@@ -210,9 +219,7 @@ export class Planning {
   }
 
   toggleHabit(id: number): void {
-    this.habits.update((habits) =>
-      habits.map((habit) => (habit.id === id ? { ...habit, completed: !habit.completed } : habit)),
-    );
+    this.habitService.toggleCompletion(id, dateKey(this.selectedDate()));
   }
 
   createEvent(draft: PlannerEventDraft): void {

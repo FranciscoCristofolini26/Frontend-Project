@@ -1,0 +1,124 @@
+<div
+  class="habit-drawer-backdrop"
+  (click)="closeFromBackdrop($event)"
+  (keydown.escape)="close.emit()"
+>
+  <aside
+    class="habit-drawer"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="habit() ? 'Editar hábito' : 'Novo hábito'"
+  >
+    <header class="habit-drawer__header">
+      <div>
+        <h2>{{ habit() ? 'Editar hábito' : 'Novo hábito' }}</h2>
+        <p>Defina o que você quer construir na sua rotina.</p>
+      </div>
+      <button
+        type="button"
+        class="button button--ghost button--icon"
+        aria-label="Fechar drawer"
+        (click)="close.emit()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form class="habit-drawer__form" (ngSubmit)="submit()">
+      <label class="form-field">
+        Nome do hábito <span aria-hidden="true">*</span>
+        <input
+          class="input-control"
+          type="text"
+          name="habit-name"
+          [(ngModel)]="draft.name"
+          placeholder="Ex.: Caminhar pela manhã"
+          autocomplete="off"
+        />
+        @if (submitted && !draft.name.trim()) {
+          <small class="habit-drawer__error">Informe o nome do hábito.</small>
+        }
+      </label>
+
+      <fieldset class="habit-drawer__fieldset">
+        <legend>Ícone</legend>
+        <div class="habit-drawer__icon-picker">
+          @for (icon of icons; track icon) {
+            <button
+              type="button"
+              class="habit-drawer__icon-option"
+              [class.habit-drawer__icon-option--selected]="draft.icon === icon"
+              [attr.aria-label]="'Selecionar ícone ' + icon"
+              [attr.aria-pressed]="draft.icon === icon"
+              (click)="setIcon(icon)"
+            >
+              <mat-icon>{{ icon }}</mat-icon>
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="habit-drawer__fieldset">
+        <legend>Categoria</legend>
+        <div class="habit-drawer__category-picker">
+          @for (category of categories(); track category.id) {
+            <button
+              type="button"
+              class="habit-drawer__category-option"
+              [class.habit-drawer__category-option--selected]="draft.categoryId === category.id"
+              [attr.aria-pressed]="draft.categoryId === category.id"
+              (click)="setCategory(category.id)"
+            >
+              {{ category.name }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <label class="form-field">
+        Frequência
+        <select class="input-control" name="frequency" [(ngModel)]="draft.frequencyType">
+          <option value="daily">Todos os dias</option>
+        </select>
+        <small class="habit-drawer__hint"
+          >Outras frequências serão disponibilizadas em breve.</small
+        >
+      </label>
+
+      <label class="form-field">
+        Horário <span class="habit-drawer__optional">Opcional</span>
+        <input class="input-control" type="time" name="time" [(ngModel)]="draft.time" />
+      </label>
+
+      <label class="form-field">
+        Objetivo específico <span class="habit-drawer__optional">Opcional</span>
+        <input
+          class="input-control"
+          type="text"
+          name="goal"
+          [(ngModel)]="draft.goal"
+          placeholder="Ex.: 30 minutos por dia"
+        />
+      </label>
+
+      <label class="form-field">
+        Observação <span class="habit-drawer__optional">Opcional</span>
+        <textarea
+          class="input-control textarea habit-drawer__textarea"
+          name="note"
+          [(ngModel)]="draft.note"
+          placeholder="Uma anotação para este hábito..."
+        ></textarea>
+      </label>
+
+      <footer class="habit-drawer__actions">
+        <button type="button" class="button button--secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button type="submit" class="button button--primary">
+          <mat-icon>save</mat-icon>Salvar
+        </button>
+      </footer>
+    </form>
+  </aside>
+</div>

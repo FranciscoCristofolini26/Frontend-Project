@@ -1,18 +1,13 @@
 .schedule-page {
   background: var(--color-bg-main);
   min-height: 100vh;
-  padding: 24px 24px 24px 16px;
+  padding: 40px 24px;
 }
 
 .schedule-page__content {
   margin: 0 auto;
   max-width: 1536px;
-  transition: padding-right 0.3s ease-in-out, max-width 0.3s ease-in-out;
-}
-
-.schedule-page__content--full {
-  margin: 0;
-  max-width: none;
+  transition: padding-right 0.3s ease-in-out;
 }
 
 .schedule-content-switcher {

@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.habit-empty-state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  padding: 42px 24px;
+  text-align: center;
+}
+
+.habit-empty-state__icon {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-brand-accent) 12%, transparent);
+  border-radius: 50%;
+  color: var(--color-brand-accent);
+  display: inline-flex;
+  height: 52px;
+  justify-content: center;
+  width: 52px;
+}
+
+.habit-empty-state__icon mat-icon {
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
+}
+
+.habit-empty-state h2 {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 18px;
+  margin: 16px 0 0;
+}
+
+.habit-empty-state p {
+  color: var(--color-text-sub);
+  line-height: 1.5;
+  margin: 8px 0 20px;
+  max-width: 420px;
+}
+
+.habit-empty-state .button mat-icon {
+  font-size: 19px;
+  height: 19px;
+  width: 19px;
+}

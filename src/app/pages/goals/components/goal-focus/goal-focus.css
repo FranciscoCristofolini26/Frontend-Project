@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.goal-focus {
+  border-left: 3px solid var(--color-brand-primary);
+  margin-top: 18px;
+  padding: 18px 20px;
+}
+
+.goal-focus__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.goal-focus__eyebrow {
+  color: var(--color-brand-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.goal-focus__primary {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.35;
+  margin: 9px 0 0;
+}
+
+.goal-focus__message {
+  color: var(--color-text-sub);
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
+.goal-focus form footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.goal-focus .form-field span {
+  color: var(--color-text-disabled);
+  font-size: 12px;
+  font-weight: 400;
+}
