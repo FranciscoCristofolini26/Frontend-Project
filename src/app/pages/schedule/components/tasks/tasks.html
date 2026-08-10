@@ -2,8 +2,8 @@
   <div class="min-w-0">
     @if (showNewTaskDialog()) {
       <app-tasks-properties
-        (close)="closeNewTaskDialog()"
-        (save)="addTask($event)"
+        (closeForm)="closeNewTaskDialog()"
+        (saveForm)="addTask($event)"
       ></app-tasks-properties>
     }
 

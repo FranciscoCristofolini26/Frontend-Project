@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -25,8 +25,8 @@ import { Task, TaskPriority, TaskPeriod } from '../../../models';
   styleUrl: './tasks-properties.css',
 })
 export class TasksProperties {
-  close = output<void>();
-  save = output<Omit<Task, 'id'>>();
+  closeForm = output<void>();
+  saveForm = output<Omit<Task, 'id'>>();
 
   taskForm: FormGroup;
   priorities = Object.values(TaskPriority);
@@ -39,7 +39,9 @@ export class TasksProperties {
   selectedDate = signal<Date | null>(null);
   selectedTime = signal<string>('');
 
-  constructor(private fb: FormBuilder) {
+  private fb = inject(FormBuilder);
+
+  constructor() {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       priority: [TaskPriority.NORMAL, Validators.required],
@@ -66,7 +68,6 @@ export class TasksProperties {
   private updateDueLabel() {
     const date = this.selectedDate();
     const time = this.selectedTime();
-    const period = this.taskForm.get('period')?.value;
 
     if (!date && !time) {
       return;
@@ -114,7 +115,7 @@ export class TasksProperties {
         notes: formValue.notes || undefined,
         completed: formValue.completed,
       };
-      this.save.emit(task);
+      this.saveForm.emit(task);
       this.onClose();
     }
   }
@@ -153,7 +154,7 @@ export class TasksProperties {
   }
 
   onClose() {
-    this.close.emit();
+    this.closeForm.emit();
   }
 
   onBackdropClick(event: Event) {
