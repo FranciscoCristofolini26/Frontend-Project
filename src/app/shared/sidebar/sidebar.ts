@@ -131,26 +131,6 @@ export class Sidebar implements OnDestroy {
       ],
     },
     {
-      title: 'ASSISTENTE IA',
-      items: [
-        {
-          icon: 'psychology',
-          label: 'Planejamento Inteligente',
-          url: '',
-        },
-        {
-          icon: 'lightbulb',
-          label: 'Sugestões',
-          url: '',
-        },
-        {
-          icon: 'insights',
-          label: 'Insights',
-          url: '',
-        },
-      ],
-    },
-    {
       title: 'CONFIGURAÇÕES',
       items: [
         {
