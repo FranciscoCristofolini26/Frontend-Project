@@ -32,13 +32,15 @@ export class Notes implements OnInit {
   loadNotes(): void {
     this.noteService.getNotes().subscribe({
       next: (data) => {
+        // Converte as strings de data recebidas do JSON para objetos Date
+
         this.notas = data.map(nota => ({
           ...nota,
           edited: nota.edited ? new Date(nota.edited) : new Date(),
           fixedAt: nota.fixedAt ? new Date(nota.fixedAt) : null
         }));
-
         this.changeDetectorRef.detectChanges();
+
       },
       error: (err) => console.error('Erro ao carregar notas:', err)
     });

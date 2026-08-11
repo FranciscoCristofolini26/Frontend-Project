@@ -67,7 +67,7 @@ export class PlannerDayView {
   }
 
   eventHeight(event: PositionedPlannerEvent): number {
-    return Math.max(durationInMinutes(event) * this.pixelsPerMinute() - 6, this.eventMinHeight());
+    return durationInMinutes(event) * this.pixelsPerMinute();
   }
 
   eventLeft(event: PositionedPlannerEvent): number {

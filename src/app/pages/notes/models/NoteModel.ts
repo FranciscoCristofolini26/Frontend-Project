@@ -3,7 +3,7 @@ export interface NoteModel {
   title: string;
   description: string;
   edited: Date;
-  favourite: boolean;
-  fixed: boolean;
-  fixedAt: Date | null;
+  favourite?: boolean;
+  fixed?: boolean;
+  fixedAt?: Date | null;
 }
