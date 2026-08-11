@@ -83,6 +83,7 @@ export class Notes implements OnInit {
   }
 
   openEditEditor(nota: NoteModel): void {
+    if (nota.id === undefined) return;
     this.isCreating = false;
     this.editingId = nota.id;
     this.setDraft(nota.title, nota.description);
@@ -143,6 +144,7 @@ export class Notes implements OnInit {
 
   toggleFavourite(nota: NoteModel, event: MouseEvent): void {
     event.stopPropagation();
+    if (nota.id === undefined) return;
     this.noteService.updateNote(nota.id, { favourite: !nota.favourite }).subscribe(() => {
       this.loadNotes();
     });
@@ -150,6 +152,7 @@ export class Notes implements OnInit {
 
   toggleFixed(nota: NoteModel, event: MouseEvent): void {
     event.stopPropagation();
+    if (nota.id === undefined) return;
     const fixed = !nota.fixed;
     const fixedAt = fixed ? new Date() : null;
 
@@ -158,7 +161,7 @@ export class Notes implements OnInit {
     });
   }
 
-  timeAgo(date: Date): string {
+  timeAgo(date: Date | null | undefined): string {
     if (!(date instanceof Date) || isNaN(date.getTime())) return '';
     const diffMin = Math.floor((Date.now() - date.getTime()) / 60000);
     if (diffMin < 60) return `há ${Math.max(diffMin, 1)} min`;
