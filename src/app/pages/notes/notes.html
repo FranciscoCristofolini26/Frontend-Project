@@ -25,7 +25,7 @@
           <p>{{ previewContent(nota.description) }}</p>
 
           <footer>
-            <span>Editada {{ timeAgo(nota.edited) }}</span>
+            <span>Editada {{ timeAgo(nota.edited ?? null) }}</span>
             <div class="note-actions">
 
               <button type="button" class="button button--ghost button--icon" [attr.aria-label]="nota.favourite ? 'Remover dos favoritos' : 'Favoritar nota'" (click)="toggleFavourite(nota, $event)">
