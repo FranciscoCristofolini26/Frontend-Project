@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
-import { Task, TaskPriority, TaskPeriod } from '../../../models';
+import { Task, TaskPriority } from '../../../models';
 
 @Component({
   selector: 'app-tasks-properties',
@@ -30,11 +30,6 @@ export class TasksProperties {
 
   taskForm: FormGroup;
   priorities = Object.values(TaskPriority);
-  periods: { value: TaskPeriod; label: string }[] = [
-    { value: 'hoje', label: 'Hoje' },
-    { value: 'proximas', label: 'Próximas' },
-    { value: 'mais-tarde', label: 'Mais tarde' },
-  ];
 
   selectedDate = signal<Date | null>(null);
   selectedTime = signal<string>('');
@@ -45,11 +40,8 @@ export class TasksProperties {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       priority: [TaskPriority.NORMAL, Validators.required],
-      period: ['hoje' as TaskPeriod, Validators.required],
       dueDate: [null],
       dueTime: [''],
-      project: [''],
-      assignee: [''],
       notes: [''],
       completed: [false],
     });
@@ -108,10 +100,7 @@ export class TasksProperties {
       const task: Omit<Task, 'id'> = {
         title: formValue.title,
         priority: formValue.priority,
-        period: formValue.period,
         dueLabel: this.getDueLabel(),
-        project: formValue.project || undefined,
-        assignee: formValue.assignee || undefined,
         notes: formValue.notes || undefined,
         completed: formValue.completed,
       };

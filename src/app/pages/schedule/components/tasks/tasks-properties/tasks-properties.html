@@ -22,24 +22,13 @@
         }
       </div>
 
-      <div class="form-row">
-        <div class="form-field">
+      <div class="form-field">
           <label for="priority">Prioridade *</label>
           <select id="priority" formControlName="priority" class="input-control">
             @for (priority of priorities; track priority) {
               <option [value]="priority">{{ priority }}</option>
             }
           </select>
-        </div>
-
-        <div class="form-field">
-          <label for="period">Período *</label>
-          <select id="period" formControlName="period" class="input-control">
-            @for (period of periods; track period.value) {
-              <option [value]="period.value">{{ period.label }}</option>
-            }
-          </select>
-        </div>
       </div>
 
       <div class="form-row">
@@ -62,30 +51,6 @@
             formControlName="dueTime"
             class="input-control"
             (change)="onTimeChange($event.target.value)"
-          />
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-field">
-          <label for="project">Projeto</label>
-          <input
-            id="project"
-            type="text"
-            formControlName="project"
-            class="input-control"
-            placeholder="Nome do projeto (opcional)"
-          />
-        </div>
-
-        <div class="form-field">
-          <label for="assignee">Responsável</label>
-          <input
-            id="assignee"
-            type="text"
-            formControlName="assignee"
-            class="input-control"
-            placeholder="Nome do responsável (opcional)"
           />
         </div>
       </div>

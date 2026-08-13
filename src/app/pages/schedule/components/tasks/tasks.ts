@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, effect, inject, input, signal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { LayoutTier, Task, TaskPeriod, TaskPriority } from '../../models';
+import { LayoutTier, Task, TaskPriority } from '../../models';
 import { TasksProperties } from './tasks-properties/tasks-properties';
 import { TasksService } from './service/tasks.service';
 
@@ -10,13 +10,6 @@ const PRIORITY_CLASSES: Record<TaskPriority, string> = {
   [TaskPriority.NORMAL]: 'bg-surface-elevated text-text-sub',
 };
 
-const PERIOD_LABELS: Record<TaskPeriod, string> = {
-  hoje: 'Hoje',
-  proximas: 'Próximas',
-  'mais-tarde': 'Mais tarde',
-};
-
-const PERIOD_ORDER: TaskPeriod[] = ['hoje', 'proximas', 'mais-tarde'];
 
 const TIER_ROW_CLASSES: Record<LayoutTier, string> = {
   compact: 'gap-3 rounded-xl p-4',
@@ -70,16 +63,6 @@ export class Tasks implements OnInit {
   selectedTask = computed(
     () => this.tasks().find((task) => task.id === this.selectedTaskId()) ?? null,
   );
-
-  taskSections = computed(() => {
-    const pending = this.pendingTasks();
-
-    return PERIOD_ORDER.map((period) => ({
-      key: period,
-      label: PERIOD_LABELS[period],
-      tasks: pending.filter((task) => task.period === period),
-    })).filter((section) => section.tasks.length > 0);
-  });
 
   constructor() {
     effect(() => this.detailOpenChange.emit(this.selectedTaskId() !== null));

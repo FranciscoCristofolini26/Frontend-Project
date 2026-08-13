@@ -34,8 +34,3 @@ mat-icon.icon-xl {
   }
 }
 
-@media (max-width: 384px) {
-  .task-row__project {
-    display: none;
-  }
-}
