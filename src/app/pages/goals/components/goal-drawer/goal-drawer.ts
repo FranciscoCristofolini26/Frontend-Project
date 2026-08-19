@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { CategoryService } from '../../../../shared/categories';
+import { CategoryService } from '../../../../shared/components/categories';
 import { HabitService } from '../../../habits/service/habit.service';
 import { Goal, GoalDraft, emptyGoalDraft, goalToDraft } from '../../models/goal';
 

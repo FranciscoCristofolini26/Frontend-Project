@@ -4,7 +4,7 @@ import { HabitDrawer } from './components/habit-drawer/habit-drawer';
 import { HabitEmptyState } from './components/habit-empty-state/habit-empty-state';
 import { HabitGrid } from './components/habit-grid/habit-grid';
 import { HabitSummaryBar } from './components/habit-summary-bar/habit-summary-bar';
-import { CategoryService } from '../../shared/categories';
+import { CategoryService } from '../../shared/components/categories';
 import { Habit, HabitDraft } from './models/habit';
 import { HabitService } from './service/habit.service';
 

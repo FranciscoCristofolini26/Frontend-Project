@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { CategoryService } from '../../shared/categories';
+import { CategoryService } from '../../shared/components/categories';
 import { GoalDrawer } from './components/goal-drawer/goal-drawer';
 import { GoalEmptyState } from './components/goal-empty-state/goal-empty-state';
 import { GoalFocus } from './components/goal-focus/goal-focus';

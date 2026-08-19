@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { CategoryService } from '../../../../shared/categories';
+import { CategoryService } from '../../../../shared/components/categories';
 import { Habit, HabitDraft, emptyHabitDraft, habitToDraft } from '../../models/habit';
 
 const HABIT_ICONS = [

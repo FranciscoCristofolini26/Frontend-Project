@@ -16,7 +16,7 @@
     "module": "preserve",
     /*Alerações necessárias para o Anime.JS*/
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true  
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

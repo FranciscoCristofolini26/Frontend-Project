@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { CategoryService } from '../../../../shared/categories';
+import { CategoryService } from '../../../../shared/components/categories';
 import { HabitService } from '../../../habits/service/habit.service';
 import { Goal } from '../../models/goal';
 import { calculateGoalProgress } from '../../utils/goal-progress';

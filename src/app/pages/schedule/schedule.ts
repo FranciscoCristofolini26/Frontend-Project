@@ -4,7 +4,7 @@ import { Tasks } from './components/tasks/tasks';
 import { Header, PlannerContent, PlannerViewMode } from './components/header/header';
 import { startOfDay } from './models/planner.utils';
 import { LayoutTier } from './models';
-import { SidebarState } from '../../shared/sidebar/sidebar-state';
+import { SidebarState } from '../../shared/components/sidebar/sidebar-state';
 
 type ScheduleView = 'planejamento' | 'tarefas';
 
