@@ -1,7 +1,8 @@
 <div
   class="goal-drawer-backdrop"
+  tabindex="-1"
   (click)="closeFromBackdrop($event)"
-  (keydown.escape)="close.emit()"
+  (keydown.escape)="dismissed.emit()"
 >
   <aside
     class="goal-drawer"
@@ -18,7 +19,7 @@
         type="button"
         class="button button--ghost button--icon"
         aria-label="Fechar drawer"
-        (click)="close.emit()"
+        (click)="dismissed.emit()"
       >
         <mat-icon>close</mat-icon>
       </button>
@@ -112,7 +113,7 @@
       }
 
       <footer class="goal-drawer__actions">
-        <button type="button" class="button button--secondary" (click)="close.emit()">
+        <button type="button" class="button button--secondary" (click)="dismissed.emit()">
           Cancelar
         </button>
         <button type="submit" class="button button--primary">

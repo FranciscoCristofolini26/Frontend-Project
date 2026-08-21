@@ -299,13 +299,17 @@
   <app-calendar-event-form
     [event]="editingEvent()"
     [initialDate]="toDateKey(selectedDate())"
-    (save)="saveEvent($event)"
-    (close)="closeForm()"
+    (formSubmitted)="saveEvent($event)"
+    (dismissed)="closeForm()"
   />
 }
 
 @if (eventPendingDeletion(); as event) {
-  <div class="modal-backdrop calendar-confirmation" (keydown.escape)="cancelDeletion()">
+  <div
+    class="modal-backdrop calendar-confirmation"
+    tabindex="-1"
+    (keydown.escape)="cancelDeletion()"
+  >
     <section
       class="modal-dialog calendar-confirmation__dialog"
       role="alertdialog"
@@ -328,7 +332,8 @@
 @if (googleConnectOpen()) {
   <div
     class="modal-backdrop calendar-google-dialog"
-    (click)="googleConnectOpen.set(false)"
+    tabindex="-1"
+    (click)="closeGoogleDialog($event)"
     (keydown.escape)="googleConnectOpen.set(false)"
   >
     <section
@@ -336,7 +341,6 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="google-connect-title"
-      (click)="$event.stopPropagation()"
     >
       <span class="calendar-google-dialog__icon"><mat-icon>calendar_month</mat-icon></span>
       <h2 id="google-connect-title">Conectar Google Calendar</h2>

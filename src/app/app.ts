@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MainLayout } from './shared/components/main-layout/main-layout';
 
 @Component({
@@ -8,6 +8,4 @@ import { MainLayout } from './shared/components/main-layout/main-layout';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('AgendaFrontend');
-}
+export class App {}

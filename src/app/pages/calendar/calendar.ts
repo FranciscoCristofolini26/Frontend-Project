@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CalendarEventForm } from './components/calendar-event-form/calendar-event-form';
-import { CalendarEvent, CalendarEventDraft, CALENDAR_EVENT_MOCKS } from './models';
+import { CalendarEvent, CalendarEventDraft } from './models';
+import { CalendarEventService } from './service/calendar-event.service';
 import {
   addDays,
   addMonths,
@@ -17,7 +18,6 @@ import {
 
 type CalendarView = 'month' | 'week';
 
-const INITIAL_REFERENCE_DATE = new Date(2026, 7, 8);
 const MAX_VISIBLE_MONTH_EVENTS = 3;
 const WEEK_START_HOUR = 8;
 const WEEK_END_HOUR = 20;
@@ -39,10 +39,12 @@ const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' })
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Calendar {
+  private readonly calendarEventService = inject(CalendarEventService);
+
   readonly view = signal<CalendarView>('month');
-  readonly referenceDate = signal(startOfDay(INITIAL_REFERENCE_DATE));
-  readonly selectedDate = signal(startOfDay(INITIAL_REFERENCE_DATE));
-  readonly events = signal<CalendarEvent[]>(CALENDAR_EVENT_MOCKS);
+  readonly referenceDate = signal(startOfDay(new Date()));
+  readonly selectedDate = signal(startOfDay(new Date()));
+  readonly events = this.calendarEventService.events;
   readonly selectedEvent = signal<CalendarEvent | null>(null);
   readonly formOpen = signal(false);
   readonly editingEvent = signal<CalendarEvent | null>(null);
@@ -156,19 +158,12 @@ export class Calendar {
 
     if (eventBeingEdited) {
       const updatedEvent = { ...eventBeingEdited, ...draft };
-      this.events.update((events) =>
-        events.map((event) => (event.id === eventBeingEdited.id ? updatedEvent : event)),
-      );
+      this.calendarEventService.update(updatedEvent);
       this.selectedEvent.set(updatedEvent);
       this.selectedDate.set(fromDateKey(updatedEvent.date));
     } else {
-      const createdEvent: CalendarEvent = {
-        id: `event-${crypto.randomUUID()}`,
-        ...draft,
-      };
-      this.events.update((events) => [...events, createdEvent]);
-      this.selectedDate.set(fromDateKey(createdEvent.date));
-      this.selectedEvent.set(createdEvent);
+      this.calendarEventService.create(draft);
+      this.selectedDate.set(fromDateKey(draft.date));
     }
 
     this.closeForm();
@@ -186,7 +181,7 @@ export class Calendar {
     const event = this.eventPendingDeletion();
     if (!event) return;
 
-    this.events.update((events) => events.filter((item) => item.id !== event.id));
+    this.calendarEventService.remove(event.id);
     if (this.selectedEvent()?.id === event.id) this.selectedEvent.set(null);
     this.eventPendingDeletion.set(null);
   }
@@ -194,6 +189,10 @@ export class Calendar {
   connectGoogleCalendar(): void {
     this.googleConnected.set(true);
     this.googleConnectOpen.set(false);
+  }
+
+  closeGoogleDialog(event: MouseEvent): void {
+    if (event.target === event.currentTarget) this.googleConnectOpen.set(false);
   }
 
   eventsForDate(dateKey: string): CalendarEvent[] {

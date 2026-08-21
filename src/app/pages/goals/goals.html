@@ -91,5 +91,9 @@
 </section>
 
 @if (drawerOpen()) {
-  <app-goal-drawer [goal]="editingGoal()" (close)="closeDrawer()" (save)="saveGoal($event)" />
+  <app-goal-drawer
+    [goal]="editingGoal()"
+    (dismissed)="closeDrawer()"
+    (formSubmitted)="saveGoal($event)"
+  />
 }

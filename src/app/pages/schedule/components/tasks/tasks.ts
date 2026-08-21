@@ -1,5 +1,7 @@
 import { Component, OnInit, computed, effect, inject, input, signal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { catchError, of } from 'rxjs';
+import { DemoDataStore } from '../../../../core/data-access/demo-data-store.service';
 import { LayoutTier, Task, TaskPriority } from '../../models';
 import { TasksProperties } from './tasks-properties/tasks-properties';
 import { TasksService } from './service/tasks.service';
@@ -9,7 +11,6 @@ const PRIORITY_CLASSES: Record<TaskPriority, string> = {
   [TaskPriority.MEDIA]: 'bg-warning/10 text-warning',
   [TaskPriority.NORMAL]: 'bg-surface-elevated text-text-sub',
 };
-
 
 const TIER_ROW_CLASSES: Record<LayoutTier, string> = {
   compact: 'gap-3 rounded-xl p-4',
@@ -48,7 +49,8 @@ const TIER_ICON_CLASSES: Record<LayoutTier, string> = {
   styleUrl: './tasks.css',
 })
 export class Tasks implements OnInit {
-  private tasksService = inject(TasksService);
+  private readonly tasksService = inject(TasksService);
+  private readonly demoDataStore = inject(DemoDataStore);
 
   layoutTier = input<LayoutTier>('balanced');
   newTaskRequest = input(0);
@@ -74,7 +76,21 @@ export class Tasks implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tasksService.getTasks().subscribe((tasks) => this.tasks.set(tasks));
+    this.tasksService
+      .getTasks()
+      .pipe(catchError(() => of([])))
+      .subscribe((tasks) => {
+        const displayedTasks = tasks.length
+          ? tasks
+          : this.demoDataStore.getOrCreateList<Task>('schedule-tasks', () => ({
+              id: 1,
+              title: 'Exemplo de tarefa',
+              priority: TaskPriority.NORMAL,
+              dueLabel: 'Hoje',
+              completed: false,
+            }));
+        this.tasks.set(displayedTasks);
+      });
   }
 
   isGroupCollapsed(key: string): boolean {
@@ -110,7 +126,10 @@ export class Tasks implements OnInit {
 
     const completed = !task.completed;
     this.tasks.update((list) => list.map((t) => (t.id === id ? { ...t, completed } : t)));
-    this.tasksService.updateTask(id, { completed }).subscribe();
+    this.tasksService
+      .updateTask(id, { completed })
+      .pipe(catchError(() => of({ ...task, completed })))
+      .subscribe();
   }
 
   openNewTaskDialog() {
@@ -122,9 +141,15 @@ export class Tasks implements OnInit {
   }
 
   addTask(task: Omit<Task, 'id'>) {
-    this.tasksService.createTask(task).subscribe((newTask) => {
-      this.tasks.update((list) => [...list, newTask]);
-    });
+    const fallbackTask: Task = {
+      ...task,
+      id: Math.max(0, ...this.tasks().map((item) => item.id)) + 1,
+    };
+
+    this.tasksService
+      .createTask(task)
+      .pipe(catchError(() => of(fallbackTask)))
+      .subscribe((newTask) => this.tasks.update((list) => [...list, newTask]));
   }
 
   priorityClasses(priority: TaskPriority): string {

@@ -1,7 +1,8 @@
 <div
   class="modal-backdrop calendar-event-form__backdrop"
+  tabindex="-1"
   (click)="closeFromBackdrop($event)"
-  (keydown.escape)="close.emit()"
+  (keydown.escape)="dismissed.emit()"
 >
   <section
     class="modal-dialog calendar-event-form__dialog"
@@ -18,7 +19,7 @@
         <button
           type="button"
           class="button button--ghost button--icon"
-          (click)="close.emit()"
+          (click)="dismissed.emit()"
           aria-label="Fechar formulário"
         >
           <mat-icon>close</mat-icon>
@@ -111,7 +112,7 @@
       </div>
 
       <footer class="calendar-event-form__footer">
-        <button type="button" class="button button--secondary" (click)="close.emit()">
+        <button type="button" class="button button--secondary" (click)="dismissed.emit()">
           Cancelar
         </button>
         <button type="submit" class="button button--primary">

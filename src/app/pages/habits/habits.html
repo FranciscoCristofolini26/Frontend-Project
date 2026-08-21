@@ -63,17 +63,25 @@
 </section>
 
 @if (drawerOpen()) {
-  <app-habit-drawer [habit]="editingHabit()" (close)="closeDrawer()" (save)="saveHabit($event)" />
+  <app-habit-drawer
+    [habit]="editingHabit()"
+    (dismissed)="closeDrawer()"
+    (formSubmitted)="saveHabit($event)"
+  />
 }
 
 @if (deleteCandidate(); as habit) {
-  <div class="habit-delete-backdrop" (click)="cancelDelete()" (keydown.escape)="cancelDelete()">
+  <div
+    class="habit-delete-backdrop"
+    tabindex="-1"
+    (click)="cancelDeleteFromBackdrop($event)"
+    (keydown.escape)="cancelDelete()"
+  >
     <section
       class="habit-delete-dialog card"
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="habit-delete-title"
-      (click)="$event.stopPropagation()"
     >
       <span class="habit-delete-dialog__icon" aria-hidden="true"
         ><mat-icon>delete_forever</mat-icon></span

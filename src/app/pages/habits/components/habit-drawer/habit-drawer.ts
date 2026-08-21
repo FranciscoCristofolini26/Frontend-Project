@@ -28,8 +28,8 @@ export class HabitDrawer {
   private readonly categoryService = inject(CategoryService);
 
   readonly habit = input<Habit | null>(null);
-  readonly close = output<void>();
-  readonly save = output<HabitDraft>();
+  readonly dismissed = output<void>();
+  readonly formSubmitted = output<HabitDraft>();
   readonly categories = this.categoryService.categories;
   readonly icons = HABIT_ICONS;
   draft: HabitDraft = emptyHabitDraft();
@@ -47,7 +47,7 @@ export class HabitDrawer {
     this.submitted = true;
     if (!this.draft.name.trim()) return;
 
-    this.save.emit({ ...this.draft });
+    this.formSubmitted.emit({ ...this.draft });
   }
 
   setIcon(icon: string): void {
@@ -59,6 +59,6 @@ export class HabitDrawer {
   }
 
   closeFromBackdrop(event: MouseEvent): void {
-    if (event.target === event.currentTarget) this.close.emit();
+    if (event.target === event.currentTarget) this.dismissed.emit();
   }
 }

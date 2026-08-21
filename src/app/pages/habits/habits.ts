@@ -101,6 +101,10 @@ export class Habits {
     this.deleteCandidate.set(null);
   }
 
+  cancelDeleteFromBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) this.cancelDelete();
+  }
+
   confirmDelete(): void {
     const habit = this.deleteCandidate();
     if (!habit) return;

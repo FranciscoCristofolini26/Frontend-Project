@@ -25,8 +25,8 @@ export class GoalDrawer {
   private readonly habitService = inject(HabitService);
 
   readonly goal = input<Goal | null>(null);
-  readonly close = output<void>();
-  readonly save = output<GoalDraft>();
+  readonly dismissed = output<void>();
+  readonly formSubmitted = output<GoalDraft>();
   readonly categories = this.categoryService.categories;
   readonly habits = this.habitService.habits;
   readonly hasTaskLinks = computed(() => Boolean(this.goal()?.taskLinks.length));
@@ -44,7 +44,7 @@ export class GoalDrawer {
   submit(): void {
     this.submitted = true;
     if (!this.draft.title.trim() || !this.draft.expectedResult.trim()) return;
-    this.save.emit({
+    this.formSubmitted.emit({
       ...this.draft,
       habitTargetCount: Math.max(1, Number(this.draft.habitTargetCount)),
     });
@@ -55,6 +55,6 @@ export class GoalDrawer {
   }
 
   closeFromBackdrop(event: MouseEvent): void {
-    if (event.target === event.currentTarget) this.close.emit();
+    if (event.target === event.currentTarget) this.dismissed.emit();
   }
 }
