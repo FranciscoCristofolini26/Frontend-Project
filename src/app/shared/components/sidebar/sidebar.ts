@@ -1,6 +1,6 @@
 import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NavigationSectionsModel } from './models/NavigationSectionsModel';
 import { SidebarState } from './sidebar-state';
 
@@ -13,7 +13,7 @@ const SIDEBAR_WIDTH_STORAGE_KEY = 'agenda.sidebar-width';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MatIconModule, RouterLink],
+  imports: [MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
   host: {
@@ -46,7 +46,7 @@ export class Sidebar implements OnDestroy {
     {
       title: 'INÍCIO',
       items: [
-        { icon: 'home', label: 'Home', active: true, url: '' },
+        { icon: 'home', label: 'Home', url: '/home' },
         { icon: 'dashboard', label: 'Dashboard', url: '' },
       ],
     },
@@ -56,32 +56,33 @@ export class Sidebar implements OnDestroy {
         {
           icon: 'view_kanban',
           label: 'Planner',
-          url: 'schedule',
+          url: '/schedule',
         },
         {
           icon: 'calendar_month',
           label: 'Calendário',
-          url: 'calendar',
+          url: '/calendar',
         },
         {
           icon: 'check_circle',
           label: 'Tarefas',
-          url: 'schedule',
+          url: '/schedule',
+          queryParams: { view: 'tarefas' },
         },
         {
           icon: 'target',
           label: 'Metas Semanais',
-          url: 'goals',
+          url: '/goals',
         },
         {
           icon: 'self_improvement',
           label: 'Hábitos',
-          url: 'habits',
+          url: '/habits',
         },
         {
           icon: 'note',
           label: 'Notas',
-          url: 'notes',
+          url: '/notes',
         },
         {
           icon: 'schedule',
@@ -91,7 +92,7 @@ export class Sidebar implements OnDestroy {
         {
           icon: 'folder',
           label: 'Projetos',
-          url: '',
+          url: '/projects',
         },
       ],
     },

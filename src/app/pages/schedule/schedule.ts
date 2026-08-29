@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Planning } from './components/planning/planning';
 import { Tasks } from './components/tasks/tasks';
 import { Header, PlannerContent, PlannerViewMode } from './components/header/header';
@@ -15,7 +16,7 @@ type ScheduleView = 'planejamento' | 'tarefas';
   styleUrl: './schedule.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Schedule {
+export class Schedule implements OnInit {
   readonly view = signal<ScheduleView>('planejamento');
   readonly selectedDate = signal(startOfDay(new Date()));
   readonly plannerViewMode = signal<PlannerViewMode>('daily');
@@ -24,6 +25,8 @@ export class Schedule {
   readonly newTaskRequest = signal(0);
 
   private readonly sidebarState = inject(SidebarState);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly activeContent = (): PlannerContent =>
     this.view() === 'planejamento' ? 'planning' : 'tasks';
@@ -42,8 +45,19 @@ export class Schedule {
 
   readonly edgeToEdge = computed(() => this.openSidebarsCount() > 0);
 
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.view.set(params.get('view') === 'tarefas' ? 'tarefas' : 'planejamento');
+    });
+  }
+
   setView(view: ScheduleView) {
     this.view.set(view);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: view === 'tarefas' ? 'tarefas' : null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onPrimaryAction(content: PlannerContent): void {

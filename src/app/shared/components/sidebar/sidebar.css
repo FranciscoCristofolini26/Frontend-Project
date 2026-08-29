@@ -233,6 +233,8 @@
   padding: 0 9px;
   position: relative;
   text-align: left;
+  text-decoration: none;
+  width: 100%;
 }
 
 .sidebar-nav-item:hover {

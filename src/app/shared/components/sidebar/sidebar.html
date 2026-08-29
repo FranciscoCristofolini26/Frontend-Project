@@ -70,16 +70,17 @@
 
         <div class="sidebar-section__items">
           @for (item of section.items; track item.label) {
-            <a [routerLink] = "item.url">
-              <button
-                type="button"
-                class="sidebar-nav-item"
-                [class.sidebar-nav-item--active]="item.active"
-                [attr.aria-current]="item.active ? 'page' : null"
-              >
-                <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ item.icon }}</mat-icon>
-                <span>{{ item.label }}</span>
-              </button>
+            <a
+              class="sidebar-nav-item"
+              [routerLink]="item.url"
+              [queryParams]="item.queryParams"
+              routerLinkActive="sidebar-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              #routeLink="routerLinkActive"
+              [attr.aria-current]="routeLink.isActive ? 'page' : null"
+            >
+              <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
             </a>
           }
         </div>
