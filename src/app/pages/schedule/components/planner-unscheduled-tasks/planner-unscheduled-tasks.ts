@@ -7,6 +7,7 @@ const CATEGORY_LABELS: Record<PlannerCategory, string> = {
   work: 'Trabalho',
   study: 'Estudos',
   personal: 'Pessoal',
+  health: 'Saúde',
   event: 'Evento',
   habit: 'Hábito',
 };

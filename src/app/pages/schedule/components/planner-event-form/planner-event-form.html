@@ -55,6 +55,16 @@
 
           <div class="planner-event-form__fields">
             <label class="form-field">
+              Dia
+              <input
+                class="input-control"
+                type="date"
+                [value]="eventDate()"
+                (input)="updateEventDate($event)"
+              />
+            </label>
+
+            <label class="form-field">
               Início
               <input
                 class="input-control"
@@ -84,6 +94,26 @@
                 @for (option of categories; track option.value) {
                   <option [value]="option.value">{{ option.label }}</option>
                 }
+              </select>
+            </label>
+
+            <label class="form-field">
+              Localização
+              <input
+                class="input-control"
+                type="text"
+                [value]="location()"
+                (input)="updateLocation($event)"
+                placeholder="Ex.: Sala 204 ou link da reunião"
+                autocomplete="off"
+              />
+            </label>
+
+            <label class="form-field">
+              Calendário
+              <select class="input-control" [value]="source()" (change)="updateSource($event)">
+                <option value="internal">Meu calendário</option>
+                <option value="google">Google Calendar</option>
               </select>
             </label>
           </div>

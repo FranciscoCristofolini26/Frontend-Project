@@ -24,6 +24,8 @@ const CATEGORY_OPTIONS: { value: CalendarEventCategory; label: string }[] = [
   { value: 'study', label: 'Estudos' },
   { value: 'personal', label: 'Pessoal' },
   { value: 'health', label: 'Saúde' },
+  { value: 'event', label: 'Evento' },
+  { value: 'habit', label: 'Hábito' },
 ];
 
 @Component({

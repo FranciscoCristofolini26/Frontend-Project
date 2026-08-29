@@ -207,22 +207,24 @@
             @if (event.description) {
               <p class="calendar-panel__event-description">{{ event.description }}</p>
             }
-            <div class="calendar-panel__event-actions">
-              <button
-                type="button"
-                class="button button--secondary button--compact"
-                (click)="openEditForm(event)"
-              >
-                <mat-icon>edit</mat-icon>Editar
-              </button>
-              <button
-                type="button"
-                class="button button--danger button--compact"
-                (click)="requestDeletion(event)"
-              >
-                <mat-icon>delete</mat-icon>Excluir
-              </button>
-            </div>
+            @if (!isTask(event)) {
+              <div class="calendar-panel__event-actions">
+                <button
+                  type="button"
+                  class="button button--secondary button--compact"
+                  (click)="openEditForm(event)"
+                >
+                  <mat-icon>edit</mat-icon>Editar
+                </button>
+                <button
+                  type="button"
+                  class="button button--danger button--compact"
+                  (click)="requestDeletion(event)"
+                >
+                  <mat-icon>delete</mat-icon>Excluir
+                </button>
+              </div>
+            }
           </section>
         } @else {
           <section class="calendar-panel__day-agenda">
@@ -271,6 +273,12 @@
               </div>
             }
           </section>
+        }
+
+        @if (dataLoadFailed()) {
+          <p class="calendar-panel__load-warning" role="status">
+            Falha ao carregar eventos ou tarefas.
+          </p>
         }
 
         <section class="calendar-panel__calendars">

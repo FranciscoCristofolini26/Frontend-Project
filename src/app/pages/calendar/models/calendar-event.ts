@@ -1,9 +1,9 @@
 export type CalendarEventSource = 'internal' | 'google';
 
-export type CalendarEventCategory = 'work' | 'study' | 'personal' | 'health';
+export type CalendarEventCategory = 'work' | 'study' | 'personal' | 'health' | 'event' | 'habit';
 
 export interface CalendarEvent {
-  id: string;
+  id: number | string;
   title: string;
   date: string;
   startTime: string;

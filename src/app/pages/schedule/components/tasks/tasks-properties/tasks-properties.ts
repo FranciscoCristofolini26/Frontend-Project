@@ -79,7 +79,7 @@ export class TasksProperties {
       } else if (isTomorrow) {
         label = 'Amanhã';
       } else {
-        label = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        label = date.toLocaleDateString('pt-BR');
       }
     }
 
@@ -131,7 +131,7 @@ export class TasksProperties {
       } else if (isTomorrow) {
         label = 'Amanhã';
       } else {
-        label = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        label = date.toLocaleDateString('pt-BR');
       }
     }
 

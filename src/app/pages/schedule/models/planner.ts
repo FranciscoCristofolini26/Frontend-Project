@@ -1,4 +1,6 @@
-export type PlannerCategory = 'work' | 'study' | 'personal' | 'event' | 'habit';
+export type PlannerCategory = 'work' | 'study' | 'personal' | 'health' | 'event' | 'habit';
+
+export type PlannerEventSource = 'internal' | 'google';
 
 export type PlannerItemKind = 'event' | 'task';
 
@@ -7,6 +9,8 @@ export interface PlannerEvent {
   date: string;
   title: string;
   description?: string;
+  location?: string;
+  source?: PlannerEventSource;
   startTime: string;
   endTime: string;
   category: PlannerCategory;
@@ -15,7 +19,10 @@ export interface PlannerEvent {
 
 export interface PlannerEventDraft {
   title: string;
+  date: string;
   description: string;
+  location?: string;
+  source?: PlannerEventSource;
   startTime: string;
   endTime: string;
   category: PlannerCategory;
