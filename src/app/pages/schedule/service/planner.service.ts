@@ -39,10 +39,9 @@ export class PlannerService {
     this.loadUnscheduledTasks();
   }
 
-  createEvent(draft: PlannerEventDraft, date: string, kind: PlannerEvent['kind'] = 'event'): void {
+  createEvent(draft: PlannerEventDraft, kind: PlannerEvent['kind'] = 'event'): void {
     const event: PlannerEvent = {
       id: this.nextEventId(),
-      date,
       kind,
       ...draft,
     };

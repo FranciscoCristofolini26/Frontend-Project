@@ -1,15 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { CalendarEventForm } from './components/calendar-event-form/calendar-event-form';
 import { CalendarEvent, CalendarEventDraft } from './models';
-<<<<<<< Updated upstream
 import { CalendarEventService } from './service/calendar-event.service';
-=======
-import { CalendarEventsService } from './service/calendar-events.service';
 import { TasksService } from '../schedule/components/tasks/service/tasks.service';
 import { Task, TaskPriority } from '../schedule/models';
->>>>>>> Stashed changes
 import {
   addDays,
   addMonths,
@@ -45,24 +48,16 @@ const WEEKDAY_FORMATTER = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' })
   styleUrl: './calendar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-<<<<<<< Updated upstream
-export class Calendar {
-  private readonly calendarEventService = inject(CalendarEventService);
-=======
 export class Calendar implements OnInit {
-  private readonly calendarEventsService = inject(CalendarEventsService);
+  private readonly calendarEventService = inject(CalendarEventService);
   private readonly tasksService = inject(TasksService);
->>>>>>> Stashed changes
 
   readonly view = signal<CalendarView>('month');
   readonly referenceDate = signal(startOfDay(new Date()));
   readonly selectedDate = signal(startOfDay(new Date()));
-<<<<<<< Updated upstream
-  readonly events = this.calendarEventService.events;
-=======
-  readonly events = signal<CalendarEvent[]>([]);
+  readonly taskEvents = signal<CalendarEvent[]>([]);
+  readonly events = computed(() => [...this.calendarEventService.events(), ...this.taskEvents()]);
   readonly dataLoadFailed = signal(false);
->>>>>>> Stashed changes
   readonly selectedEvent = signal<CalendarEvent | null>(null);
   readonly formOpen = signal(false);
   readonly editingEvent = signal<CalendarEvent | null>(null);
@@ -104,22 +99,15 @@ export class Calendar implements OnInit {
   readonly toDateKey = toDateKey;
 
   ngOnInit(): void {
-    forkJoin({
-      events: this.calendarEventsService.getEvents().pipe(
-        catchError(() => {
-          this.dataLoadFailed.set(true);
-          return of<CalendarEvent[]>([]);
-        }),
-      ),
-      tasks: this.tasksService.getTasks().pipe(
+    this.tasksService
+      .getTasks()
+      .pipe(
         catchError(() => {
           this.dataLoadFailed.set(true);
           return of<Task[]>([]);
         }),
-      ),
-    }).subscribe(({ events, tasks }) => {
-      this.events.set([...events, ...tasks.flatMap((task) => this.taskToCalendarEvent(task))]);
-    });
+      )
+      .subscribe((tasks) => this.taskEvents.set(tasks.flatMap((task) => this.taskToCalendarEvent(task))));
   }
 
   previousPeriod(): void {
@@ -194,7 +182,6 @@ export class Calendar implements OnInit {
     const eventBeingEdited = this.editingEvent();
 
     if (eventBeingEdited) {
-<<<<<<< Updated upstream
       const updatedEvent = { ...eventBeingEdited, ...draft };
       this.calendarEventService.update(updatedEvent);
       this.selectedEvent.set(updatedEvent);
@@ -202,26 +189,8 @@ export class Calendar implements OnInit {
     } else {
       this.calendarEventService.create(draft);
       this.selectedDate.set(fromDateKey(draft.date));
-=======
-      this.calendarEventsService
-        .updateEvent(eventBeingEdited.id, draft)
-        .subscribe((updatedEvent) => {
-          this.events.update((events) =>
-            events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)),
-          );
-          this.selectedEvent.set(updatedEvent);
-          this.selectedDate.set(fromDateKey(updatedEvent.date));
-          this.closeForm();
-        });
-    } else {
-      this.calendarEventsService.createEvent(draft).subscribe((createdEvent) => {
-        this.events.update((events) => [...events, createdEvent]);
-        this.selectedDate.set(fromDateKey(createdEvent.date));
-        this.selectedEvent.set(createdEvent);
-        this.closeForm();
-      });
->>>>>>> Stashed changes
     }
+    this.closeForm();
   }
 
   requestDeletion(event: CalendarEvent): void {
@@ -236,17 +205,9 @@ export class Calendar implements OnInit {
     const event = this.eventPendingDeletion();
     if (!event) return;
 
-<<<<<<< Updated upstream
     this.calendarEventService.remove(event.id);
     if (this.selectedEvent()?.id === event.id) this.selectedEvent.set(null);
     this.eventPendingDeletion.set(null);
-=======
-    this.calendarEventsService.deleteEvent(event.id).subscribe(() => {
-      this.events.update((events) => events.filter((item) => item.id !== event.id));
-      if (this.selectedEvent()?.id === event.id) this.selectedEvent.set(null);
-      this.eventPendingDeletion.set(null);
-    });
->>>>>>> Stashed changes
   }
 
   connectGoogleCalendar(): void {

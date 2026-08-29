@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
-  OnInit,
   computed,
   effect,
   inject,
@@ -30,8 +29,6 @@ import { PlannerSidebar } from '../planner-sidebar/planner-sidebar';
 import { PlannerUnscheduledTasks } from '../planner-unscheduled-tasks/planner-unscheduled-tasks';
 import { PlannerWeekView } from '../planner-week-view/planner-week-view';
 import { PlannerEventForm } from '../planner-event-form/planner-event-form';
-import { CalendarEvent, CalendarEventDraft } from '../../../calendar/models';
-import { CalendarEventsService } from '../../../calendar/service/calendar-events.service';
 
 function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60);
@@ -44,104 +41,6 @@ function formatDuration(minutes: number): string {
   return `${hours}h${remainingMinutes > 0 ? ` ${remainingMinutes}min` : ''}`;
 }
 
-<<<<<<< Updated upstream
-=======
-function createPlannerEvents(today: Date): PlannerEvent[] {
-  return [
-    {
-      id: 1,
-      date: dateKey(today),
-      title: 'Daily com produto',
-      startTime: '09:00',
-      endTime: '09:30',
-      category: 'event',
-      kind: 'event',
-    },
-    {
-      id: 2,
-      date: dateKey(today),
-      title: 'Revisar proposta da Acme',
-      startTime: '10:00',
-      endTime: '11:00',
-      category: 'event',
-      kind: 'task',
-    },
-    {
-      id: 3,
-      date: dateKey(today),
-      title: 'Estudar Angular',
-      startTime: '14:00',
-      endTime: '15:30',
-      category: 'study',
-      kind: 'task',
-    },
-    {
-      id: 4,
-      date: dateKey(today),
-      title: 'Consulta médica',
-      startTime: '14:30',
-      endTime: '15:15',
-      category: 'personal',
-      kind: 'event',
-    },
-    {
-      id: 5,
-      date: dateKey(today),
-      title: 'Revisão de sprint',
-      startTime: '16:30',
-      endTime: '17:15',
-      category: 'work',
-      kind: 'event',
-    },
-    {
-      id: 6,
-      date: dateKey(addDays(today, -2)),
-      title: 'Planejamento de conteúdo',
-      startTime: '10:00',
-      endTime: '11:00',
-      category: 'work',
-      kind: 'event',
-    },
-    {
-      id: 7,
-      date: dateKey(addDays(today, -1)),
-      title: 'Sessão de leitura',
-      startTime: '15:00',
-      endTime: '16:00',
-      category: 'study',
-      kind: 'task',
-    },
-    {
-      id: 8,
-      date: dateKey(addDays(today, 1)),
-      title: 'Café com Ana',
-      startTime: '12:00',
-      endTime: '13:00',
-      category: 'personal',
-      kind: 'event',
-    },
-    {
-      id: 9,
-      date: dateKey(addDays(today, 2)),
-      title: 'Workshop de design',
-      startTime: '09:30',
-      endTime: '11:30',
-      category: 'work',
-      kind: 'event',
-    },
-    {
-      id: 10,
-      date: dateKey(addDays(today, 3)),
-      title: 'Planejar a próxima semana',
-      startTime: '16:00',
-      endTime: '17:00',
-      category: 'work',
-      kind: 'task',
-    },
-  ];
-}
-
->>>>>>> Stashed changes
 @Component({
   selector: 'app-planning',
   imports: [
@@ -155,13 +54,9 @@ function createPlannerEvents(today: Date): PlannerEvent[] {
   styleUrl: './planning.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Planning implements OnInit {
+export class Planning {
   private readonly habitService = inject(HabitService);
-<<<<<<< Updated upstream
   private readonly plannerService = inject(PlannerService);
-=======
-  private readonly calendarEventsService = inject(CalendarEventsService);
->>>>>>> Stashed changes
 
   readonly selectedDate = input<Date>(startOfDay(new Date()));
   readonly viewMode = input<PlannerViewMode>('daily');
@@ -176,17 +71,8 @@ export class Planning implements OnInit {
   );
   readonly dragAndDropEnabled = computed(() => this.viewMode() === 'daily' && this.isDesktop());
 
-<<<<<<< Updated upstream
   readonly events = this.plannerService.events;
   readonly unscheduledTasks = this.plannerService.unscheduledTasks;
-=======
-  readonly events = signal<PlannerEvent[]>([]);
-  readonly unscheduledTasks = signal<PlannerTask[]>([
-    { id: 1, title: 'Organizar materiais da reunião', category: 'work', project: 'Produto' },
-    { id: 2, title: 'Ler capítulo 4 do curso', category: 'study', project: 'Angular' },
-    { id: 3, title: 'Responder e-mails pendentes', category: 'personal' },
-  ]);
->>>>>>> Stashed changes
   readonly habits = computed<PlannerHabit[]>(() => {
     const activeDate = dateKey(this.selectedDate());
     return this.habitService
@@ -234,12 +120,6 @@ export class Planning implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.calendarEventsService
-      .getEvents()
-      .subscribe((events) => this.events.set(events.map((event) => this.toPlannerEvent(event))));
-  }
-
   toggleHabit(id: number): void {
     this.habitService.toggleCompletion(id, dateKey(this.selectedDate()));
   }
@@ -250,25 +130,12 @@ export class Planning implements OnInit {
       return;
     }
 
-<<<<<<< Updated upstream
-    this.plannerService.createEvent(draft, dateKey(this.selectedDate()));
+    this.plannerService.createEvent(draft);
     this.closeEventForm();
   }
 
   removeEvent(id: number): void {
     this.plannerService.removeEvent(id);
-=======
-    this.calendarEventsService.createEvent(this.toCalendarEventDraft(draft)).subscribe((event) => {
-      this.events.update((events) => [...events, this.toPlannerEvent(event)]);
-      this.closeEventForm();
-    });
-  }
-
-  removeEvent(id: number): void {
-    this.calendarEventsService.deleteEvent(id).subscribe(() => {
-      this.events.update((events) => events.filter((event) => event.id !== id));
-    });
->>>>>>> Stashed changes
   }
 
   openEventEditor(event: PlannerEvent): void {
@@ -285,20 +152,8 @@ export class Planning implements OnInit {
       return;
     }
 
-<<<<<<< Updated upstream
     this.plannerService.updateEvent({ ...event, ...draft });
     this.closeEventForm();
-=======
-    this.calendarEventsService
-      .updateEvent(event.id, this.toCalendarEventDraft(draft))
-      .subscribe((updatedEvent) => {
-        const updatedPlannerEvent = this.toPlannerEvent(updatedEvent);
-        this.events.update((events) =>
-          events.map((item) => (item.id === event.id ? updatedPlannerEvent : item)),
-        );
-        this.closeEventForm();
-      });
->>>>>>> Stashed changes
   }
 
   removeEditingEvent(id: number): void {
@@ -340,43 +195,15 @@ export class Planning implements OnInit {
     this.plannerService.createEvent(
       {
         title: task.title,
+        date: dateKey(this.selectedDate()),
         description: '',
         startTime: slotTime,
         endTime,
         category: task.category,
       },
-      dateKey(this.selectedDate()),
       'task',
     );
     this.plannerService.removeUnscheduledTask(task.id);
-  }
-
-  private toCalendarEventDraft(draft: PlannerEventDraft): CalendarEventDraft {
-    return {
-      title: draft.title,
-      date: draft.date,
-      startTime: draft.startTime,
-      endTime: draft.endTime,
-      description: draft.description,
-      location: draft.location,
-      source: draft.source ?? 'internal',
-      category: draft.category,
-    };
-  }
-
-  private toPlannerEvent(event: CalendarEvent): PlannerEvent {
-    return {
-      id: Number(event.id),
-      title: event.title,
-      date: event.date,
-      description: event.description,
-      location: event.location,
-      source: event.source,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      category: event.category,
-      kind: 'event',
-    };
   }
 
   private isDesktopViewport(): boolean {

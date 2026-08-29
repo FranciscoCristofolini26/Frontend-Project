@@ -71,7 +71,7 @@ export class CalendarEventService {
       );
   }
 
-  remove(id: string): void {
+  remove(id: CalendarEvent['id']): void {
     this.api
       .delete(RESOURCE, id)
       .pipe(catchError(() => of(undefined)))
