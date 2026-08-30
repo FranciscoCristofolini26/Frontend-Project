@@ -3,5 +3,6 @@ export interface IconModel{
     label:string,
     active?:boolean,
     url:string,
-    queryParams?: Record<string, string>
+    queryParams?: Record<string, string>,
+    action?: 'settings'
 }

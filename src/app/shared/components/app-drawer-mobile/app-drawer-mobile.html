@@ -1,0 +1,62 @@
+<div
+  class="app-drawer-mobile__backdrop"
+  [class.app-drawer-mobile__backdrop--visible]="open()"
+  (click)="dismissed.emit()"
+  aria-hidden="true"
+></div>
+
+<aside
+  #drawer
+  id="app-mobile-drawer"
+  class="app-drawer-mobile"
+  [class.app-drawer-mobile--open]="open()"
+  [attr.aria-hidden]="!open() || suspended()"
+  [attr.inert]="open() && !suspended() ? null : ''"
+  role="dialog"
+  [attr.aria-modal]="open() ? 'true' : null"
+  aria-label="Menu de navegação"
+>
+    <header class="app-drawer-mobile__header">
+      <app-logo />
+      <button
+        type="button"
+        class="app-drawer-mobile__close"
+        (click)="dismissed.emit()"
+        aria-label="Fechar menu"
+      >
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+
+    <nav class="app-drawer-mobile__nav" aria-label="Navegação principal">
+      @for (section of sections(); track section.title) {
+        <section class="app-drawer-mobile__section">
+          <h2>{{ section.title }}</h2>
+          <div>
+            @for (item of section.items; track item.label) {
+              @if (item.action === 'settings') {
+                <button type="button" class="app-drawer-mobile__link" (click)="settingsRequested.emit()">
+                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+                  <span>{{ item.label }}</span>
+                </button>
+              } @else {
+                <a
+                  [routerLink]="item.url"
+                  [queryParams]="item.queryParams"
+                  routerLinkActive="app-drawer-mobile__link--active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  #routeLink="routerLinkActive"
+                  [attr.aria-current]="routeLink.isActive ? 'page' : null"
+                  class="app-drawer-mobile__link"
+                  (click)="closeAfterNavigation()"
+                >
+                  <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+                  <span>{{ item.label }}</span>
+                </a>
+              }
+            }
+          </div>
+        </section>
+      }
+    </nav>
+</aside>

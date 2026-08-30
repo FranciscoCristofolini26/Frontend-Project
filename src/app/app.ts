@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MainLayout } from './shared/components/main-layout/main-layout';
+import { AppShell } from './shared/components/app-shell/app-shell';
 
 @Component({
   selector: 'app-root',
-  imports: [MainLayout],
+  imports: [AppShell],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',

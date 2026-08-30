@@ -31,30 +31,6 @@
         {{ dashboard().profile.initials }}
       </span>
 
-      <div class="home-settings">
-        <button
-          type="button"
-          class="icon-button"
-          (click)="settingsOpen.update((open) => !open)"
-          aria-label="Abrir configurações de tema"
-          [attr.aria-expanded]="settingsOpen()"
-          aria-controls="home-theme-settings"
-        >
-          <mat-icon aria-hidden="true">settings</mat-icon>
-        </button>
-
-        @if (settingsOpen()) {
-          <section id="home-theme-settings" class="card card--elevated home-settings__panel" aria-label="Tema da aplicação">
-            <p>Tema da aplicação</p>
-            <button type="button" (click)="setTheme('light')" [class.is-selected]="themeService.theme() === 'light'">
-              <mat-icon aria-hidden="true">light_mode</mat-icon>Claro
-            </button>
-            <button type="button" (click)="setTheme('dark')" [class.is-selected]="themeService.theme() === 'dark'">
-              <mat-icon aria-hidden="true">dark_mode</mat-icon>Escuro
-            </button>
-          </section>
-        }
-      </div>
     </div>
   </header>
 
@@ -143,26 +119,6 @@
     </article>
   </section>
 
-  <section class="home-suggestions" aria-labelledby="suggestions-title">
-    <header class="home-suggestions__heading">
-      <mat-icon aria-hidden="true">auto_awesome</mat-icon><h2 id="suggestions-title">{{ dashboard().suggestions.title }}</h2>
-    </header>
-    <div class="home-suggestions__list">
-      @for (suggestion of dashboard().suggestions.items; track suggestion.id) {
-        <article class="card card--elevated card--padded home-suggestion-card">
-          <p>{{ suggestion.message }}</p>
-          <div>
-            <a routerLink="/schedule">{{ suggestion.primaryAction }}</a><span aria-hidden="true">·</span>
-            <button type="button" (click)="dismissSuggestion(suggestion.id)">{{ suggestion.dismissAction }}</button>
-          </div>
-        </article>
-      }
-      @if (!dashboard().suggestions.items.length) {
-        <p class="card card--elevated card--padded home-empty-value home-empty-value--card">{{ dashboard().suggestions.emptyLabel }}</p>
-      }
-    </div>
-  </section>
-
   <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr]">
     <section class="card card--elevated card--padded home-habits" aria-labelledby="habits-title">
       <header class="section-heading">
@@ -204,8 +160,4 @@
     </section>
   </section>
 
-  <footer class="home-footer">
-    <span><strong>{{ dashboard().appName }}</strong><span aria-hidden="true"> · </span>{{ dashboard().footer.tagline }}</span>
-    <span class="home-footer__sync"><i aria-hidden="true"></i>{{ dashboard().footer.syncStatus }}</span>
-  </footer>
 </main>

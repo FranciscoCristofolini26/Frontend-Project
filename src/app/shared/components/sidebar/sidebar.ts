@@ -1,7 +1,8 @@
-import { Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, OnDestroy, output, signal } from '@angular/core';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NavigationSectionsModel } from './models/NavigationSectionsModel';
+import { AppLogo } from '../app-logo/app-logo';
+import { NAVIGATION_SECTIONS } from './navigation-sections';
 import { SidebarState } from './sidebar-state';
 
 const MOBILE_SIDEBAR_WIDTH = 280;
@@ -13,7 +14,7 @@ const SIDEBAR_WIDTH_STORAGE_KEY = 'agenda.sidebar-width';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MatIconModule, RouterLink, RouterLinkActive],
+  imports: [AppLogo, MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
   host: {
@@ -33,8 +34,6 @@ export class Sidebar implements OnDestroy {
   readonly isResizing = signal(false);
 
   readonly isDesktop = this.sidebarState.isDesktop;
-  readonly isTablet = this.sidebarState.isTablet;
-  readonly isMobile = this.sidebarState.isMobile;
   readonly panelWidth = computed(() =>
     this.isDesktop() ? this.sidebarWidth() : MOBILE_SIDEBAR_WIDTH,
   );
@@ -42,126 +41,8 @@ export class Sidebar implements OnDestroy {
     this.isDesktop() && this.sidebarOpen() ? this.sidebarWidth() : 0,
   );
 
-  readonly navigationSections: NavigationSectionsModel[] = [
-    {
-      title: 'INÍCIO',
-      items: [
-        { icon: 'home', label: 'Home', url: '/home' },
-        { icon: 'dashboard', label: 'Dashboard', url: '' },
-      ],
-    },
-    {
-      title: 'PLANEJAMENTO',
-      items: [
-        {
-          icon: 'view_kanban',
-          label: 'Planner',
-          url: '/schedule',
-        },
-        {
-          icon: 'calendar_month',
-          label: 'Calendário',
-          url: '/calendar',
-        },
-        {
-          icon: 'check_circle',
-          label: 'Tarefas',
-          url: '/schedule',
-          queryParams: { view: 'tarefas' },
-        },
-        {
-          icon: 'target',
-          label: 'Metas Semanais',
-          url: '/goals',
-        },
-        {
-          icon: 'self_improvement',
-          label: 'Hábitos',
-          url: '/habits',
-        },
-        {
-          icon: 'note',
-          label: 'Notas',
-          url: '/notes',
-        },
-        {
-          icon: 'schedule',
-          label: 'Time Blocking',
-          url: '',
-        },
-        {
-          icon: 'folder',
-          label: 'Projetos',
-          url: '/projects',
-        },
-      ],
-    },
-    {
-      title: 'PRODUTIVIDADE',
-      items: [
-        {
-          icon: 'inbox',
-          label: 'Inbox',
-          url: '',
-        },
-        {
-          icon: 'priority_high',
-          label: 'Prioridades',
-          url: '',
-        },
-        {
-          icon: 'trending_up',
-          label: 'Progresso',
-          url: '',
-        },
-        {
-          icon: 'analytics',
-          label: 'Estatísticas',
-          url: '',
-        },
-        {
-          icon: 'today',
-          label: 'Revisão Diária',
-          url: '',
-        },
-        {
-          icon: 'description',
-          label: 'Templates',
-          url: '',
-        },
-      ],
-    },
-    {
-      title: 'CONFIGURAÇÕES',
-      items: [
-        {
-          icon: 'settings',
-          label: 'Configurações',
-          url: '',
-        },
-        {
-          icon: 'palette',
-          label: 'Aparência',
-          url: '',
-        },
-        {
-          icon: 'notifications',
-          label: 'Notificações',
-          url: '',
-        },
-        {
-          icon: 'groups',
-          label: 'Equipe',
-          url: '',
-        },
-        {
-          icon: 'apps',
-          label: 'Ícones',
-          url: '',
-        },
-      ],
-    },
-  ];
+  readonly navigationSections = NAVIGATION_SECTIONS;
+  readonly settingsRequested = output<void>();
 
   constructor() {
     this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
@@ -174,13 +55,6 @@ export class Sidebar implements OnDestroy {
 
     if (wasDesktop !== this.isDesktop()) {
       this.sidebarOpen.set(this.isDesktop());
-    }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape() {
-    if (!this.isDesktop()) {
-      this.closeSidebar();
     }
   }
 

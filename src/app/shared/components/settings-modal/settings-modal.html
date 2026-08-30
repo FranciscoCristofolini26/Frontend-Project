@@ -1,0 +1,117 @@
+<button
+  type="button"
+  class="settings-modal-backdrop"
+  (click)="close()"
+  aria-label="Fechar configurações"
+  tabindex="-1"
+></button>
+
+<div class="settings-modal-container">
+  <section
+    #dialog
+    class="settings-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="settings-modal-title"
+  >
+    <header class="settings-modal__header">
+      <h2 id="settings-modal-title">Configurações</h2>
+      <button #closeButton type="button" class="settings-modal__close" (click)="close()" aria-label="Fechar">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+
+    <div class="settings-modal__tabs" role="tablist" aria-label="Seções de configurações">
+      @for (tab of tabs; track tab.id; let index = $index) {
+        <button
+          type="button"
+          class="settings-modal__tab"
+          [class.settings-modal__tab--active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          [attr.aria-controls]="'settings-panel-' + tab.id"
+          [attr.id]="'settings-tab-' + tab.id"
+          [attr.tabindex]="activeTab() === tab.id ? 0 : -1"
+          role="tab"
+          (click)="setTab(tab.id)"
+          (keydown)="onTabKeydown($event, index)"
+        >
+          <mat-icon aria-hidden="true">{{ tab.icon }}</mat-icon>{{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <div
+      class="settings-modal__panel"
+      role="tabpanel"
+      [attr.id]="'settings-panel-' + activeTab()"
+      [attr.aria-labelledby]="'settings-tab-' + activeTab()"
+    >
+      @if (activeTab() === 'appearance') {
+        <section class="settings-section" aria-labelledby="settings-theme-title">
+          <header class="settings-section__header">
+            <h3 id="settings-theme-title">Tema</h3>
+            <p>Escolha como o PlannerFy aparece para você.</p>
+          </header>
+
+          <div class="settings-theme-grid" role="radiogroup" aria-label="Tema">
+            @for (option of themeService.themeOptions; track option.id; let index = $index) {
+              <button
+                type="button"
+                class="settings-theme-option"
+                [class.settings-theme-option--selected]="themeService.theme() === option.id"
+                role="radio"
+                [attr.aria-checked]="themeService.theme() === option.id"
+                (click)="setTheme(option.id)"
+                (keydown)="onThemeOptionKeydown($event, index)"
+              >
+                <span [class]="'settings-theme-preview settings-theme-preview--' + option.id" aria-hidden="true">
+                  <i></i><span></span><span></span>
+                </span>
+                <span class="settings-theme-option__label">
+                  @if (themeService.theme() === option.id) {
+                    <mat-icon aria-hidden="true">check</mat-icon>
+                  }
+                  {{ option.label }}
+                </span>
+                <small>{{ option.description }}</small>
+              </button>
+            }
+          </div>
+        </section>
+
+        <section class="settings-section settings-section--accent" aria-labelledby="settings-accent-title">
+          <header class="settings-section__header">
+            <h3 id="settings-accent-title">Cor de destaque</h3>
+            <p>Usada em botões, links e elementos de destaque.</p>
+          </header>
+
+          <div class="settings-accent-list" role="radiogroup" aria-label="Cor de destaque">
+            @for (option of themeService.accentOptions; track option.id; let index = $index) {
+              <button
+                type="button"
+                class="settings-accent-option"
+                [class.settings-accent-option--selected]="themeService.accent() === option.id"
+                [style.background]="option.color"
+                role="radio"
+                [attr.aria-label]="option.label"
+                [attr.aria-checked]="themeService.accent() === option.id"
+                (click)="setAccent(option.id)"
+                (keydown)="onAccentOptionKeydown($event, index)"
+              >
+                @if (themeService.accent() === option.id) {
+                  <mat-icon aria-hidden="true">check</mat-icon>
+                }
+              </button>
+            }
+          </div>
+        </section>
+      } @else {
+        <section class="settings-placeholder">
+          <mat-icon aria-hidden="true">construction</mat-icon>
+          <h3>{{ tabs.find((tab) => tab.id === activeTab())?.label }}</h3>
+          <p>Esta configuração estará disponível em breve.</p>
+        </section>
+      }
+    </div>
+  </section>
+</div>

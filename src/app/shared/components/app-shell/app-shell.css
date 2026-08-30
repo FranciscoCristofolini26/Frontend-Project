@@ -1,0 +1,16 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.app-shell__content {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .app-shell__content {
+    padding-top: 64px;
+  }
+}

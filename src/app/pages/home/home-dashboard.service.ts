@@ -65,11 +65,6 @@ export interface HomeDashboardData {
     countLabel: string | null;
     events: { id: string; time: string; title: string; category: string; tone: string }[];
   };
-  suggestions: {
-    title: string;
-    items: { id: number; message: string; primaryAction: string; dismissAction: string }[];
-    emptyLabel: string;
-  };
   habits: {
     title: string;
     todayLabel: string;
@@ -80,10 +75,6 @@ export interface HomeDashboardData {
     title: string;
     expandLabel: string;
     metrics: { id: number; icon: string; value: string | null; label: string }[];
-  };
-  footer: {
-    tagline: string;
-    syncStatus: string;
   };
 }
 
@@ -286,18 +277,7 @@ function summary(tasks: Task[] | null, habits: Habit[] | null): HomeDashboardDat
       value: habitSummary === null ? null : String(habitSummary.highestCurrentStreak),
       label: 'dias de sequência',
     },
-    { id: 4, icon: 'sentiment_satisfied', value: null, label: 'humor do dia' },
   ];
-}
-
-function backendStatus(data: HomeBackendData): string {
-  const sources = Object.values(data);
-  const connected = sources.filter((source) => source !== null).length;
-  const total = sources.length;
-
-  return connected === 0
-    ? 'Nenhuma fonte do backend conectada'
-    : `${connected} de ${total} fontes do backend conectadas`;
 }
 
 function createDashboardData(data: HomeBackendData): HomeDashboardData {
@@ -317,7 +297,6 @@ function createDashboardData(data: HomeBackendData): HomeDashboardData {
     focus: currentFocus(data.tasks),
     weeklyGoal: weeklyGoal(data.goals, today),
     agenda: agenda(data.calendarEvents, data.plannerEvents, today),
-    suggestions: { title: 'Sugestões inteligentes', items: [], emptyLabel: 'Null' },
     habits: {
       title: 'Hábitos',
       todayLabel: 'Hoje',
@@ -328,10 +307,6 @@ function createDashboardData(data: HomeBackendData): HomeDashboardData {
       title: 'Resumo do dia',
       expandLabel: 'Ver resumo completo',
       metrics: summary(data.tasks, data.habits),
-    },
-    footer: {
-      tagline: 'Espaço pessoal inteligente',
-      syncStatus: backendStatus(data),
     },
   };
 }
@@ -358,16 +333,6 @@ export class HomeDashboardService {
       goals: this.requestList<Goal>('goals'),
       calendarEvents: this.requestList<CalendarEvent>('calendar-events'),
     }).subscribe((data) => this.dashboard.set(createDashboardData(data)));
-  }
-
-  dismissSuggestion(id: number): void {
-    this.dashboard.update((dashboard) => ({
-      ...dashboard,
-      suggestions: {
-        ...dashboard.suggestions,
-        items: dashboard.suggestions.items.filter((item) => item.id !== id),
-      },
-    }));
   }
 
   private requestList<T>(resource: string) {
