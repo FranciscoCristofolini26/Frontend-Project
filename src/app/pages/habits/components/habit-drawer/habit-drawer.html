@@ -1,16 +1,16 @@
 <div
-  class="habit-drawer-backdrop"
+  class="side-drawer-backdrop"
   tabindex="-1"
   (click)="closeFromBackdrop($event)"
   (keydown.escape)="dismissed.emit()"
 >
   <aside
-    class="habit-drawer"
+    class="side-drawer"
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="habit() ? 'Editar hábito' : 'Novo hábito'"
   >
-    <header class="habit-drawer__header">
+    <header class="side-drawer__header">
       <div>
         <h2>{{ habit() ? 'Editar hábito' : 'Novo hábito' }}</h2>
         <p>Defina o que você quer construir na sua rotina.</p>
@@ -25,7 +25,7 @@
       </button>
     </header>
 
-    <form class="habit-drawer__form" (ngSubmit)="submit()">
+    <form class="side-drawer__form" (ngSubmit)="submit()">
       <label class="form-field">
         Nome do hábito <span aria-hidden="true">*</span>
         <input
@@ -37,7 +37,7 @@
           autocomplete="off"
         />
         @if (submitted && !draft.name.trim()) {
-          <small class="habit-drawer__error">Informe o nome do hábito.</small>
+          <small class="side-drawer__error">Informe o nome do hábito.</small>
         }
       </label>
 
@@ -81,18 +81,18 @@
         <select class="input-control" name="frequency" [(ngModel)]="draft.frequencyType">
           <option value="daily">Todos os dias</option>
         </select>
-        <small class="habit-drawer__hint"
+        <small class="side-drawer__hint"
           >Outras frequências serão disponibilizadas em breve.</small
         >
       </label>
 
       <label class="form-field">
-        Horário <span class="habit-drawer__optional">Opcional</span>
+        Horário <span class="side-drawer__optional">Opcional</span>
         <input class="input-control" type="time" name="time" [(ngModel)]="draft.time" />
       </label>
 
       <label class="form-field">
-        Objetivo específico <span class="habit-drawer__optional">Opcional</span>
+        Objetivo específico <span class="side-drawer__optional">Opcional</span>
         <input
           class="input-control"
           type="text"
@@ -103,7 +103,7 @@
       </label>
 
       <label class="form-field">
-        Observação <span class="habit-drawer__optional">Opcional</span>
+        Observação <span class="side-drawer__optional">Opcional</span>
         <textarea
           class="input-control textarea habit-drawer__textarea"
           name="note"
@@ -112,7 +112,7 @@
         ></textarea>
       </label>
 
-      <footer class="habit-drawer__actions">
+      <footer class="side-drawer__actions">
         <button type="button" class="button button--secondary" (click)="dismissed.emit()">
           Cancelar
         </button>

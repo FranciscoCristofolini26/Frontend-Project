@@ -14,12 +14,12 @@
     />
 
     <nav class="schedule-content-switcher" aria-label="Conteúdo da agenda">
-      <div class="schedule-content-switcher__tabs">
+      <div class="segmented-control schedule-content-switcher__tabs">
         <button
           type="button"
           (click)="setView('planejamento')"
-          class="schedule-content-switcher__tab"
-          [class.schedule-content-switcher__tab--active]="view() === 'planejamento'"
+          class="segmented-control__option"
+          [class.segmented-control__option--active]="view() === 'planejamento'"
           [attr.aria-current]="view() === 'planejamento' ? 'page' : null"
         >
           Planner
@@ -27,8 +27,8 @@
         <button
           type="button"
           (click)="setView('tarefas')"
-          class="schedule-content-switcher__tab"
-          [class.schedule-content-switcher__tab--active]="view() === 'tarefas'"
+          class="segmented-control__option"
+          [class.segmented-control__option--active]="view() === 'tarefas'"
           [attr.aria-current]="view() === 'tarefas' ? 'page' : null"
         >
           Tasks

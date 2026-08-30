@@ -1,8 +1,13 @@
 @import 'tailwindcss';
 @import './app/styles/components/buttons.css';
 @import './app/styles/components/cards.css';
+@import './app/styles/components/content.css';
 @import './app/styles/components/inputs.css';
+@import './app/styles/components/layout.css';
 @import './app/styles/components/modal.css';
+@import './app/styles/components/segmented-control.css';
+@import './app/styles/components/side-drawer.css';
+@import './app/styles/components/tabs.css';
 
 body {
   min-width: 310px;

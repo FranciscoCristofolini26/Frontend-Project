@@ -1,13 +1,13 @@
-<section class="habits-page">
-  <div class="habits-page__content">
-    <header class="habits-page__header">
+<section class="habits-page page-shell">
+  <div class="habits-page__content page-container page-container--wide">
+    <header class="page-header">
       <div>
-        <h1>Hábitos</h1>
-        <p>Construa sua rotina e acompanhe a consistência que você acumulou.</p>
+        <h1 class="page-title">Hábitos</h1>
+        <p class="page-subtitle">Construa sua rotina e acompanhe a consistência que você acumulou.</p>
       </div>
       <button
         type="button"
-        class="button button--primary habits-page__new-button"
+        class="button button--primary habits-page__new-button max-sm:w-full"
         (click)="openCreateDrawer()"
       >
         <mat-icon>add</mat-icon>Novo hábito
@@ -30,12 +30,12 @@
     </div>
 
     <div class="habits-page__filters">
-      <nav class="habits-page__tabs" aria-label="Filtrar hábitos">
+      <nav class="tabs habits-page__tabs" aria-label="Filtrar hábitos">
         @for (tab of tabs(); track tab.id) {
           <button
             type="button"
-            class="habits-page__tab"
-            [class.habits-page__tab--active]="activeFilter() === tab.id"
+            class="tab"
+            [class.tab--active]="activeFilter() === tab.id"
             [attr.aria-pressed]="activeFilter() === tab.id"
             (click)="setFilter(tab.id)"
           >
@@ -72,13 +72,13 @@
 
 @if (deleteCandidate(); as habit) {
   <div
-    class="habit-delete-backdrop"
+    class="modal-backdrop habit-delete-backdrop"
     tabindex="-1"
     (click)="cancelDeleteFromBackdrop($event)"
     (keydown.escape)="cancelDelete()"
   >
     <section
-      class="habit-delete-dialog card"
+      class="modal-dialog habit-delete-dialog"
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="habit-delete-title"

@@ -1,16 +1,16 @@
-<section class="calendar-page">
-  <div class="calendar-page__content">
-    <header class="calendar-page__header">
+<section class="calendar-page page-shell">
+  <div class="calendar-page__content page-container page-container--extra-wide">
+    <header class="page-header">
       <div>
         <p class="calendar-page__eyebrow">Organização pessoal</p>
-        <h1>Calendário</h1>
-        <p class="calendar-page__subtitle">
+        <h1 class="page-title">Calendário</h1>
+        <p class="page-subtitle">
           Visualize seus compromissos e saiba o que acontece a seguir.
         </p>
       </div>
       <button
         type="button"
-        class="button button--primary calendar-page__new-event"
+        class="button button--primary calendar-page__new-event max-sm:w-full"
         (click)="openCreateForm()"
       >
         <mat-icon>add</mat-icon><span>Evento</span>
@@ -48,10 +48,14 @@
       </div>
 
       <div class="calendar-toolbar__actions">
-        <div class="calendar-view-switcher" aria-label="Visualização do calendário">
+        <div
+          class="segmented-control segmented-control--borderless segmented-control--compact segmented-control--muted-active calendar-view-switcher"
+          aria-label="Visualização do calendário"
+        >
           <button
             type="button"
-            [class.calendar-view-switcher__option--active]="view() === 'month'"
+            class="segmented-control__option"
+            [class.segmented-control__option--active]="view() === 'month'"
             [attr.aria-pressed]="view() === 'month'"
             (click)="setView('month')"
           >
@@ -59,7 +63,8 @@
           </button>
           <button
             type="button"
-            [class.calendar-view-switcher__option--active]="view() === 'week'"
+            class="segmented-control__option"
+            [class.segmented-control__option--active]="view() === 'week'"
             [attr.aria-pressed]="view() === 'week'"
             (click)="setView('week')"
           >

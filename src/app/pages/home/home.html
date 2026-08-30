@@ -1,0 +1,211 @@
+<main class="home-page">
+  <header class="home-header">
+    <a class="home-header__brand" routerLink="/home" aria-label="Ir para o início">
+      <span>{{ dashboard().appName }}</span><span aria-hidden="true">/</span><strong>{{ dashboard().pageName }}</strong>
+    </a>
+
+    <div class="home-header__actions">
+      <label class="input-shell home-search" for="home-search">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <input
+          #searchInput
+          id="home-search"
+          class="input-control"
+          type="search"
+          placeholder="Procurar..."
+          [value]="searchQuery()"
+          (input)="updateSearch($event)"
+          (keydown)="onSearchKeydown($event)"
+          aria-label="Procurar no espaço pessoal"
+        />
+        @if (searchQuery()) {
+          <button type="button" class="home-search__clear" (click)="clearSearch()" aria-label="Limpar busca">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        } @else {
+          <kbd>⌘K</kbd>
+        }
+      </label>
+
+      <span class="home-header__avatar" [attr.aria-label]="dashboard().profile.name ?? 'Null'">
+        {{ dashboard().profile.initials }}
+      </span>
+
+      <div class="home-settings">
+        <button
+          type="button"
+          class="icon-button"
+          (click)="settingsOpen.update((open) => !open)"
+          aria-label="Abrir configurações de tema"
+          [attr.aria-expanded]="settingsOpen()"
+          aria-controls="home-theme-settings"
+        >
+          <mat-icon aria-hidden="true">settings</mat-icon>
+        </button>
+
+        @if (settingsOpen()) {
+          <section id="home-theme-settings" class="card card--elevated home-settings__panel" aria-label="Tema da aplicação">
+            <p>Tema da aplicação</p>
+            <button type="button" (click)="setTheme('light')" [class.is-selected]="themeService.theme() === 'light'">
+              <mat-icon aria-hidden="true">light_mode</mat-icon>Claro
+            </button>
+            <button type="button" (click)="setTheme('dark')" [class.is-selected]="themeService.theme() === 'dark'">
+              <mat-icon aria-hidden="true">dark_mode</mat-icon>Escuro
+            </button>
+          </section>
+        }
+      </div>
+    </div>
+  </header>
+
+  <p class="home-search-status" aria-live="polite">{{ searchStatus() }}</p>
+
+  <section class="home-welcome" aria-labelledby="home-title">
+    <p class="eyebrow">{{ dashboard().welcome.eyebrow }}</p>
+    <h1 id="home-title">{{ dashboard().welcome.title }}</h1>
+    <span>{{ dashboard().welcome.description }}</span>
+  </section>
+
+  <section class="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label="Visão geral de hoje">
+    <article class="card card--elevated card--padded home-day-card">
+      <div class="home-day-card__topline">
+        <span>{{ dashboard().day.weekday }}</span>
+        <span class="home-day-card__weather-reading">
+          <mat-icon aria-hidden="true">{{ dashboard().day.weatherIcon }}</mat-icon>
+          <strong>{{ dashboard().day.temperature ?? 'Null' }}</strong>
+          <small>{{ dashboard().day.city ?? 'Null' }}</small>
+        </span>
+      </div>
+      <div class="home-day-card__date">
+        <strong>{{ dashboard().day.number }}</strong><span>{{ dashboard().day.month }}</span>
+      </div>
+      <p class="home-day-card__weather">{{ dashboard().day.weatherCondition ?? 'Null' }}</p>
+      <p class="home-day-card__greeting">{{ dashboard().day.greeting ?? 'Null' }}</p>
+    </article>
+
+    <article class="card card--elevated card--padded home-time-card">
+      <p class="eyebrow home-card__eyebrow"><mat-icon aria-hidden="true">schedule</mat-icon>{{ dashboard().availableTime.label }}</p>
+      <strong class="home-time-card__value">{{ dashboard().availableTime.value ?? 'Null' }}</strong>
+      <div class="home-time-card__segments" role="list" aria-label="Distribuição do tempo no dia">
+        @for (segment of dashboard().availableTime.segments; track segment.id) {
+          <span
+            role="listitem"
+            class="home-time-card__segment"
+            [class.home-time-card__segment--busy]="segment.status === 'busy'"
+            [class.home-time-card__segment--attention]="segment.status === 'attention'"
+            [attr.aria-label]="segment.label"
+          ></span>
+        }
+      </div>
+      <p class="home-time-card__description">{{ dashboard().availableTime.description ?? 'Null' }}</p>
+    </article>
+  </section>
+
+  <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-[1.05fr_.95fr_1.2fr]" aria-label="Foco, meta e agenda">
+    <article class="card card--elevated card--padded home-focus-card">
+      <p class="eyebrow home-card__eyebrow"><i class="home-status-dot" aria-hidden="true"></i>{{ dashboard().focus.label }}</p>
+      <h2>{{ dashboard().focus.title ?? 'Null' }}</h2>
+      <p>{{ dashboard().focus.description ?? 'Null' }}</p>
+      <div class="home-progress__label"><span>{{ dashboard().focus.progressLabel }}</span><strong>{{ dashboard().focus.progress === null ? 'Null' : dashboard().focus.progress + '%' }}</strong></div>
+      <div class="progress-track" role="progressbar" [attr.aria-valuenow]="dashboard().focus.progress ?? 0" aria-valuemin="0" aria-valuemax="100">
+        <span class="progress-value" [style.width.%]="dashboard().focus.progress ?? 0"></span>
+      </div>
+      <a routerLink="/schedule" class="text-action home-text-action">{{ dashboard().focus.actionLabel }} <span aria-hidden="true">→</span></a>
+    </article>
+
+    <article class="card card--elevated card--padded home-goal-card">
+      <div class="home-goal-card__ring" [style.--goal-progress]="(dashboard().weeklyGoal.progress ?? 0) + '%'">
+        <strong>{{ dashboard().weeklyGoal.progress === null ? 'Null' : dashboard().weeklyGoal.progress + '%' }}</strong>
+      </div>
+      <div>
+        <p class="eyebrow home-card__eyebrow">{{ dashboard().weeklyGoal.label }}</p>
+        <h2>{{ dashboard().weeklyGoal.title ?? 'Null' }}</h2>
+        <p>{{ dashboard().weeklyGoal.status ?? 'Null' }}</p>
+      </div>
+    </article>
+
+    <article class="card card--elevated card--padded home-agenda-card lg:col-span-2 xl:col-auto">
+      <header class="section-heading">
+        <h2>{{ dashboard().agenda.title }}</h2><span>{{ dashboard().agenda.countLabel ?? 'Null' }}</span>
+      </header>
+      <ol class="home-agenda-list">
+        @for (event of dashboard().agenda.events; track event.id) {
+          <li>
+            <time>{{ event.time }}</time>
+            <i class="home-agenda-list__dot" [class]="'home-agenda-list__dot home-agenda-list__dot--' + event.tone" aria-hidden="true"></i>
+            <div><strong>{{ event.title }}</strong><span>{{ event.category }}</span></div>
+          </li>
+        }
+      </ol>
+      @if (!dashboard().agenda.events.length) {
+        <p class="home-empty-value">Null</p>
+      }
+    </article>
+  </section>
+
+  <section class="home-suggestions" aria-labelledby="suggestions-title">
+    <header class="home-suggestions__heading">
+      <mat-icon aria-hidden="true">auto_awesome</mat-icon><h2 id="suggestions-title">{{ dashboard().suggestions.title }}</h2>
+    </header>
+    <div class="home-suggestions__list">
+      @for (suggestion of dashboard().suggestions.items; track suggestion.id) {
+        <article class="card card--elevated card--padded home-suggestion-card">
+          <p>{{ suggestion.message }}</p>
+          <div>
+            <a routerLink="/schedule">{{ suggestion.primaryAction }}</a><span aria-hidden="true">·</span>
+            <button type="button" (click)="dismissSuggestion(suggestion.id)">{{ suggestion.dismissAction }}</button>
+          </div>
+        </article>
+      }
+      @if (!dashboard().suggestions.items.length) {
+        <p class="card card--elevated card--padded home-empty-value home-empty-value--card">{{ dashboard().suggestions.emptyLabel }}</p>
+      }
+    </div>
+  </section>
+
+  <section class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr]">
+    <section class="card card--elevated card--padded home-habits" aria-labelledby="habits-title">
+      <header class="section-heading">
+        <h2 id="habits-title">{{ dashboard().habits.title }}</h2><a routerLink="/habits">{{ dashboard().habits.todayLabel }}</a>
+      </header>
+      <div class="home-habits__list">
+        @for (habit of dashboard().habits.items; track habit.id) {
+          <article class="home-habit">
+            <mat-icon aria-hidden="true">{{ habit.icon }}</mat-icon>
+            <div>
+              <div><strong>{{ habit.name }}</strong><span>{{ habit.value }}</span></div>
+              <div class="progress-track progress-track--small" role="progressbar" [attr.aria-valuenow]="habit.progress" aria-valuemin="0" aria-valuemax="100">
+                <span class="progress-value" [style.width.%]="habit.progress"></span>
+              </div>
+            </div>
+          </article>
+        }
+        @if (!dashboard().habits.items.length) {
+          <p class="home-empty-value">{{ dashboard().habits.emptyLabel }}</p>
+        }
+      </div>
+    </section>
+
+    <section class="card card--elevated card--padded home-summary" aria-labelledby="summary-title">
+      <header class="section-heading">
+        <h2 id="summary-title">{{ dashboard().daySummary.title }}</h2>
+        <button type="button" class="icon-button icon-button--small" [attr.aria-label]="dashboard().daySummary.expandLabel">
+          <mat-icon aria-hidden="true">open_in_full</mat-icon>
+        </button>
+      </header>
+      <div class="home-summary__grid">
+        @for (metric of dashboard().daySummary.metrics; track metric.id) {
+          <article>
+            <mat-icon aria-hidden="true">{{ metric.icon }}</mat-icon>
+            <strong>{{ metric.value ?? 'Null' }}</strong><span>{{ metric.label }}</span>
+          </article>
+        }
+      </div>
+    </section>
+  </section>
+
+  <footer class="home-footer">
+    <span><strong>{{ dashboard().appName }}</strong><span aria-hidden="true"> · </span>{{ dashboard().footer.tagline }}</span>
+    <span class="home-footer__sync"><i aria-hidden="true"></i>{{ dashboard().footer.syncStatus }}</span>
+  </footer>
+</main>

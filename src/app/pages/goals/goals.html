@@ -1,13 +1,13 @@
-<section class="goals-page">
-  <div class="goals-page__content">
-    <header class="goals-page__header">
+<section class="goals-page page-shell">
+  <div class="goals-page__content page-container">
+    <header class="page-header">
       <div>
-        <h1>Metas Semanais</h1>
-        <p>Escolha os resultados que merecem sua atenção nos próximos dias.</p>
+        <h1 class="page-title">Metas Semanais</h1>
+        <p class="page-subtitle">Escolha os resultados que merecem sua atenção nos próximos dias.</p>
       </div>
       <button
         type="button"
-        class="button button--primary goals-page__new-button"
+        class="button button--primary goals-page__new-button max-sm:w-full"
         (click)="openCreateDrawer()"
       >
         <mat-icon>add</mat-icon>Nova meta
@@ -25,17 +25,19 @@
     @if (summary().total) {
       <p class="goals-page__summary">
         {{ summary().completed }} de {{ summary().total }} metas concluídas
-        <span aria-hidden="true">·</span> {{ summary().percentage }}%
+        <span aria-hidden="true" class="inline-block h-[3px] w-[3px] rounded-full bg-text-disabled"></span>
+        {{ summary().percentage }}%
       </p>
     } @else {
       <p class="goals-page__summary">Sua semana ainda está aberta para o que realmente importa.</p>
     }
 
-    <div class="goals-page__filters">
-      <nav class="goals-page__state-tabs" aria-label="Filtrar metas por estado">
+    <div class="mt-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <nav class="tabs" aria-label="Filtrar metas por estado">
         <button
           type="button"
-          [class.goals-page__state-tab--active]="stateFilter() === 'all'"
+          class="tab"
+          [class.tab--active]="stateFilter() === 'all'"
           [attr.aria-pressed]="stateFilter() === 'all'"
           (click)="setStateFilter('all')"
         >
@@ -43,7 +45,8 @@
         </button>
         <button
           type="button"
-          [class.goals-page__state-tab--active]="stateFilter() === 'in-progress'"
+          class="tab"
+          [class.tab--active]="stateFilter() === 'in-progress'"
           [attr.aria-pressed]="stateFilter() === 'in-progress'"
           (click)="setStateFilter('in-progress')"
         >
@@ -51,16 +54,22 @@
         </button>
         <button
           type="button"
-          [class.goals-page__state-tab--active]="stateFilter() === 'completed'"
+          class="tab"
+          [class.tab--active]="stateFilter() === 'completed'"
           [attr.aria-pressed]="stateFilter() === 'completed'"
           (click)="setStateFilter('completed')"
         >
           Concluídas
         </button>
       </nav>
-      <label class="goals-page__category-filter"
+      <label class="input-shell goals-page__category-filter"
         >Categoria
-        <select [value]="categoryFilter()" (change)="setCategoryFilter(category.value)" #category>
+        <select
+          class="cursor-pointer bg-transparent text-[13px] outline-none"
+          [value]="categoryFilter()"
+          (change)="setCategoryFilter(category.value)"
+          #category
+        >
           <option value="all">Todas as categorias</option>
           @for (item of categories(); track item.id) {
             <option [value]="item.id">{{ item.name }}</option>
@@ -70,11 +79,11 @@
     </div>
 
     @if (loading()) {
-      <section class="goals-page__feedback card" aria-live="polite">
+      <section class="card mt-4 flex items-center gap-2 p-5 text-text-sub" aria-live="polite">
         <mat-icon>progress_activity</mat-icon>Carregando metas da semana…
       </section>
     } @else if (error()) {
-      <section class="goals-page__feedback goals-page__feedback--error card" role="alert">
+      <section class="card mt-4 flex items-center gap-2 p-5 text-error" role="alert">
         <mat-icon>error</mat-icon>{{ error() }}
       </section>
     } @else if (filteredGoals().length) {

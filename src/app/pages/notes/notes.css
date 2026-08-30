@@ -4,37 +4,6 @@
   min-width: 0;
 }
 
-.notes-page {
-  background: var(--color-bg-main);
-  min-height: inherit;
-  padding: 40px 24px;
-}
-
-.notes-content {
-  margin: auto;
-  max-width: 1152px;
-}
-
-.notes-header {
-  align-items: center;
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-}
-
-.notes-header h1 {
-  color: var(--color-text-main);
-  font-family: var(--font-title);
-  font-size: 36px;
-  line-height: 1.1;
-  margin: 0;
-}
-
-.notes-header p {
-  color: var(--color-text-sub);
-  margin: 6.4px 0 0;
-}
-
 .search-field {
   margin-top: 32px;
 }
@@ -85,10 +54,6 @@
   color: var(--color-brand-primary);
 }
 
-.empty-state {
-  color: var(--color-text-sub);
-}
-
 .note-editor {
   padding: 32px;
 }
@@ -119,9 +84,6 @@ mat-icon {
 }
 
 @media (min-width: 640px) {
-  .notes-page {
-    padding: 40px;
-  }
   .notes-grid {
     columns: 2;
   }
@@ -134,13 +96,6 @@ mat-icon {
 }
 
 @media (max-width: 480px) {
-  .notes-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .notes-header .button {
-    width: 100%;
-  }
   .note-editor {
     padding: 24px;
   }
