@@ -1,9 +1,27 @@
-import { PlannerEvent, PlannerOverlapGroup, PositionedPlannerEvent } from './planner';
+import {
+  PlannerDayAvailability,
+  PlannerEvent,
+  PlannerOverlapGroup,
+  PlannerTimeSlot,
+  PositionedPlannerEvent,
+} from './planner';
 
 export const DAY_START_HOUR = 8;
 export const DAY_END_HOUR = 20;
+export const PLANNER_SLOT_DURATION_MINUTES = 60;
+export const PLANNER_SLOT_COUNT = DAY_END_HOUR - DAY_START_HOUR;
 export const PIXELS_PER_MINUTE = 2;
-export const MAX_CONCURRENT_EVENTS = 3;
+
+export const PLANNER_DAY_SLOTS: readonly PlannerTimeSlot[] = Array.from(
+  { length: PLANNER_SLOT_COUNT },
+  (_, index) => {
+    const startHour = DAY_START_HOUR + index;
+    return {
+      startTime: `${startHour.toString().padStart(2, '0')}:00`,
+      endTime: `${(startHour + 1).toString().padStart(2, '0')}:00`,
+    };
+  },
+);
 
 export function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -29,6 +47,45 @@ export function toMinutes(time: string): number {
 
 export function durationInMinutes(event: Pick<PlannerEvent, 'startTime' | 'endTime'>): number {
   return Math.max(0, toMinutes(event.endTime) - toMinutes(event.startTime));
+}
+
+export function isPlannerTimeSlot(
+  interval: Pick<PlannerEvent, 'startTime' | 'endTime'>,
+): boolean {
+  return PLANNER_DAY_SLOTS.some(
+    (slot) => slot.startTime === interval.startTime && slot.endTime === interval.endTime,
+  );
+}
+
+/**
+ * Converts events into a unique set of occupied one-hour slots. Counting slots
+ * instead of event duration keeps the result correct even if legacy API data
+ * contains overlapping or malformed events.
+ */
+export function getPlannerDayAvailability(
+  date: string,
+  events: PlannerEvent[],
+): PlannerDayAvailability {
+  const eventsForDate = events.filter((event) => event.date === date);
+  const slots = PLANNER_DAY_SLOTS.map((slot) => {
+    const slotStart = toMinutes(slot.startTime);
+    const slotEnd = toMinutes(slot.endTime);
+    const available = !eventsForDate.some(
+      (event) => toMinutes(event.startTime) < slotEnd && toMinutes(event.endTime) > slotStart,
+    );
+
+    return { ...slot, available };
+  });
+  const availableBlocks = slots.filter((slot) => slot.available).length;
+
+  return {
+    date,
+    totalBlocks: PLANNER_SLOT_COUNT,
+    occupiedBlocks: PLANNER_SLOT_COUNT - availableBlocks,
+    availableBlocks,
+    availableHours: availableBlocks,
+    slots,
+  };
 }
 
 export function startOfWeek(date: Date): Date {

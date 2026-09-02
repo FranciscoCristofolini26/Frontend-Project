@@ -12,7 +12,7 @@ export class TasksService {
   private readonly api = inject(ApiClient);
 
   getTasks(): Observable<Task[]> {
-    return this.api.getAll<Task>(RESOURCE);
+    return this.api.getAll<Task>(RESOURCE+"/getTask");
   }
 
   createTask(task: Partial<Task>): Observable<Task> {

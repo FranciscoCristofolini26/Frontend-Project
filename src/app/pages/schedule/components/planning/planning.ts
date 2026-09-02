@@ -11,15 +11,14 @@ import {
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PlannerViewMode } from '../header/header';
 import {
-  DAY_END_HOUR,
-  DAY_START_HOUR,
-  MAX_CONCURRENT_EVENTS,
+  PLANNER_DAY_SLOTS,
   PlannerEvent,
   PlannerEventDraft,
   PlannerHabit,
   PlannerTask,
   dateKey,
-  durationInMinutes,
+  getPlannerDayAvailability,
+  isPlannerTimeSlot,
   startOfDay,
 } from '../../models';
 import { HabitService } from '../../../habits/service/habit.service';
@@ -65,10 +64,7 @@ export class Planning {
   readonly editingEvent = signal<PlannerEvent | null>(null);
   readonly aiOrganizationPrompt = signal(false);
   readonly isDesktop = signal(this.isDesktopViewport());
-  readonly dailyDropListIds = Array.from(
-    { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
-    (_, index) => `daily-slot-${DAY_START_HOUR + index}`,
-  );
+  readonly dailyDropListIds = PLANNER_DAY_SLOTS.map((slot) => `daily-slot-${slot.startTime}`);
   readonly dragAndDropEnabled = computed(() => this.viewMode() === 'daily' && this.isDesktop());
 
   readonly events = this.plannerService.events;
@@ -89,6 +85,9 @@ export class Planning {
     const activeDate = dateKey(this.selectedDate());
     return this.events().filter((event) => event.date === activeDate);
   });
+  readonly dayAvailability = computed(() =>
+    getPlannerDayAvailability(dateKey(this.selectedDate()), this.dayEvents()),
+  );
   readonly taskCount = computed(
     () =>
       this.unscheduledTasks().length +
@@ -97,19 +96,13 @@ export class Planning {
   readonly eventCount = computed(
     () => this.dayEvents().filter((event) => event.kind === 'event').length,
   );
-  readonly plannedMinutes = computed(() =>
-    this.dayEvents().reduce((total, event) => total + durationInMinutes(event), 0),
-  );
+  readonly plannedMinutes = computed(() => this.dayAvailability().occupiedBlocks * 60);
   readonly plannedHours = computed(() => formatDuration(this.plannedMinutes()));
-  readonly freeMinutes = computed(() => {
-    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
-    return Math.max(0, availableMinutes - this.plannedMinutes());
-  });
+  readonly freeMinutes = computed(() => this.dayAvailability().availableBlocks * 60);
   readonly freeTime = computed(() => formatDuration(this.freeMinutes()));
-  readonly freeTimePercentage = computed(() => {
-    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
-    return Math.round((this.freeMinutes() / availableMinutes) * 100);
-  });
+  readonly freeTimePercentage = computed(() =>
+    Math.round((this.dayAvailability().availableBlocks / this.dayAvailability().totalBlocks) * 100),
+  );
 
   constructor() {
     effect(() => {
@@ -125,7 +118,7 @@ export class Planning {
   }
 
   createEvent(draft: PlannerEventDraft): void {
-    if (this.wouldExceedConcurrentLimit(draft)) {
+    if (!isPlannerTimeSlot(draft) || this.hasOccupiedSlot(draft)) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
@@ -147,7 +140,7 @@ export class Planning {
     const event = this.editingEvent();
     if (!event) return;
 
-    if (this.wouldExceedConcurrentLimit(draft, event.id)) {
+    if (!isPlannerTimeSlot(draft) || this.hasOccupiedSlot(draft, event.id)) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
@@ -177,17 +170,8 @@ export class Planning {
     }
 
     const task = event.item.data;
-    const startHour = Number(slotTime.slice(0, 2));
-    const endTime = `${Math.min(startHour + 1, DAY_END_HOUR + 1)
-      .toString()
-      .padStart(2, '0')}:00`;
-    if (
-      this.wouldExceedConcurrentLimit({
-        date: dateKey(this.selectedDate()),
-        startTime: slotTime,
-        endTime,
-      })
-    ) {
+    const slot = PLANNER_DAY_SLOTS.find((item) => item.startTime === slotTime);
+    if (!slot || this.hasOccupiedSlot({ date: dateKey(this.selectedDate()), ...slot })) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
@@ -198,7 +182,7 @@ export class Planning {
         date: dateKey(this.selectedDate()),
         description: '',
         startTime: slotTime,
-        endTime,
+        endTime: slot.endTime,
         category: task.category,
       },
       'task',
@@ -210,39 +194,23 @@ export class Planning {
     return typeof window !== 'undefined' && window.innerWidth >= 1024;
   }
 
-  private wouldExceedConcurrentLimit(
+  private hasOccupiedSlot(
     candidate: Pick<PlannerEvent, 'date' | 'startTime' | 'endTime'>,
     ignoredEventId?: number,
   ): boolean {
+    if (!isPlannerTimeSlot(candidate)) {
+      return true;
+    }
+
     const candidateStart = this.timeToMinutes(candidate.startTime);
     const candidateEnd = this.timeToMinutes(candidate.endTime);
-    const relevantEvents = this.events().filter(
+    return this.events().some(
       (event) =>
         event.id !== ignoredEventId &&
         event.date === candidate.date &&
         this.timeToMinutes(event.startTime) < candidateEnd &&
         this.timeToMinutes(event.endTime) > candidateStart,
     );
-    const boundaries = [
-      candidateStart,
-      candidateEnd,
-      ...relevantEvents.flatMap((event) => [
-        Math.max(candidateStart, this.timeToMinutes(event.startTime)),
-        Math.min(candidateEnd, this.timeToMinutes(event.endTime)),
-      ]),
-    ].sort((first, second) => first - second);
-
-    return boundaries.some((boundary, index) => {
-      const nextBoundary = boundaries[index + 1];
-      if (nextBoundary === undefined || nextBoundary === boundary) return false;
-
-      const probe = boundary + (nextBoundary - boundary) / 2;
-      const simultaneous = relevantEvents.filter(
-        (event) =>
-          this.timeToMinutes(event.startTime) < probe && this.timeToMinutes(event.endTime) > probe,
-      ).length;
-      return simultaneous >= MAX_CONCURRENT_EVENTS;
-    });
   }
 
   private timeToMinutes(time: string): number {

@@ -6,13 +6,21 @@ import { Goal } from '../goals/models/goal';
 import { weekIdFor } from '../goals/utils/week.utils';
 import { Habit } from '../habits/models/habit';
 import { calculateHabitSummary } from '../habits/utils/habit-metrics';
-import { PlannerEvent, Task, dateKey, durationInMinutes, toMinutes } from '../schedule/models';
+import {
+  PlannerDayAvailability,
+  PlannerEvent,
+  PLANNER_SLOT_COUNT,
+  Task,
+  dateKey,
+  getPlannerDayAvailability,
+} from '../schedule/models';
 
 export type HomeTimeSegmentStatus = 'busy' | 'attention' | 'free' | 'unknown';
 
 interface HomeBackendData {
   tasks: Task[] | null;
   plannerEvents: PlannerEvent[] | null;
+  plannerAvailability: PlannerDayAvailability | null;
   habits: Habit[] | null;
   goals: Goal[] | null;
   calendarEvents: CalendarEvent[] | null;
@@ -96,47 +104,31 @@ function currentDayData(): HomeDashboardData['day'] {
 }
 
 function createUnknownSegments(): HomeDashboardData['availableTime']['segments'] {
-  return Array.from({ length: 7 }, (_, index) => ({
+  return Array.from({ length: PLANNER_SLOT_COUNT }, (_, index) => ({
     id: index + 1,
     status: 'unknown' as const,
     label: 'Null',
   }));
 }
 
-function formatDuration(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const remainder = minutes % 60;
-
-  if (hours === 0) return `${remainder}min hoje`;
-  return `${hours}h${remainder ? ` ${remainder}min` : ''} hoje`;
+function timeSegments(
+  availability: PlannerDayAvailability,
+): HomeDashboardData['availableTime']['segments'] {
+  return availability.slots.map((slot, index) => ({
+    id: index + 1,
+    status: slot.available ? 'free' : 'busy',
+    label: `${slot.startTime} a ${slot.endTime}`,
+  }));
 }
 
-function timeSegments(events: PlannerEvent[], today: Date): HomeDashboardData['availableTime']['segments'] {
-  const startHour = 8;
-  const hoursPerSegment = 2;
-  const segmentsCount = 7;
-  const todayKey = dateKey(today);
+function availableTime(
+  events: PlannerEvent[] | null,
+  backendAvailability: PlannerDayAvailability | null,
+  today: Date,
+): HomeDashboardData['availableTime'] {
+  const availability = backendAvailability ?? (events ? getPlannerDayAvailability(dateKey(today), events) : null);
 
-  return Array.from({ length: segmentsCount }, (_, index) => {
-    const start = (startHour + index * hoursPerSegment) * 60;
-    const end = start + hoursPerSegment * 60;
-    const overlappingEvents = events.filter(
-      (event) =>
-        event.date === todayKey && toMinutes(event.startTime) < end && toMinutes(event.endTime) > start,
-    );
-    const status: HomeTimeSegmentStatus =
-      overlappingEvents.length > 1 ? 'attention' : overlappingEvents.length === 1 ? 'busy' : 'free';
-
-    return {
-      id: index + 1,
-      status,
-      label: `${String(start / 60).padStart(2, '0')}h a ${String(end / 60).padStart(2, '0')}h`,
-    };
-  });
-}
-
-function availableTime(events: PlannerEvent[] | null, today: Date): HomeDashboardData['availableTime'] {
-  if (events === null) {
+  if (availability === null) {
     return {
       label: 'TEMPO DISPONÍVEL',
       value: null,
@@ -145,16 +137,11 @@ function availableTime(events: PlannerEvent[] | null, today: Date): HomeDashboar
     };
   }
 
-  const busyMinutes = events
-    .filter((event) => event.date === dateKey(today))
-    .reduce((total, event) => total + durationInMinutes(event), 0);
-  const dayMinutes = 14 * 60;
-
   return {
     label: 'TEMPO DISPONÍVEL',
-    value: formatDuration(Math.max(0, dayMinutes - busyMinutes)),
-    description: null,
-    segments: timeSegments(events, today),
+    value: `${availability.availableHours}h`,
+    description: `${availability.availableBlocks} de ${availability.totalBlocks} blocos livres`,
+    segments: timeSegments(availability),
   };
 }
 
@@ -293,7 +280,7 @@ function createDashboardData(data: HomeBackendData): HomeDashboardData {
       description: 'Uma visão calma do que importa agora, sem perder de vista o seu ritmo.',
     },
     day: currentDayData(),
-    availableTime: availableTime(data.plannerEvents, today),
+    availableTime: availableTime(data.plannerEvents, data.plannerAvailability, today),
     focus: currentFocus(data.tasks),
     weeklyGoal: weeklyGoal(data.goals, today),
     agenda: agenda(data.calendarEvents, data.plannerEvents, today),
@@ -314,6 +301,7 @@ function createDashboardData(data: HomeBackendData): HomeDashboardData {
 const INITIAL_BACKEND_DATA: HomeBackendData = {
   tasks: null,
   plannerEvents: null,
+  plannerAvailability: null,
   habits: null,
   goals: null,
   calendarEvents: null,
@@ -325,10 +313,12 @@ export class HomeDashboardService {
 
   readonly dashboard = signal<HomeDashboardData>(createDashboardData(INITIAL_BACKEND_DATA));
 
-  constructor() {
+  load(): void {
+    const today = dateKey(new Date());
     forkJoin({
       tasks: this.requestList<Task>('tasks'),
       plannerEvents: this.requestList<PlannerEvent>('planner/events'),
+      plannerAvailability: this.requestPlannerAvailability(today),
       habits: this.requestList<Habit>('habits'),
       goals: this.requestList<Goal>('goals'),
       calendarEvents: this.requestList<CalendarEvent>('calendar-events'),
@@ -337,5 +327,11 @@ export class HomeDashboardService {
 
   private requestList<T>(resource: string) {
     return this.api.getAll<T>(resource).pipe(catchError(() => of<T[] | null>(null)));
+  }
+
+  private requestPlannerAvailability(date: string) {
+    return this.api
+      .get<PlannerDayAvailability>(`planner/availability?date=${encodeURIComponent(date)}`)
+      .pipe(catchError(() => of<PlannerDayAvailability | null>(null)));
   }
 }

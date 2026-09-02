@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   computed,
   inject,
   signal,
@@ -19,7 +20,7 @@ import { HomeDashboardService } from './home-dashboard.service';
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Home {
+export class Home implements OnInit {
   private readonly dashboardService = inject(HomeDashboardService);
   readonly dashboard = this.dashboardService.dashboard;
   readonly searchQuery = signal('');
@@ -29,6 +30,10 @@ export class Home {
       ? `A pesquisa por “${this.searchQuery().trim()}” está pronta para ser conectada aos seus dados.`
       : '',
   );
+
+  ngOnInit(): void {
+    this.dashboardService.load();
+  }
 
   @HostListener('document:keydown', ['$event'])
   onDocumentKeydown(event: KeyboardEvent): void {

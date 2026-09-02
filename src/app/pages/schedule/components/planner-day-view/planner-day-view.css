@@ -40,7 +40,7 @@
   text-transform: capitalize;
 }
 
-.planner-day-view__half-hour {
+.planner-day-view__hourly-slots {
   color: var(--color-text-disabled);
   font-size: 11px;
 }
@@ -60,7 +60,7 @@
   display: grid;
   font-size: 11px;
   font-weight: 600;
-  grid-template-rows: repeat(13, var(--planner-hour-height));
+  grid-template-rows: repeat(12, var(--planner-hour-height));
   text-align: right;
 }
 
@@ -69,22 +69,14 @@
 }
 
 .planner-day-view__canvas {
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 0,
-      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 1px,
-      transparent 1px,
-      transparent var(--planner-half-hour-height)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
-        calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
-    );
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--planner-hour-height) - 1px),
+    color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
+      calc(var(--planner-hour-height) - 1px),
+    color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
+  );
   border-left: 1px solid var(--color-border);
   min-height: var(--planner-canvas-height);
   position: relative;
@@ -92,7 +84,7 @@
 
 .planner-day-view__drop-slots {
   display: grid;
-  grid-template-rows: repeat(13, var(--planner-hour-height));
+  grid-template-rows: repeat(12, var(--planner-hour-height));
   inset: 0;
   pointer-events: none;
   position: absolute;
@@ -152,7 +144,7 @@ app-planner-event-card {
     font-size: 16px;
   }
 
-  .planner-day-view__half-hour {
+  .planner-day-view__hourly-slots {
     display: none;
   }
 

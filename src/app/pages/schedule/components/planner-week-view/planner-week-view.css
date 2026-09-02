@@ -39,7 +39,7 @@
   margin-top: 4px;
 }
 
-.planner-week-view__half-hour {
+.planner-week-view__hourly-slots {
   color: var(--color-text-disabled);
   font-size: 11px;
 }
@@ -85,7 +85,7 @@
   display: grid;
   font-size: 10px;
   font-weight: 600;
-  grid-template-rows: repeat(13, var(--planner-hour-height));
+  grid-template-rows: repeat(12, var(--planner-hour-height));
   text-align: right;
 }
 
@@ -94,22 +94,14 @@
 }
 
 .planner-week-view__day-canvas {
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 0,
-      color-mix(in srgb, var(--color-border) 45%, var(--color-card-surface)) 1px,
-      transparent 1px,
-      transparent var(--planner-half-hour-height)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
-        calc(var(--planner-hour-height) - 1px),
-      color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
-    );
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--planner-hour-height) - 1px),
+    color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface))
+      calc(var(--planner-hour-height) - 1px),
+    color-mix(in srgb, var(--color-border) 70%, var(--color-card-surface)) var(--planner-hour-height)
+  );
   border-left: 1px solid var(--color-border);
   min-height: var(--planner-canvas-height);
   position: relative;

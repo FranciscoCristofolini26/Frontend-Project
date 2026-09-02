@@ -1,7 +1,6 @@
 <section
   class="planner-day-view card"
   aria-label="Visualização diária"
-  [style.--planner-half-hour-height]="halfHourHeight() + 'px'"
   [style.--planner-hour-height]="hourHeight() + 'px'"
   [style.--planner-canvas-height]="canvasHeight() + 'px'"
   [style.--planner-event-min-height]="eventMinHeight() + 'px'"
@@ -11,7 +10,7 @@
       <p class="planner-day-view__eyebrow">Visão diária</p>
       <h2 class="planner-day-view__title">{{ dateLabel() }}</h2>
     </div>
-    <span class="planner-day-view__half-hour">Intervalos de 30 min</span>
+    <span class="planner-day-view__hourly-slots">Blocos de 1 hora</span>
   </header>
 
   <div class="planner-day-view__scroll">
@@ -24,15 +23,15 @@
 
       <div class="planner-day-view__canvas" [class.planner-day-view__canvas--drop-enabled]="dragEnabled()">
         <div class="planner-day-view__drop-slots" aria-label="Horários disponíveis para agendamento">
-          @for (hour of hours; track hour) {
+          @for (slot of slots; track slot.startTime) {
             <div
               cdkDropList
               class="planner-day-view__drop-slot"
-              [id]="'daily-slot-' + hour"
+              [id]="'daily-slot-' + slot.startTime"
               [cdkDropListDisabled]="!dragEnabled()"
               [cdkDropListSortingDisabled]="true"
-              (cdkDropListDropped)="dropTask($event, hour)"
-              [attr.aria-label]="'Agendar às ' + hour.toString().padStart(2, '0') + ':00'"
+              (cdkDropListDropped)="dropTask($event, slot.startTime)"
+              [attr.aria-label]="'Agendar de ' + slot.startTime + ' a ' + slot.endTime"
             ></div>
           }
         </div>
