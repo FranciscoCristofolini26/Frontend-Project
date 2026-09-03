@@ -5,7 +5,7 @@ import { DemoDataStore } from '../../../core/data-access/demo-data-store.service
 import { Habit, HabitDraft } from '../models/habit';
 import { toDateKey } from '../utils/habit-metrics';
 
-const RESOURCE = 'habits';
+const RESOURCE = 'habit';
 
 function createDemoHabit(): Habit {
   return {

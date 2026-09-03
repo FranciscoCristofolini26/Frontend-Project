@@ -14,6 +14,7 @@ import {
   dateKey,
   getPlannerDayAvailability,
 } from '../schedule/models';
+import { SCHEDULE_TASKS_LIST_RESOURCE } from '../schedule/service/schedule-tasks.endpoints';
 
 export type HomeTimeSegmentStatus = 'busy' | 'attention' | 'free' | 'unknown';
 
@@ -126,7 +127,8 @@ function availableTime(
   backendAvailability: PlannerDayAvailability | null,
   today: Date,
 ): HomeDashboardData['availableTime'] {
-  const availability = backendAvailability ?? (events ? getPlannerDayAvailability(dateKey(today), events) : null);
+  const availability =
+    backendAvailability ?? (events ? getPlannerDayAvailability(dateKey(today), events) : null);
 
   if (availability === null) {
     return {
@@ -246,7 +248,10 @@ function habitItems(habits: Habit[] | null, today: Date): HomeDashboardData['hab
     });
 }
 
-function summary(tasks: Task[] | null, habits: Habit[] | null): HomeDashboardData['daySummary']['metrics'] {
+function summary(
+  tasks: Task[] | null,
+  habits: Habit[] | null,
+): HomeDashboardData['daySummary']['metrics'] {
   const completed = tasks?.filter((task) => task.completed).length;
   const habitSummary = habits === null ? null : calculateHabitSummary(habits);
 
@@ -316,7 +321,7 @@ export class HomeDashboardService {
   load(): void {
     const today = dateKey(new Date());
     forkJoin({
-      tasks: this.requestList<Task>('tasks'),
+      tasks: this.requestList<Task>(SCHEDULE_TASKS_LIST_RESOURCE),
       plannerEvents: this.requestList<PlannerEvent>('planner/events'),
       plannerAvailability: this.requestPlannerAvailability(today),
       habits: this.requestList<Habit>('habits'),

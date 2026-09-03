@@ -2,10 +2,26 @@ import { Injectable, inject, signal } from '@angular/core';
 import { catchError, finalize, of } from 'rxjs';
 import { ApiClient, withoutId } from '../../../core/data-access/api-client.service';
 import { DemoDataStore } from '../../../core/data-access/demo-data-store.service';
-import { PlannerEvent, PlannerEventDraft, PlannerTask, dateKey } from '../models';
+import {
+  PlannerCategory,
+  PlannerEvent,
+  PlannerEventDraft,
+  PlannerTask,
+  Task,
+  dateKey,
+} from '../models';
+import { SCHEDULE_TASKS_LIST_RESOURCE, SCHEDULE_TASKS_RESOURCE } from './schedule-tasks.endpoints';
 
 const EVENTS_RESOURCE = 'planner/events';
-const TASKS_RESOURCE = 'planner/tasks';
+const DEFAULT_TASK_CATEGORY: PlannerCategory = 'personal';
+
+function toPlannerTask(task: Task): PlannerTask {
+  return {
+    id: task.id,
+    title: task.title,
+    category: DEFAULT_TASK_CATEGORY,
+  };
+}
 
 function createDemoEvent(): PlannerEvent {
   return {
@@ -71,7 +87,7 @@ export class PlannerService {
 
   removeUnscheduledTask(id: number): void {
     this.api
-      .delete(TASKS_RESOURCE, id)
+      .delete(SCHEDULE_TASKS_RESOURCE, id)
       .pipe(catchError(() => of(undefined)))
       .subscribe(() =>
         this.unscheduledTasks.update((items) => items.filter((item) => item.id !== id)),
@@ -93,12 +109,12 @@ export class PlannerService {
 
   private loadUnscheduledTasks(): void {
     this.api
-      .getAll<PlannerTask>(TASKS_RESOURCE)
+      .getAll<Task>(SCHEDULE_TASKS_LIST_RESOURCE)
       .pipe(
         catchError(() => of([])),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((tasks) => this.unscheduledTasks.set(tasks));
+      .subscribe((tasks) => this.unscheduledTasks.set(tasks.map(toPlannerTask)));
   }
 
   private nextEventId(): number {
