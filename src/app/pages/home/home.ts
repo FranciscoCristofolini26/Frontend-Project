@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { HomeDashboardService } from './home-dashboard.service';
+import { HomeDashboardService } from './service/home-dashboard.service';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +23,8 @@ import { HomeDashboardService } from './home-dashboard.service';
 export class Home implements OnInit {
   private readonly dashboardService = inject(HomeDashboardService);
   readonly dashboard = this.dashboardService.dashboard;
+  readonly weatherLoading = this.dashboardService.weatherLoading;
+  readonly weatherError = this.dashboardService.weatherError;
   readonly searchQuery = signal('');
   readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
   readonly searchStatus = computed(() =>
@@ -57,5 +59,4 @@ export class Home implements OnInit {
       this.clearSearch();
     }
   }
-
 }

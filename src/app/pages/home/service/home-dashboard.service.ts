@@ -1,11 +1,11 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { catchError, forkJoin, of } from 'rxjs';
-import { ApiClient } from '../../core/data-access/api-client.service';
-import { CalendarEvent } from '../calendar/models';
-import { Goal } from '../goals/models/goal';
-import { weekIdFor } from '../goals/utils/week.utils';
-import { Habit } from '../habits/models/habit';
-import { calculateHabitSummary } from '../habits/utils/habit-metrics';
+import { ApiClient } from '../../../core/data-access/api-client.service';
+import { CalendarEvent } from '../../calendar/models';
+import { Goal } from '../../goals/models/goal';
+import { weekIdFor } from '../../goals/utils/week.utils';
+import { Habit } from '../../habits/models/habit';
+import { calculateHabitSummary } from '../../habits/utils/habit-metrics';
 import {
   PlannerDayAvailability,
   PlannerEvent,
@@ -13,8 +13,10 @@ import {
   Task,
   dateKey,
   getPlannerDayAvailability,
-} from '../schedule/models';
-import { SCHEDULE_TASKS_LIST_RESOURCE } from '../schedule/service/schedule-tasks.endpoints';
+} from '../../schedule/models';
+import { SCHEDULE_TASKS_LIST_RESOURCE } from '../../schedule/service/schedule-tasks.endpoints';
+import { WeatherResponse } from '../models/weather';
+import { WeatherService } from './weatherService.service';
 
 export type HomeTimeSegmentStatus = 'busy' | 'attention' | 'free' | 'unknown';
 
@@ -87,7 +89,23 @@ export interface HomeDashboardData {
   };
 }
 
-function currentDayData(): HomeDashboardData['day'] {
+const WEATHER_ICONS: Record<string, string> = {
+  'Céu limpo': 'wb_sunny',
+  'Parcialmente nublado': 'partly_cloudy_day',
+  Nublado: 'cloud',
+  Nevoeiro: 'foggy',
+  Garoa: 'rainy',
+  'Garoa congelante': 'rainy',
+  Chuva: 'rainy',
+  'Chuva congelante': 'rainy',
+  Neve: 'weather_snowy',
+  'Pancadas de chuva': 'rainy',
+  'Pancadas de neve': 'weather_snowy',
+  Trovoada: 'thunderstorm',
+  'Trovoada com granizo': 'thunderstorm',
+};
+
+function currentDayData(weather: WeatherResponse | null): HomeDashboardData['day'] {
   const today = new Date();
   const weekday = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(today);
   const month = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(today).replace('.', '');
@@ -96,10 +114,12 @@ function currentDayData(): HomeDashboardData['day'] {
     weekday: `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}`,
     number: String(today.getDate()).padStart(2, '0'),
     month: `${month.charAt(0).toUpperCase()}${month.slice(1)}`,
-    weatherIcon: 'cloud_off',
-    temperature: null,
-    city: null,
-    weatherCondition: null,
+    weatherIcon: weather ? WEATHER_ICONS[weather.condition] ?? 'cloud' : 'cloud_off',
+    temperature: weather
+      ? `${new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(weather.temperature)} °C`
+      : null,
+    city: weather?.city ?? null,
+    weatherCondition: weather?.condition ?? null,
     greeting: null,
   };
 }
@@ -272,7 +292,7 @@ function summary(
   ];
 }
 
-function createDashboardData(data: HomeBackendData): HomeDashboardData {
+function createDashboardData(data: HomeBackendData, weather: WeatherResponse | null): HomeDashboardData {
   const today = new Date();
 
   return {
@@ -284,7 +304,7 @@ function createDashboardData(data: HomeBackendData): HomeDashboardData {
       title: 'Um dia de cada vez.',
       description: 'Uma visão calma do que importa agora, sem perder de vista o seu ritmo.',
     },
-    day: currentDayData(),
+    day: currentDayData(weather),
     availableTime: availableTime(data.plannerEvents, data.plannerAvailability, today),
     focus: currentFocus(data.tasks),
     weeklyGoal: weeklyGoal(data.goals, today),
@@ -315,10 +335,17 @@ const INITIAL_BACKEND_DATA: HomeBackendData = {
 @Injectable({ providedIn: 'root' })
 export class HomeDashboardService {
   private readonly api = inject(ApiClient);
+  private readonly weatherService = inject(WeatherService);
+  private readonly backendData = signal<HomeBackendData>(INITIAL_BACKEND_DATA);
 
-  readonly dashboard = signal<HomeDashboardData>(createDashboardData(INITIAL_BACKEND_DATA));
+  readonly dashboard = computed(() =>
+    createDashboardData(this.backendData(), this.weatherService.weather()),
+  );
+  readonly weatherLoading = this.weatherService.loading;
+  readonly weatherError = this.weatherService.error;
 
   load(): void {
+    this.weatherService.load();
     const today = dateKey(new Date());
     forkJoin({
       tasks: this.requestList<Task>(SCHEDULE_TASKS_LIST_RESOURCE),
@@ -327,7 +354,7 @@ export class HomeDashboardService {
       habits: this.requestList<Habit>('habits'),
       goals: this.requestList<Goal>('goals'),
       calendarEvents: this.requestList<CalendarEvent>('calendar-events'),
-    }).subscribe((data) => this.dashboard.set(createDashboardData(data)));
+    }).subscribe((data) => this.backendData.set(data));
   }
 
   private requestList<T>(resource: string) {
