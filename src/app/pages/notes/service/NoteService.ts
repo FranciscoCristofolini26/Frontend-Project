@@ -1,27 +1,29 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { NoteModel } from '../models/NoteModel'
+import { ApiClient } from '../../../core/data-access/api-client.service';
+import { NoteModel } from '../models/NoteModel';
+
+const RESOURCE = 'notes';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NoteService {
-  private httpClient = inject(HttpClient);
-  private API_URL = 'http://localhost:8080/notes';
+  private readonly api = inject(ApiClient);
 
   getNotes(): Observable<NoteModel[]> {
-    return this.httpClient.get<NoteModel[]>(this.API_URL);
+    return this.api.getAll<NoteModel>(RESOURCE);
   }
 
-  createNote(nota: Partial<NoteModel>): Observable<NoteModel> {
-    return this.httpClient.post<NoteModel>(this.API_URL, nota);
+  createNote(note: Partial<NoteModel>): Observable<NoteModel> {
+    return this.api.post<NoteModel, Partial<NoteModel>>(RESOURCE, note);
   }
 
-  updateNote(id: number, nota: Partial<NoteModel>): Observable<NoteModel> {
-    return this.httpClient.put<NoteModel>(`${this.API_URL}/${id}`, nota);
+  updateNote(id: number, note: Partial<NoteModel>): Observable<NoteModel> {
+    return this.api.put<NoteModel, Partial<NoteModel>>(RESOURCE, id, note);
   }
 
   deleteNote(id: number): Observable<void> {
-    return this.httpClient.delete<void>(`${this.API_URL}/${id}`);
+    return this.api.delete(RESOURCE, id);
   }
 }

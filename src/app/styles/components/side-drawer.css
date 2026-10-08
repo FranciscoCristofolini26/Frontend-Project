@@ -1,0 +1,113 @@
+.side-drawer-backdrop {
+  background: rgb(0 0 0 / 0.38);
+  inset: 0;
+  position: fixed;
+  z-index: 100;
+}
+
+.side-drawer {
+  animation: side-drawer-slide-in 0.22s ease-out;
+  background: var(--color-card-surface);
+  border-left: 1px solid var(--color-border);
+  box-shadow: -18px 0 42px rgb(0 0 0 / 0.2);
+  box-sizing: border-box;
+  color: var(--color-text-main);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-left: auto;
+  max-width: 100%;
+  overflow: auto;
+  width: min(100%, 480px);
+}
+
+.side-drawer__header {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.side-drawer__header h2 {
+  font-family: var(--font-title);
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.side-drawer__header p {
+  color: var(--color-text-sub);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 5px 0 0;
+}
+
+.side-drawer__form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 8px 24px 24px;
+}
+
+.side-drawer .form-field {
+  margin-top: 17px;
+}
+
+.side-drawer .form-field > span[aria-hidden] {
+  color: var(--color-error);
+}
+
+.side-drawer select.input-control {
+  background-color: var(--color-card-surface);
+}
+
+.side-drawer__optional,
+.side-drawer__hint {
+  color: var(--color-text-disabled);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.side-drawer__hint,
+.side-drawer__error {
+  display: block;
+  margin-top: 5px;
+}
+
+.side-drawer__error {
+  color: var(--color-error);
+}
+
+.side-drawer__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 26px;
+}
+
+.side-drawer__actions mat-icon {
+  font-size: 19px;
+  height: 19px;
+  width: 19px;
+}
+
+@keyframes side-drawer-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .side-drawer__header,
+  .side-drawer__form {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

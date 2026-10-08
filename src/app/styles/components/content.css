@@ -1,0 +1,113 @@
+.card--elevated {
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-main) 5%, transparent);
+}
+
+.icon-button {
+  align-items: center;
+  background: var(--color-card-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  padding: 0;
+  width: 36px;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-main);
+}
+
+.icon-button--small {
+  background: transparent;
+  border-color: transparent;
+  height: 30px;
+  width: 30px;
+}
+
+.icon-button:focus-visible,
+.text-action:focus-visible,
+.section-heading a:focus-visible,
+.section-heading > button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  align-items: center;
+  color: var(--color-text-sub);
+  display: flex;
+  font-size: 11px;
+  font-weight: 750;
+  gap: 7px;
+  letter-spacing: 0.13em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.section-heading h2 {
+  font-family: var(--font-title);
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.section-heading > span {
+  color: var(--color-text-sub);
+  font-size: 12px;
+}
+
+.section-heading > button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.section-heading a,
+.section-heading > button,
+.text-action {
+  color: var(--color-brand-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.section-heading a:hover,
+.section-heading > button:hover,
+.text-action:hover {
+  color: var(--color-brand-hover);
+}
+
+.progress-track {
+  background: var(--color-surface-elevated);
+  border-radius: 999px;
+  height: 7px;
+  overflow: hidden;
+}
+
+.progress-track > .progress-value {
+  background: var(--color-brand-primary);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.progress-track--small {
+  height: 5px;
+}
+
+.empty-state {
+  color: var(--color-text-sub);
+}

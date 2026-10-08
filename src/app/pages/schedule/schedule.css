@@ -16,38 +16,6 @@
   margin-top: 20px;
 }
 
-.schedule-content-switcher__tabs {
-  background: var(--color-bg-sub);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-}
-
-.schedule-content-switcher__tab {
-  background: transparent;
-  border: 0;
-  border-radius: 9px;
-  color: var(--color-text-sub);
-  cursor: pointer;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 14px;
-}
-
-.schedule-content-switcher__tab--active {
-  background: var(--color-card-surface);
-  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-text-main) 10%, transparent);
-  color: var(--color-brand-primary);
-}
-
-.schedule-content-switcher__tab:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
-  outline-offset: 2px;
-}
-
 .schedule-page__main {
   margin-top: 16px;
 }

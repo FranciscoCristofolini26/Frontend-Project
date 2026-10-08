@@ -1,0 +1,50 @@
+.segmented-control {
+  background: var(--color-bg-sub);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+}
+
+.segmented-control--borderless {
+  border: 0;
+  border-radius: 10px;
+}
+
+.segmented-control__option {
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+}
+
+.segmented-control__option:hover {
+  color: var(--color-text-main);
+}
+
+.segmented-control__option--active {
+  background: var(--color-card-surface);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-text-main) 10%, transparent);
+  color: var(--color-brand-primary);
+}
+
+.segmented-control--muted-active .segmented-control__option--active {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  color: var(--color-text-main);
+}
+
+.segmented-control__option:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.segmented-control--compact .segmented-control__option {
+  border-radius: 8px;
+  padding: 7px 11px;
+}

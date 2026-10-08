@@ -1,0 +1,88 @@
+@if (isDesktop() && !sidebarOpen()) {
+  <button
+    type="button"
+    class="sidebar-reveal-button"
+    (click)="openSidebar()"
+    aria-label="Abrir barra lateral"
+    title="Abrir barra lateral"
+  >
+    <mat-icon class="sidebar-symbol">menu</mat-icon>
+  </button>
+}
+
+<aside
+  class="sidebar"
+  [class.sidebar--open]="sidebarOpen()"
+  [class.sidebar--resizing]="isResizing()"
+  [style.width.px]="panelWidth()"
+  aria-label="Navegação principal"
+>
+  <header class="sidebar-header">
+    <app-logo />
+
+    <button
+      type="button"
+      class="sidebar-hide-button"
+      (click)="closeSidebar()"
+      aria-label="Ocultar barra lateral"
+      title="Ocultar barra lateral"
+    >
+      <mat-icon class="sidebar-symbol sidebar-symbol--small">left_panel_close</mat-icon>
+    </button>
+  </header>
+
+  <nav class="sidebar-nav">
+    @for (section of navigationSections; track section.title) {
+      <section class="sidebar-section">
+        <div class="sidebar-section__title">
+          <span>{{ section.title }}</span>
+          <i></i>
+        </div>
+
+          <div class="sidebar-section__items">
+          @for (item of section.items; track item.label) {
+            @if (item.action === 'settings') {
+              <button type="button" class="sidebar-nav-item" (click)="settingsRequested.emit()">
+                <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
+              </button>
+            } @else {
+              <a
+                class="sidebar-nav-item"
+                [routerLink]="item.url"
+                [queryParams]="item.queryParams"
+                routerLinkActive="sidebar-nav-item--active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                #routeLink="routerLinkActive"
+                [attr.aria-current]="routeLink.isActive ? 'page' : null"
+              >
+                <mat-icon class="sidebar-symbol sidebar-symbol--small">{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
+              </a>
+            }
+          }
+        </div>
+      </section>
+    }
+  </nav>
+
+  <footer class="sidebar-footer">
+    <div class="sidebar-profile">
+      <span class="sidebar-avatar">SP<i></i></span>
+      <div>
+        <span>Seu perfil</span>
+        <small>Plano Pro · Online</small>
+      </div>
+      <button type="button" (click)="settingsRequested.emit()" aria-label="Configurações do perfil" title="Configurações do perfil">
+        <mat-icon class="sidebar-symbol sidebar-symbol--small">settings</mat-icon>
+      </button>
+    </div>
+  </footer>
+
+  <button
+    type="button"
+    class="sidebar-resizer"
+    (pointerdown)="startResize($event)"
+    aria-label="Redimensionar barra lateral"
+  ></button>
+</aside>

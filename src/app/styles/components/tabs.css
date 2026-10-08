@@ -1,0 +1,34 @@
+.tabs {
+  display: flex;
+  gap: 3px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.tab {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 10px 8px;
+}
+
+.tab:hover {
+  color: var(--color-text-main);
+}
+
+.tab--active {
+  border-bottom-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+
+.tab:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 38%, transparent);
+  outline-offset: -1px;
+}

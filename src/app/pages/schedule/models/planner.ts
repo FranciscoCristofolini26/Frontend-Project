@@ -1,4 +1,6 @@
-export type PlannerCategory = 'work' | 'study' | 'personal' | 'event' | 'habit';
+export type PlannerCategory = 'work' | 'study' | 'personal' | 'health' | 'event' | 'habit';
+
+export type PlannerEventSource = 'internal' | 'google';
 
 export type PlannerItemKind = 'event' | 'task';
 
@@ -7,6 +9,8 @@ export interface PlannerEvent {
   date: string;
   title: string;
   description?: string;
+  location?: string;
+  source?: PlannerEventSource;
   startTime: string;
   endTime: string;
   category: PlannerCategory;
@@ -15,10 +19,29 @@ export interface PlannerEvent {
 
 export interface PlannerEventDraft {
   title: string;
+  date: string;
   description: string;
+  location?: string;
+  source?: PlannerEventSource;
   startTime: string;
   endTime: string;
   category: PlannerCategory;
+}
+
+/** A fixed one-hour interval in the planner workday. */
+export interface PlannerTimeSlot {
+  startTime: string;
+  endTime: string;
+}
+
+/** Daily availability derived from the planner's one-hour slots. */
+export interface PlannerDayAvailability {
+  date: string;
+  totalBlocks: number;
+  occupiedBlocks: number;
+  availableBlocks: number;
+  availableHours: number;
+  slots: Array<PlannerTimeSlot & { available: boolean }>;
 }
 
 export interface PlannerTask {

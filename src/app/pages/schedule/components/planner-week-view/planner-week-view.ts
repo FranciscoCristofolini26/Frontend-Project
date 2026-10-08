@@ -8,8 +8,8 @@ import {
   signal,
 } from '@angular/core';
 import {
-  DAY_END_HOUR,
   DAY_START_HOUR,
+  PLANNER_SLOT_COUNT,
   PlannerEvent,
   PlannerOverlapGroup,
   durationInMinutes,
@@ -44,7 +44,7 @@ export class PlannerWeekView {
   readonly eventEdited = output<PlannerEvent>();
   readonly compactTimeline = signal(this.isCompactViewport());
   readonly hours = Array.from(
-    { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
+    { length: PLANNER_SLOT_COUNT },
     (_, index) => DAY_START_HOUR + index,
   );
   readonly weekDays = computed<WeekDay[]>(() =>
@@ -68,9 +68,8 @@ export class PlannerWeekView {
   );
   // The weekly cards need room for a title and its time on separate lines.
   readonly pixelsPerMinute = computed(() => (this.compactTimeline() ? 1.35 : 2.25));
-  readonly halfHourHeight = computed(() => this.pixelsPerMinute() * 30);
   readonly hourHeight = computed(() => this.pixelsPerMinute() * 60);
-  readonly canvasHeight = computed(() => this.hourHeight() * 13);
+  readonly canvasHeight = computed(() => this.hourHeight() * PLANNER_SLOT_COUNT);
   readonly eventMinHeight = computed(() => (this.compactTimeline() ? 38 : 54));
 
   @HostListener('window:resize')

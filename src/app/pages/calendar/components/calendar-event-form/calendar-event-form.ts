@@ -24,6 +24,8 @@ const CATEGORY_OPTIONS: { value: CalendarEventCategory; label: string }[] = [
   { value: 'study', label: 'Estudos' },
   { value: 'personal', label: 'Pessoal' },
   { value: 'health', label: 'Saúde' },
+  { value: 'event', label: 'Evento' },
+  { value: 'habit', label: 'Hábito' },
 ];
 
 @Component({
@@ -36,8 +38,8 @@ const CATEGORY_OPTIONS: { value: CalendarEventCategory; label: string }[] = [
 export class CalendarEventForm {
   readonly event = input<CalendarEvent | null>(null);
   readonly initialDate = input.required<string>();
-  readonly save = output<CalendarEventDraft>();
-  readonly close = output<void>();
+  readonly formSubmitted = output<CalendarEventDraft>();
+  readonly dismissed = output<void>();
   readonly categories = CATEGORY_OPTIONS;
 
   draft: EventFormDraft = this.emptyDraft('');
@@ -74,7 +76,7 @@ export class CalendarEventForm {
     }
     if (this.draft.startTime >= this.draft.endTime) return;
 
-    this.save.emit({
+    this.formSubmitted.emit({
       title: this.draft.title.trim(),
       date: this.draft.date,
       startTime: this.draft.startTime,
@@ -87,7 +89,7 @@ export class CalendarEventForm {
   }
 
   closeFromBackdrop(event: MouseEvent): void {
-    if (event.target === event.currentTarget) this.close.emit();
+    if (event.target === event.currentTarget) this.dismissed.emit();
   }
 
   private emptyDraft(date: string): EventFormDraft {

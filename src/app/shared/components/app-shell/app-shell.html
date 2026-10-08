@@ -1,0 +1,25 @@
+<div class="app-shell">
+  <app-sidebar (settingsRequested)="openSettings()" />
+
+  <app-header-mobile
+    [title]="pageTitle()"
+    [drawerOpen]="drawerOpen()"
+    (menuRequested)="openDrawer()"
+  />
+
+  <main class="app-shell__content">
+    <router-outlet />
+  </main>
+
+  <app-drawer-mobile
+    [open]="drawerOpen()"
+    [suspended]="settingsOpen()"
+    [sections]="navigationSections"
+    (dismissed)="closeDrawer()"
+    (settingsRequested)="openSettings()"
+  />
+
+  @if (settingsOpen()) {
+    <app-settings-modal (dismissed)="closeSettings()" />
+  }
+</div>

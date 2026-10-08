@@ -1,13 +1,11 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { MainLayout } from "./shared/main-layout/main-layout";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AppShell } from './shared/components/app-shell/app-shell';
 
 @Component({
   selector: 'app-root',
-  imports: [MainLayout],
+  imports: [AppShell],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('AgendaFrontend');
-}
+export class App {}

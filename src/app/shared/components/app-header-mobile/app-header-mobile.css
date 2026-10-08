@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.app-header-mobile {
+  align-items: center;
+  background: var(--color-card-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  height: 64px;
+  inset: 0 0 auto;
+  padding: 0 12px;
+  position: fixed;
+  z-index: 40;
+}
+
+.app-header-mobile__menu {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  color: var(--color-text-main);
+  cursor: pointer;
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+
+.app-header-mobile__menu:hover {
+  background: var(--color-surface-elevated);
+}
+
+.app-header-mobile__menu:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+  outline-offset: -2px;
+}
+
+.app-header-mobile__menu mat-icon {
+  font-size: 22px;
+  height: 22px;
+  width: 22px;
+}
+
+.app-header-mobile__title {
+  color: var(--color-text-main);
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  :host {
+    display: none;
+  }
+}

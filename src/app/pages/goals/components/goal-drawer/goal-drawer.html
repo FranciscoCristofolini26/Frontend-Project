@@ -1,15 +1,16 @@
 <div
-  class="goal-drawer-backdrop"
+  class="side-drawer-backdrop"
+  tabindex="-1"
   (click)="closeFromBackdrop($event)"
-  (keydown.escape)="close.emit()"
+  (keydown.escape)="dismissed.emit()"
 >
   <aside
-    class="goal-drawer"
+    class="side-drawer"
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="goal() ? 'Editar meta semanal' : 'Nova meta semanal'"
   >
-    <header class="goal-drawer__header">
+    <header class="side-drawer__header">
       <div>
         <h2>{{ goal() ? 'Editar meta' : 'Nova meta' }}</h2>
         <p>Descreva o resultado que você quer alcançar nesta semana.</p>
@@ -18,13 +19,13 @@
         type="button"
         class="button button--ghost button--icon"
         aria-label="Fechar drawer"
-        (click)="close.emit()"
+        (click)="dismissed.emit()"
       >
         <mat-icon>close</mat-icon>
       </button>
     </header>
 
-    <form class="goal-drawer__form" (ngSubmit)="submit()">
+    <form class="side-drawer__form" (ngSubmit)="submit()">
       <label class="form-field"
         >Nome da meta <span aria-hidden="true">*</span>
         <input
@@ -36,7 +37,7 @@
           autocomplete="off"
         />
         @if (submitted && !draft.title.trim()) {
-          <small class="goal-drawer__error">Informe o nome da meta.</small>
+          <small class="side-drawer__error">Informe o nome da meta.</small>
         }
       </label>
 
@@ -49,16 +50,16 @@
           placeholder="O que significa concluir esta meta?"
         ></textarea>
         @if (submitted && !draft.expectedResult.trim()) {
-          <small class="goal-drawer__error">Descreva o resultado esperado.</small>
+          <small class="side-drawer__error">Descreva o resultado esperado.</small>
         }
       </label>
 
       <label class="form-field"
         >Prioridade
         <select class="input-control" name="priority" [(ngModel)]="draft.priority">
-          <option value="ALTA">Alta</option>
-          <option value="MEDIA">Média</option>
-          <option value="BAIXA">Baixa</option>
+          <option value="HIGH">Alta</option>
+          <option value="NORMAL">Média</option>
+          <option value="LOW">Baixa</option>
         </select>
       </label>
 
@@ -78,7 +79,7 @@
         </div>
       } @else {
         <label class="form-field"
-          >Relacionar a um hábito <span class="goal-drawer__optional">Opcional</span>
+          >Relacionar a um hábito <span class="side-drawer__optional">Opcional</span>
           <select
             class="input-control"
             name="habit"
@@ -104,15 +105,15 @@
               step="1"
               [(ngModel)]="draft.habitTargetCount"
             />
-            <small class="goal-drawer__hint"
+            <small class="side-drawer__hint"
               >A contagem vem das execuções registradas no Planner.</small
             >
           </label>
         }
       }
 
-      <footer class="goal-drawer__actions">
-        <button type="button" class="button button--secondary" (click)="close.emit()">
+      <footer class="side-drawer__actions">
+        <button type="button" class="button button--secondary" (click)="dismissed.emit()">
           Cancelar
         </button>
         <button type="submit" class="button button--primary">

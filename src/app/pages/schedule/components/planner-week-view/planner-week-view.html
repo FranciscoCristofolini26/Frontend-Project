@@ -1,7 +1,6 @@
 <section
   class="planner-week-view card"
   aria-label="Visualização semanal"
-  [style.--planner-half-hour-height]="halfHourHeight() + 'px'"
   [style.--planner-hour-height]="hourHeight() + 'px'"
   [style.--planner-canvas-height]="canvasHeight() + 'px'"
   [style.--planner-event-min-height]="eventMinHeight() + 'px'"
@@ -11,7 +10,7 @@
       <p class="planner-week-view__eyebrow">Visão semanal</p>
       <h2 class="planner-week-view__title">Sua semana planejada</h2>
     </div>
-    <span class="planner-week-view__half-hour">Intervalos de 30 min</span>
+    <span class="planner-week-view__hourly-slots">Blocos de 1 hora</span>
   </header>
 
   @if (mobileSelectedDay(); as selectedDay) {

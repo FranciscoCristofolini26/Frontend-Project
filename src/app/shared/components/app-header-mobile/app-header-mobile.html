@@ -1,0 +1,15 @@
+<header class="app-header-mobile">
+  <button
+    #menuButton
+    type="button"
+    class="app-header-mobile__menu"
+    (click)="menuRequested.emit()"
+    aria-label="Abrir menu"
+    [attr.aria-expanded]="drawerOpen()"
+    aria-controls="app-mobile-drawer"
+  >
+    <mat-icon aria-hidden="true">menu</mat-icon>
+  </button>
+  <h1 class="app-header-mobile__title">{{ title() }}</h1>
+  <span aria-hidden="true"></span>
+</header>

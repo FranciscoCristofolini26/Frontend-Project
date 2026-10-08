@@ -7,15 +7,26 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { PlannerCategory, PlannerEvent, PlannerEventDraft } from '../../models';
+import {
+  dateKey,
+  isPlannerTimeSlot,
+  PlannerCategory,
+  PlannerEvent,
+  PlannerEventDraft,
+  PlannerEventSource,
+  PLANNER_DAY_SLOTS,
+} from '../../models';
 
 const CATEGORY_OPTIONS: { value: PlannerCategory; label: string }[] = [
   { value: 'work', label: 'Trabalho' },
   { value: 'personal', label: 'Pessoal' },
   { value: 'habit', label: 'Hábito' },
   { value: 'study', label: 'Estudos' },
+  { value: 'health', label: 'Saúde' },
   { value: 'event', label: 'Evento' },
 ];
+
+const DEFAULT_START_TIME = PLANNER_DAY_SLOTS[1].startTime;
 
 @Component({
   selector: 'app-planner-event-form',
@@ -34,12 +45,18 @@ export class PlannerEventForm {
   readonly categories = CATEGORY_OPTIONS;
 
   readonly title = signal('');
+  readonly eventDate = signal('');
   readonly description = signal('');
-  readonly startTime = signal('09:00');
-  readonly endTime = signal('10:00');
+  readonly location = signal('');
+  readonly source = signal<PlannerEventSource>('internal');
+  readonly startTime = signal(DEFAULT_START_TIME);
+  readonly endTime = computed(
+    () => PLANNER_DAY_SLOTS.find((slot) => slot.startTime === this.startTime())?.endTime ?? '',
+  );
   readonly category = signal<PlannerCategory>('work');
   readonly errorMessage = signal('');
   readonly editingEvent = computed(() => this.event());
+  readonly slots = PLANNER_DAY_SLOTS;
   readonly isDirty = computed(() => {
     const event = this.editingEvent();
 
@@ -49,7 +66,10 @@ export class PlannerEventForm {
 
     return (
       this.title().trim() !== event.title ||
+      this.eventDate() !== event.date ||
       this.description().trim() !== (event.description ?? '') ||
+      this.location().trim() !== (event.location ?? '') ||
+      this.source() !== (event.source ?? 'internal') ||
       this.startTime() !== event.startTime ||
       this.endTime() !== event.endTime ||
       this.category() !== event.category
@@ -94,18 +114,28 @@ export class PlannerEventForm {
     this.errorMessage.set('');
   }
 
+  updateEventDate(event: Event): void {
+    this.eventDate.set((event.target as HTMLInputElement).value);
+    this.errorMessage.set('');
+  }
+
   updateDescription(event: Event): void {
     this.description.set((event.target as HTMLTextAreaElement).value);
     this.errorMessage.set('');
   }
 
-  updateStartTime(event: Event): void {
-    this.startTime.set((event.target as HTMLInputElement).value);
+  updateLocation(event: Event): void {
+    this.location.set((event.target as HTMLInputElement).value);
     this.errorMessage.set('');
   }
 
-  updateEndTime(event: Event): void {
-    this.endTime.set((event.target as HTMLInputElement).value);
+  updateSource(event: Event): void {
+    this.source.set((event.target as HTMLSelectElement).value as PlannerEventSource);
+    this.errorMessage.set('');
+  }
+
+  updateStartTime(event: Event): void {
+    this.startTime.set((event.target as HTMLInputElement).value);
     this.errorMessage.set('');
   }
 
@@ -117,19 +147,22 @@ export class PlannerEventForm {
   submit(event: SubmitEvent): void {
     event.preventDefault();
 
-    if (!this.title().trim()) {
-      this.errorMessage.set('Informe um nome para o evento.');
+    if (!this.title().trim() || !this.eventDate()) {
+      this.errorMessage.set('Informe um nome e uma data para o evento.');
       return;
     }
 
-    if (!this.startTime() || !this.endTime() || this.startTime() >= this.endTime()) {
-      this.errorMessage.set('O horário final deve ser posterior ao horário inicial.');
+    if (!isPlannerTimeSlot({ startTime: this.startTime(), endTime: this.endTime() })) {
+      this.errorMessage.set('Escolha um bloco de uma hora entre 08:00 e 20:00.');
       return;
     }
 
     const draft = {
       title: this.title().trim(),
+      date: this.eventDate(),
       description: this.description().trim(),
+      location: this.location().trim() || undefined,
+      source: this.source(),
       startTime: this.startTime(),
       endTime: this.endTime(),
       category: this.category(),
@@ -167,18 +200,22 @@ export class PlannerEventForm {
 
   private reset(): void {
     this.title.set('');
+    this.eventDate.set(dateKey(this.date()));
     this.description.set('');
-    this.startTime.set('09:00');
-    this.endTime.set('10:00');
+    this.location.set('');
+    this.source.set('internal');
+    this.startTime.set(DEFAULT_START_TIME);
     this.category.set('work');
     this.errorMessage.set('');
   }
 
   private populate(event: PlannerEvent | null): void {
     this.title.set(event?.title ?? '');
+    this.eventDate.set(event?.date ?? dateKey(this.date()));
     this.description.set(event?.description ?? '');
-    this.startTime.set(event?.startTime ?? '09:00');
-    this.endTime.set(event?.endTime ?? '10:00');
+    this.location.set(event?.location ?? '');
+    this.source.set(event?.source ?? 'internal');
+    this.startTime.set(event?.startTime ?? DEFAULT_START_TIME);
     this.category.set(event?.category ?? 'work');
     this.errorMessage.set('');
   }

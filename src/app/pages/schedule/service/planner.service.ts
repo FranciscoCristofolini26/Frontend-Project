@@ -1,0 +1,123 @@
+import { Injectable, inject, signal } from '@angular/core';
+import { catchError, finalize, of } from 'rxjs';
+import { ApiClient, withoutId } from '../../../core/data-access/api-client.service';
+import { DemoDataStore } from '../../../core/data-access/demo-data-store.service';
+import {
+  PlannerCategory,
+  PlannerEvent,
+  PlannerEventDraft,
+  PlannerTask,
+  Task,
+  dateKey,
+} from '../models';
+import { SCHEDULE_TASKS_LIST_RESOURCE, SCHEDULE_TASKS_RESOURCE } from './schedule-tasks.endpoints';
+
+const EVENTS_RESOURCE = 'planner/events';
+const DEFAULT_TASK_CATEGORY: PlannerCategory = 'personal';
+
+function toPlannerTask(task: Task): PlannerTask {
+  return {
+    id: task.id,
+    title: task.title,
+    category: DEFAULT_TASK_CATEGORY,
+  };
+}
+
+function createDemoEvent(): PlannerEvent {
+  return {
+    id: 1,
+    date: dateKey(new Date()),
+    title: 'Exemplo de compromisso',
+    description: 'Evento de demonstração exibido somente sem dados da API.',
+    startTime: '09:00',
+    endTime: '10:00',
+    category: 'personal',
+    kind: 'event',
+  };
+}
+
+@Injectable({ providedIn: 'root' })
+export class PlannerService {
+  private readonly api = inject(ApiClient);
+  private readonly demoDataStore = inject(DemoDataStore);
+
+  readonly events = signal<PlannerEvent[]>([]);
+  readonly unscheduledTasks = signal<PlannerTask[]>([]);
+  readonly loading = signal(false);
+
+  constructor() {
+    this.load();
+  }
+
+  load(): void {
+    this.loading.set(true);
+    this.loadEvents();
+    this.loadUnscheduledTasks();
+  }
+
+  createEvent(draft: PlannerEventDraft, kind: PlannerEvent['kind'] = 'event'): void {
+    const event: PlannerEvent = {
+      id: this.nextEventId(),
+      kind,
+      ...draft,
+    };
+    this.api
+      .post<PlannerEvent, Omit<PlannerEvent, 'id'>>(EVENTS_RESOURCE, withoutId(event))
+      .pipe(catchError(() => of(event)))
+      .subscribe((createdEvent) => this.events.update((items) => [...items, createdEvent]));
+  }
+
+  updateEvent(event: PlannerEvent): void {
+    this.api
+      .put<PlannerEvent, Omit<PlannerEvent, 'id'>>(EVENTS_RESOURCE, event.id, withoutId(event))
+      .pipe(catchError(() => of(event)))
+      .subscribe((updatedEvent) =>
+        this.events.update((items) =>
+          items.map((item) => (item.id === updatedEvent.id ? updatedEvent : item)),
+        ),
+      );
+  }
+
+  removeEvent(id: number): void {
+    this.api
+      .delete(EVENTS_RESOURCE, id)
+      .pipe(catchError(() => of(undefined)))
+      .subscribe(() => this.events.update((items) => items.filter((item) => item.id !== id)));
+  }
+
+  removeUnscheduledTask(id: number): void {
+    this.api
+      .delete(SCHEDULE_TASKS_RESOURCE, id)
+      .pipe(catchError(() => of(undefined)))
+      .subscribe(() =>
+        this.unscheduledTasks.update((items) => items.filter((item) => item.id !== id)),
+      );
+  }
+
+  private loadEvents(): void {
+    this.api
+      .getAll<PlannerEvent>(EVENTS_RESOURCE)
+      .pipe(catchError(() => of([])))
+      .subscribe((events) => {
+        this.events.set(
+          events.length
+            ? events
+            : this.demoDataStore.getOrCreateList('planner-events', createDemoEvent),
+        );
+      });
+  }
+
+  private loadUnscheduledTasks(): void {
+    this.api
+      .getAll<Task>(SCHEDULE_TASKS_LIST_RESOURCE)
+      .pipe(
+        catchError(() => of([])),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((tasks) => this.unscheduledTasks.set(tasks.map(toPlannerTask)));
+  }
+
+  private nextEventId(): number {
+    return Math.max(0, ...this.events().map((event) => event.id)) + 1;
+  }
+}

@@ -11,19 +11,18 @@ import {
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PlannerViewMode } from '../header/header';
 import {
-  DAY_END_HOUR,
-  DAY_START_HOUR,
-  MAX_CONCURRENT_EVENTS,
+  PLANNER_DAY_SLOTS,
   PlannerEvent,
   PlannerEventDraft,
   PlannerHabit,
   PlannerTask,
-  addDays,
   dateKey,
-  durationInMinutes,
+  getPlannerDayAvailability,
+  isPlannerTimeSlot,
   startOfDay,
 } from '../../models';
 import { HabitService } from '../../../habits/service/habit.service';
+import { PlannerService } from '../../service/planner.service';
 import { PlannerDayView } from '../planner-day-view/planner-day-view';
 import { PlannerSidebar } from '../planner-sidebar/planner-sidebar';
 import { PlannerUnscheduledTasks } from '../planner-unscheduled-tasks/planner-unscheduled-tasks';
@@ -41,101 +40,6 @@ function formatDuration(minutes: number): string {
   return `${hours}h${remainingMinutes > 0 ? ` ${remainingMinutes}min` : ''}`;
 }
 
-function createPlannerEvents(today: Date): PlannerEvent[] {
-  return [
-    {
-      id: 1,
-      date: dateKey(today),
-      title: 'Daily com produto',
-      startTime: '09:00',
-      endTime: '09:30',
-      category: 'work',
-      kind: 'event',
-    },
-    {
-      id: 2,
-      date: dateKey(today),
-      title: 'Revisar proposta da Acme',
-      startTime: '10:00',
-      endTime: '11:00',
-      category: 'work',
-      kind: 'task',
-    },
-    {
-      id: 3,
-      date: dateKey(today),
-      title: 'Estudar Angular',
-      startTime: '14:00',
-      endTime: '15:30',
-      category: 'study',
-      kind: 'task',
-    },
-    {
-      id: 4,
-      date: dateKey(today),
-      title: 'Consulta médica',
-      startTime: '14:30',
-      endTime: '15:15',
-      category: 'personal',
-      kind: 'event',
-    },
-    {
-      id: 5,
-      date: dateKey(today),
-      title: 'Revisão de sprint',
-      startTime: '16:30',
-      endTime: '17:15',
-      category: 'event',
-      kind: 'event',
-    },
-    {
-      id: 6,
-      date: dateKey(addDays(today, -2)),
-      title: 'Planejamento de conteúdo',
-      startTime: '10:00',
-      endTime: '11:00',
-      category: 'work',
-      kind: 'event',
-    },
-    {
-      id: 7,
-      date: dateKey(addDays(today, -1)),
-      title: 'Sessão de leitura',
-      startTime: '15:00',
-      endTime: '16:00',
-      category: 'study',
-      kind: 'task',
-    },
-    {
-      id: 8,
-      date: dateKey(addDays(today, 1)),
-      title: 'Café com Ana',
-      startTime: '12:00',
-      endTime: '13:00',
-      category: 'personal',
-      kind: 'event',
-    },
-    {
-      id: 9,
-      date: dateKey(addDays(today, 2)),
-      title: 'Workshop de design',
-      startTime: '09:30',
-      endTime: '11:30',
-      category: 'event',
-      kind: 'event',
-    },
-    {
-      id: 10,
-      date: dateKey(addDays(today, 3)),
-      title: 'Planejar a próxima semana',
-      startTime: '16:00',
-      endTime: '17:00',
-      category: 'work',
-      kind: 'task',
-    },
-  ];
-}
-
 @Component({
   selector: 'app-planning',
   imports: [
@@ -151,6 +55,7 @@ function createPlannerEvents(today: Date): PlannerEvent[] {
 })
 export class Planning {
   private readonly habitService = inject(HabitService);
+  private readonly plannerService = inject(PlannerService);
 
   readonly selectedDate = input<Date>(startOfDay(new Date()));
   readonly viewMode = input<PlannerViewMode>('daily');
@@ -159,18 +64,11 @@ export class Planning {
   readonly editingEvent = signal<PlannerEvent | null>(null);
   readonly aiOrganizationPrompt = signal(false);
   readonly isDesktop = signal(this.isDesktopViewport());
-  readonly dailyDropListIds = Array.from(
-    { length: DAY_END_HOUR - DAY_START_HOUR + 1 },
-    (_, index) => `daily-slot-${DAY_START_HOUR + index}`,
-  );
+  readonly dailyDropListIds = PLANNER_DAY_SLOTS.map((slot) => `daily-slot-${slot.startTime}`);
   readonly dragAndDropEnabled = computed(() => this.viewMode() === 'daily' && this.isDesktop());
 
-  readonly events = signal<PlannerEvent[]>(createPlannerEvents(startOfDay(new Date())));
-  readonly unscheduledTasks = signal<PlannerTask[]>([
-    { id: 1, title: 'Organizar materiais da reunião', category: 'work', project: 'Produto' },
-    { id: 2, title: 'Ler capítulo 4 do curso', category: 'study', project: 'Angular' },
-    { id: 3, title: 'Responder e-mails pendentes', category: 'personal' },
-  ]);
+  readonly events = this.plannerService.events;
+  readonly unscheduledTasks = this.plannerService.unscheduledTasks;
   readonly habits = computed<PlannerHabit[]>(() => {
     const activeDate = dateKey(this.selectedDate());
     return this.habitService
@@ -187,6 +85,9 @@ export class Planning {
     const activeDate = dateKey(this.selectedDate());
     return this.events().filter((event) => event.date === activeDate);
   });
+  readonly dayAvailability = computed(() =>
+    getPlannerDayAvailability(dateKey(this.selectedDate()), this.dayEvents()),
+  );
   readonly taskCount = computed(
     () =>
       this.unscheduledTasks().length +
@@ -195,19 +96,13 @@ export class Planning {
   readonly eventCount = computed(
     () => this.dayEvents().filter((event) => event.kind === 'event').length,
   );
-  readonly plannedMinutes = computed(() =>
-    this.dayEvents().reduce((total, event) => total + durationInMinutes(event), 0),
-  );
+  readonly plannedMinutes = computed(() => this.dayAvailability().occupiedBlocks * 60);
   readonly plannedHours = computed(() => formatDuration(this.plannedMinutes()));
-  readonly freeMinutes = computed(() => {
-    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
-    return Math.max(0, availableMinutes - this.plannedMinutes());
-  });
+  readonly freeMinutes = computed(() => this.dayAvailability().availableBlocks * 60);
   readonly freeTime = computed(() => formatDuration(this.freeMinutes()));
-  readonly freeTimePercentage = computed(() => {
-    const availableMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
-    return Math.round((this.freeMinutes() / availableMinutes) * 100);
-  });
+  readonly freeTimePercentage = computed(() =>
+    Math.round((this.dayAvailability().availableBlocks / this.dayAvailability().totalBlocks) * 100),
+  );
 
   constructor() {
     effect(() => {
@@ -223,27 +118,17 @@ export class Planning {
   }
 
   createEvent(draft: PlannerEventDraft): void {
-    const candidate = { ...draft, date: dateKey(this.selectedDate()) };
-    if (this.wouldExceedConcurrentLimit(candidate)) {
+    if (!isPlannerTimeSlot(draft) || this.hasOccupiedSlot(draft)) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
 
-    const nextId = Math.max(0, ...this.events().map((event) => event.id)) + 1;
-    this.events.update((events) => [
-      ...events,
-      {
-        ...draft,
-        id: nextId,
-        date: dateKey(this.selectedDate()),
-        kind: 'event',
-      },
-    ]);
+    this.plannerService.createEvent(draft);
     this.closeEventForm();
   }
 
   removeEvent(id: number): void {
-    this.events.update((events) => events.filter((event) => event.id !== id));
+    this.plannerService.removeEvent(id);
   }
 
   openEventEditor(event: PlannerEvent): void {
@@ -253,18 +138,14 @@ export class Planning {
 
   updateEvent(draft: PlannerEventDraft): void {
     const event = this.editingEvent();
-    if (!event) {
-      return;
-    }
+    if (!event) return;
 
-    if (this.wouldExceedConcurrentLimit({ ...draft, date: event.date }, event.id)) {
+    if (!isPlannerTimeSlot(draft) || this.hasOccupiedSlot(draft, event.id)) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
 
-    this.events.update((events) =>
-      events.map((item) => (item.id === event.id ? { ...item, ...draft } : item)),
-    );
+    this.plannerService.updateEvent({ ...event, ...draft });
     this.closeEventForm();
   }
 
@@ -283,84 +164,53 @@ export class Planning {
     this.isDesktop.set(this.isDesktopViewport());
   }
 
-  onTaskDropped(
-    event: CdkDragDrop<unknown, PlannerTask[], PlannerTask>,
-    slotTime: string,
-  ): void {
+  onTaskDropped(event: CdkDragDrop<unknown, PlannerTask[], PlannerTask>, slotTime: string): void {
     if (!this.dragAndDropEnabled() || event.previousContainer.id !== 'unplanned-tasks') {
       return;
     }
 
     const task = event.item.data;
-    const startHour = Number(slotTime.slice(0, 2));
-    const endTime = `${Math.min(startHour + 1, DAY_END_HOUR + 1).toString().padStart(2, '0')}:00`;
-    if (
-      this.wouldExceedConcurrentLimit({
-        date: dateKey(this.selectedDate()),
-        startTime: slotTime,
-        endTime,
-      })
-    ) {
+    const slot = PLANNER_DAY_SLOTS.find((item) => item.startTime === slotTime);
+    if (!slot || this.hasOccupiedSlot({ date: dateKey(this.selectedDate()), ...slot })) {
       this.aiOrganizationPrompt.set(true);
       return;
     }
 
-    const nextId = Math.max(0, ...this.events().map((plannerEvent) => plannerEvent.id)) + 1;
-
-    this.events.update((events) => [
-      ...events,
+    this.plannerService.createEvent(
       {
-        id: nextId,
-        date: dateKey(this.selectedDate()),
         title: task.title,
+        date: dateKey(this.selectedDate()),
+        description: '',
         startTime: slotTime,
-        endTime,
+        endTime: slot.endTime,
         category: task.category,
-        kind: 'task',
       },
-    ]);
-    this.unscheduledTasks.update((tasks) => tasks.filter((item) => item.id !== task.id));
+      'task',
+    );
+    this.plannerService.removeUnscheduledTask(task.id);
   }
 
   private isDesktopViewport(): boolean {
     return typeof window !== 'undefined' && window.innerWidth >= 1024;
   }
 
-  private wouldExceedConcurrentLimit(
+  private hasOccupiedSlot(
     candidate: Pick<PlannerEvent, 'date' | 'startTime' | 'endTime'>,
     ignoredEventId?: number,
   ): boolean {
+    if (!isPlannerTimeSlot(candidate)) {
+      return true;
+    }
+
     const candidateStart = this.timeToMinutes(candidate.startTime);
     const candidateEnd = this.timeToMinutes(candidate.endTime);
-    const relevantEvents = this.events().filter(
+    return this.events().some(
       (event) =>
         event.id !== ignoredEventId &&
         event.date === candidate.date &&
         this.timeToMinutes(event.startTime) < candidateEnd &&
         this.timeToMinutes(event.endTime) > candidateStart,
     );
-    const boundaries = [
-      candidateStart,
-      candidateEnd,
-      ...relevantEvents.flatMap((event) => [
-        Math.max(candidateStart, this.timeToMinutes(event.startTime)),
-        Math.min(candidateEnd, this.timeToMinutes(event.endTime)),
-      ]),
-    ].sort((first, second) => first - second);
-
-    return boundaries.some((boundary, index) => {
-      const nextBoundary = boundaries[index + 1];
-      if (nextBoundary === undefined || nextBoundary === boundary) {
-        return false;
-      }
-
-      const probe = boundary + (nextBoundary - boundary) / 2;
-      const simultaneous = relevantEvents.filter(
-        (event) =>
-          this.timeToMinutes(event.startTime) < probe && this.timeToMinutes(event.endTime) > probe,
-      ).length;
-      return simultaneous >= MAX_CONCURRENT_EVENTS;
-    });
   }
 
   private timeToMinutes(time: string): number {

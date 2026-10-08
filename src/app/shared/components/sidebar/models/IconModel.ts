@@ -2,5 +2,7 @@ export interface IconModel{
     icon:string,
     label:string,
     active?:boolean,
-    url:string
+    url:string,
+    queryParams?: Record<string, string>,
+    action?: 'settings'
 }

@@ -1,13 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 @import 'tailwindcss';
 @import './app/styles/components/buttons.css';
 @import './app/styles/components/cards.css';
+@import './app/styles/components/content.css';
 @import './app/styles/components/inputs.css';
+@import './app/styles/components/layout.css';
 @import './app/styles/components/modal.css';
+@import './app/styles/components/segmented-control.css';
+@import './app/styles/components/side-drawer.css';
+@import './app/styles/components/tabs.css';
 
 body {
   min-width: 310px;
   overflow-x: hidden;
+}
+
+body.app-mobile-drawer-open {
+  overflow: hidden;
+}
+
+body.app-settings-open {
+  overflow: hidden;
 }
 
 @theme {
@@ -48,6 +60,21 @@ body {
   --color-text-disabled: #808080;
 }
 
+.high-contrast {
+  --color-bg-main: #000000;
+  --color-bg-sub: #0d0d0d;
+  --color-card-surface: #161616;
+  --color-surface-elevated: #282828;
+  --color-border: #ffffff;
+  --color-brand-accent: #ffffff;
+  --color-success: #52d6c8;
+  --color-warning: #facc15;
+  --color-error: #ff6b6b;
+  --color-text-main: #ffffff;
+  --color-text-sub: #f0f0f0;
+  --color-text-disabled: #c8c8c8;
+}
+
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -62,5 +89,9 @@ html {
 }
 
 html.dark {
+  color-scheme: dark;
+}
+
+html.high-contrast {
   color-scheme: dark;
 }

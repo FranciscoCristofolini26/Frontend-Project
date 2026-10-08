@@ -1,0 +1,33 @@
+:host {
+  display: inline-flex;
+  --logo-accent-fixed: #f97316;
+}
+
+.app-logo {
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.app-logo__planner {
+  color: var(--color-text-sub);
+}
+
+.app-logo__fy {
+  background: linear-gradient(
+    180deg,
+    var(--accent-color, var(--color-brand-primary)) 0%,
+    var(--logo-accent-fixed) 10%,
+    var(--logo-accent-fixed) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:host.app-logo--compact .app-logo {
+  font-size: 18px;
+}
