@@ -1,180 +1,162 @@
-<section>
-  <div class="min-w-0">
-    @if (showNewTaskDialog()) {
-      <app-tasks-properties
-        (closeForm)="closeNewTaskDialog()"
-        (saveForm)="addTask($event)"
-      ></app-tasks-properties>
-    }
+<section
+  class="tasks"
+  [class.tasks--spacious]="layoutTier() === 'spacious'"
+  aria-label="Lista de tarefas"
+>
+  @if (showNewTaskDialog()) {
+    <app-tasks-properties
+      (closeForm)="closeNewTaskDialog()"
+      (saveForm)="addTask($event)"
+    ></app-tasks-properties>
+  }
 
-    @if (tasks().length === 0) {
-      <div
-        class="mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center"
-      >
-        <mat-icon class="icon-lg text-text-sub">task_alt</mat-icon>
-        <p class="text-text-sub">Nenhuma tarefa cadastrada ainda.</p>
+  @if (tasks().length === 0) {
+    <section class="tasks-empty card" aria-label="Nenhuma tarefa cadastrada">
+      <span class="tasks-empty__icon" aria-hidden="true"><mat-icon>task_alt</mat-icon></span>
+      <h2>Nenhuma tarefa por aqui</h2>
+      <p>Crie uma tarefa para organizar o que precisa ser feito e acompanhar seu progresso.</p>
+      <button type="button" class="button button--primary" (click)="openNewTaskDialog()">
+        <mat-icon>add</mat-icon>Nova tarefa
+      </button>
+    </section>
+  } @else {
+    <div class="tasks__summary card card--elevated">
+      <div class="tasks__summary-text">
+        <span class="eyebrow">Progresso</span>
+        <strong>{{ completedTasks().length }} de {{ tasks().length }} concluídas</strong>
       </div>
-    } @else {
-      <div class="mt-6">
-        @if (pendingTasks().length > 0) {
-          <div>
-            <button
-              type="button"
-              class="flex w-full items-center gap-1.5 text-left text-xs font-semibold uppercase tracking-wide text-text-sub hover:text-text-main"
-              (click)="toggleGroup('pendentes')"
-              [attr.aria-expanded]="!isGroupCollapsed('pendentes')"
-            >
-              <mat-icon
-                class="icon-lg flex-none transition-transform duration-150"
-                [class.-rotate-90]="isGroupCollapsed('pendentes')"
-              >
-                expand_more
-              </mat-icon>
-              Pendentes Â· {{ pendingTasks().length }}
-            </button>
-
-            @if (!isGroupCollapsed('pendentes')) {
-              <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
-                @for (task of pendingTasks(); track task.id) {
-                  <li
-                    [class]="rowClasses(task.id) + ' task-row'"
-                    role="button"
-                    tabindex="0"
-                    (click)="selectTask(task.id)"
-                    (keydown.enter)="selectTask(task.id)"
-                  >
-                    <button
-                      type="button"
-                      (click)="toggleTask(task.id, $event)"
-                      class="flex-none text-text-sub hover:text-success"
-                    >
-                      <mat-icon [class]="iconClasses()">radio_button_unchecked</mat-icon>
-                    </button>
-
-                    <p class="min-w-0 flex-1 truncate font-medium text-text-main">
-                      {{ task.title }}
-                    </p>
-
-                    <div class="task-row__meta flex flex-none items-center gap-2">
-                      <span [class]="badgeClasses() + ' ' + priorityClasses(task.priority)">
-                        {{ task.priority }}
-                      </span>
-                      <span [class]="labelClasses()">{{ task.dueLabel }}</span>
-                    </div>
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        }
-
-        @if (completedTasks().length > 0) {
-          <div class="mt-8">
-            <button
-              type="button"
-              class="flex w-full items-center gap-1.5 text-left text-xs font-semibold uppercase tracking-wide text-text-sub hover:text-text-main"
-              (click)="toggleGroup('concluidas')"
-              [attr.aria-expanded]="!isGroupCollapsed('concluidas')"
-            >
-              <mat-icon
-                class="icon-lg flex-none transition-transform duration-150"
-                [class.-rotate-90]="isGroupCollapsed('concluidas')"
-              >
-                expand_more
-              </mat-icon>
-              Concluídas · {{ completedTasks().length }}
-            </button>
-
-            @if (!isGroupCollapsed('concluidas')) {
-              <ul class="mt-3 transition-all duration-150" [class]="listGapClasses()">
-                @for (task of completedTasks(); track task.id) {
-                  <li
-                    [class]="rowClasses(task.id) + ' task-row opacity-70'"
-                    role="button"
-                    tabindex="0"
-                    (click)="selectTask(task.id)"
-                    (keydown.enter)="selectTask(task.id)"
-                  >
-                    <button
-                      type="button"
-                      (click)="toggleTask(task.id, $event)"
-                      class="flex-none text-success"
-                    >
-                      <mat-icon [class]="iconClasses()">check_circle</mat-icon>
-                    </button>
-
-                    <p class="min-w-0 flex-1 truncate font-medium text-text-main line-through">
-                      {{ task.title }}
-                    </p>
-
-                    <div class="task-row__meta flex flex-none items-center gap-2">
-                      <span [class]="badgeClasses() + ' ' + priorityClasses(task.priority)">
-                        {{ task.priority }}
-                      </span>
-                      <span [class]="labelClasses()">{{ task.dueLabel }}</span>
-                    </div>
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        }
+      <span class="tasks__summary-percent">{{ progress() }}%</span>
+      <div class="progress-track tasks__summary-track" aria-hidden="true">
+        <span class="progress-value" [style.width.%]="progress()"></span>
       </div>
+    </div>
+
+    @for (group of groups(); track group.key) {
+      @if (group.tasks.length > 0) {
+        <section class="tasks-group card" [attr.aria-labelledby]="'tasks-group-' + group.key">
+          <button
+            type="button"
+            class="tasks-group__toggle"
+            [id]="'tasks-group-' + group.key"
+            (click)="toggleGroup(group.key)"
+            [attr.aria-expanded]="!isGroupCollapsed(group.key)"
+          >
+            <mat-icon
+              class="tasks-group__chevron"
+              [class.tasks-group__chevron--collapsed]="isGroupCollapsed(group.key)"
+              aria-hidden="true"
+              >expand_more</mat-icon
+            >
+            <span class="eyebrow">{{ group.label }}</span>
+            <span class="tasks-group__count">{{ group.tasks.length }}</span>
+          </button>
+
+          @if (!isGroupCollapsed(group.key)) {
+            <ul class="tasks-group__list">
+              @for (task of group.tasks; track task.id) {
+                <li
+                  class="task-row"
+                  [class.task-row--selected]="selectedTaskId() === task.id"
+                  [class.task-row--completed]="task.completed"
+                  role="button"
+                  tabindex="0"
+                  [attr.aria-pressed]="selectedTaskId() === task.id"
+                  (click)="selectTask(task.id)"
+                  (keydown.enter)="selectTask(task.id)"
+                >
+                  <button
+                    type="button"
+                    class="task-row__check"
+                    [attr.aria-label]="
+                      task.completed ? 'Reabrir ' + task.title : 'Concluir ' + task.title
+                    "
+                    (click)="toggleTask(task.id, $event)"
+                  >
+                    <mat-icon>{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                  </button>
+
+                  <p class="task-row__title">{{ task.title }}</p>
+
+                  <div class="task-row__meta">
+                    <span [class]="'task-priority task-priority--' + prioritySlug(task.priority)">
+                      {{ task.priority }}
+                    </span>
+                    <span class="task-row__due">
+                      <mat-icon aria-hidden="true">schedule</mat-icon>{{ task.dueLabel }}
+                    </span>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
     }
-  </div>
+  }
 </section>
 
 <aside
-  class="fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto border-l border-border bg-card-surface p-6 shadow-2xl transition-transform duration-300 ease-in-out lg:w-96"
-  [class.translate-x-0]="!!selectedTask()"
-  [class.translate-x-full]="!selectedTask()"
+  class="task-detail"
+  [class.task-detail--open]="!!selectedTask()"
+  [attr.aria-hidden]="!selectedTask()"
+  aria-label="Detalhes da tarefa"
 >
   @if (selectedTask(); as task) {
-    <div class="flex items-start justify-between gap-2">
-      <span
-        class="rounded-full px-3 py-1 text-xs font-semibold"
-        [class]="priorityClasses(task.priority)"
-      >
-        {{ task.priority }}
-      </span>
+    <header class="side-drawer__header">
+      <div class="task-detail__heading">
+        <span [class]="'task-priority task-priority--' + prioritySlug(task.priority)">
+          {{ task.priority }}
+        </span>
+        <h2 [class.task-detail__title--completed]="task.completed">{{ task.title }}</h2>
+      </div>
       <button
         type="button"
+        class="icon-button icon-button--small"
+        aria-label="Fechar detalhes"
         (click)="closeDetail()"
-        class="flex-none text-text-sub hover:text-text-main"
       >
-        <mat-icon class="icon-lg">close</mat-icon>
+        <mat-icon>close</mat-icon>
       </button>
+    </header>
+
+    <div class="task-detail__body">
+      <dl class="task-detail__facts">
+        <div>
+          <dt class="eyebrow">Prazo</dt>
+          <dd>{{ task.dueLabel }}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">Status</dt>
+          <dd>
+            <span
+              class="task-detail__status"
+              [class.task-detail__status--done]="task.completed"
+            >
+              {{ task.completed ? 'Concluída' : 'Pendente' }}
+            </span>
+          </dd>
+        </div>
+      </dl>
+
+      @if (task.notes) {
+        <div class="task-detail__notes">
+          <p class="eyebrow">Notas</p>
+          <p>{{ task.notes }}</p>
+        </div>
+      }
+
+      <div class="side-drawer__actions">
+        <button
+          type="button"
+          class="button button--full"
+          [class.button--primary]="!task.completed"
+          [class.button--secondary]="task.completed"
+          (click)="toggleTask(task.id)"
+        >
+          <mat-icon>{{ task.completed ? 'replay' : 'check' }}</mat-icon>
+          {{ task.completed ? 'Reabrir tarefa' : 'Marcar como concluída' }}
+        </button>
+      </div>
     </div>
-
-    <h2 class="mt-3 text-lg font-semibold text-text-main" [class.line-through]="task.completed">
-      {{ task.title }}
-    </h2>
-
-    <dl class="mt-5 grid grid-cols-2 gap-4 text-sm">
-      <div>
-        <dt class="text-xs uppercase tracking-wide text-text-sub">Prazo</dt>
-        <dd class="mt-1 text-text-main">{{ task.dueLabel }}</dd>
-      </div>
-      <div>
-        <dt class="text-xs uppercase tracking-wide text-text-sub">Status</dt>
-        <dd class="mt-1 text-text-main">{{ task.completed ? 'Concluída' : 'Pendente' }}</dd>
-      </div>
-    </dl>
-
-    @if (task.notes) {
-      <div class="mt-5">
-        <p class="text-xs uppercase tracking-wide text-text-sub">Notas</p>
-        <p class="mt-1 text-sm text-text-main">{{ task.notes }}</p>
-      </div>
-    }
-
-    <button
-      type="button"
-      (click)="toggleTask(task.id)"
-      class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-hover"
-    >
-      <mat-icon class="icon-lg">{{ task.completed ? 'replay' : 'check' }}</mat-icon>
-      {{ task.completed ? 'Reabrir tarefa' : 'Marcar como concluída' }}
-    </button>
   }
 </aside>

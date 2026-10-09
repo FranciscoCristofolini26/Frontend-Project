@@ -6,40 +6,10 @@ import { LayoutTier, Task, TaskPriority } from '../../models';
 import { TasksProperties } from './tasks-properties/tasks-properties';
 import { TasksService } from './service/tasks.service';
 
-const PRIORITY_CLASSES: Record<TaskPriority, string> = {
-  [TaskPriority.ALTA]: 'bg-error/10 text-error',
-  [TaskPriority.MEDIA]: 'bg-warning/10 text-warning',
-  [TaskPriority.NORMAL]: 'bg-surface-elevated text-text-sub',
-};
-
-const TIER_ROW_CLASSES: Record<LayoutTier, string> = {
-  compact: 'gap-3 rounded-xl p-4',
-  balanced: 'gap-3 rounded-xl p-4',
-  spacious: 'gap-4 rounded-2xl p-5 text-lg',
-};
-
-const TIER_BADGE_CLASSES: Record<LayoutTier, string> = {
-  compact: 'px-3 py-1 text-xs',
-  balanced: 'px-3 py-1 text-xs',
-  spacious: 'px-3.5 py-1.5 text-sm',
-};
-
-const TIER_LIST_GAP_CLASSES: Record<LayoutTier, string> = {
-  compact: 'space-y-3',
-  balanced: 'space-y-3',
-  spacious: 'space-y-4',
-};
-
-const TIER_LABEL_CLASSES: Record<LayoutTier, string> = {
-  compact: 'text-xs',
-  balanced: 'text-xs',
-  spacious: 'text-sm',
-};
-
-const TIER_ICON_CLASSES: Record<LayoutTier, string> = {
-  compact: 'icon-lg',
-  balanced: 'icon-lg',
-  spacious: 'icon-xl',
+const PRIORITY_SLUGS: Record<TaskPriority, string> = {
+  [TaskPriority.ALTA]: 'alta',
+  [TaskPriority.MEDIA]: 'media',
+  [TaskPriority.NORMAL]: 'normal',
 };
 
 @Component({
@@ -62,6 +32,14 @@ export class Tasks implements OnInit {
 
   pendingTasks = computed(() => this.tasks().filter((task) => !task.completed));
   completedTasks = computed(() => this.tasks().filter((task) => task.completed));
+  groups = computed(() => [
+    { key: 'pendentes', label: 'Pendentes', tasks: this.pendingTasks() },
+    { key: 'concluidas', label: 'Concluídas', tasks: this.completedTasks() },
+  ]);
+  progress = computed(() => {
+    const total = this.tasks().length;
+    return total ? Math.round((this.completedTasks().length / total) * 100) : 0;
+  });
   selectedTask = computed(
     () => this.tasks().find((task) => task.id === this.selectedTaskId()) ?? null,
   );
@@ -152,32 +130,7 @@ export class Tasks implements OnInit {
       .subscribe((newTask) => this.tasks.update((list) => [...list, newTask]));
   }
 
-  priorityClasses(priority: TaskPriority): string {
-    return PRIORITY_CLASSES[priority];
-  }
-
-  badgeClasses(): string {
-    return `rounded-full font-semibold ${TIER_BADGE_CLASSES[this.layoutTier()]}`;
-  }
-
-  listGapClasses(): string {
-    return TIER_LIST_GAP_CLASSES[this.layoutTier()];
-  }
-
-  labelClasses(): string {
-    return `${TIER_LABEL_CLASSES[this.layoutTier()]} text-text-sub`;
-  }
-
-  iconClasses(): string {
-    return TIER_ICON_CLASSES[this.layoutTier()];
-  }
-
-  rowClasses(taskId: number): string {
-    const base = 'flex cursor-pointer items-center border transition-colors duration-150';
-    const tierClasses = TIER_ROW_CLASSES[this.layoutTier()];
-
-    return this.selectedTaskId() === taskId
-      ? `${base} ${tierClasses} border-brand-primary bg-card-surface shadow-sm`
-      : `${base} ${tierClasses} border-transparent hover:border-border hover:bg-card-surface`;
+  prioritySlug(priority: TaskPriority): string {
+    return PRIORITY_SLUGS[priority];
   }
 }
